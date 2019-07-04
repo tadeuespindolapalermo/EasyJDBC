@@ -1,15 +1,15 @@
 package com.github.tadeuespindolapalermo.enumeration;
 
-public enum EnumConnectionPostgreSQL {	
+public enum EnumConnectionOracle {	
 
-	URL("jdbc:postgresql://"),
-	DRIVER("org.postgresql.Driver"),
-	PORT_DAFAULT("5432"),
+	URL("jdbc:oracle:thin:@"),
+	DRIVER("oracle.jdbc.OracleDriver"),
+	PORT_DAFAULT("1158"),
 	HOST_DAFAULT("127.0.0.1");
 	
 	private final String parameter;
 
-	private EnumConnectionPostgreSQL(String parameter) {
+	private EnumConnectionOracle(String parameter) {
 		this.parameter = parameter;
 	}
 

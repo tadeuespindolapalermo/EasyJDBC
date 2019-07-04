@@ -54,6 +54,7 @@
 		<junit.version>4.12</junit.version>
 		<postgresql.version>42.2.5</postgresql.version>
 		<log4j.version>1.2.17</log4j.version>
+		<oracle.version>12.1.0</oracle.version>
 	</properties>
 
 	<dependencies>
@@ -74,6 +75,12 @@
     		<groupId>log4j</groupId>
 		    <artifactId>log4j</artifactId>
 		    <version>${log4j.version}</version>
+		</dependency>
+		
+		<dependency>
+		   <groupId>com.oracle</groupId>
+		   <artifactId>ojdbc7</artifactId>
+		   <version>${oracle.version}</version>
 		</dependency>
 	</dependencies>
 
