@@ -7,40 +7,87 @@
 	<groupId>com.github.tadeuespindolapalermo.easyjdbc</groupId>
 	<artifactId>easy-jdbc</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+
+	<!--<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>-->
+
 	<packaging>jar</packaging>
 
 	<name>Easy JDBC Library</name>
 	<description>Library for easy persistence with JDBC!</description>
+	<url>https://github.com/tadeuespindolapalermo/EasyJDBC</url>
+
+	<scm>
+		<url>https://github.com/tadeuespindolapalermo/EasyJDBC</url>
+		<connection>scm:git:https://github.com/tadeuespindolapalermo/EasyJDBC.git</connection>
+		<developerConnection>scm:git:https://github.com/tadeuespindolapalermo/EasyJDBC.git</developerConnection>
+	</scm>
+
+	<licenses>
+		<license>
+			<name>GNU General Public License Version 3.0</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0-standalone.html</url>
+		</license>
+	</licenses>
+
+	<developers>
+		<developer>
+			<id>tadeuespindolapalermo</id>
+			<name>Tadeu Espíndola Palermo</name>
+			<email>tadeupalermoti@gmail.com</email>
+			<organization>JAVA Developer</organization>
+			<organizationUrl>https://github.com/tadeuespindolapalermo</organizationUrl>
+			<roles>
+				<role>project owner</role>
+				<role>administrator</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-3</timezone>
+		</developer>
+	</developers>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<junit.version>4.12</junit.version>
+		<postgresql.version>42.2.5</postgresql.version>
+		<log4j.version>1.2.17</log4j.version>
 	</properties>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>42.2.5</version>
+			<version>${postgresql.version}</version>
 		</dependency>
 		
 		<dependency>
     		<groupId>log4j</groupId>
 		    <artifactId>log4j</artifactId>
-		    <version>1.2.17</version>
+		    <version>${log4j.version}</version>
 		</dependency>
-
 	</dependencies>
 
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<!--<version>2.5.3</version>-->
+				<configuration>
+					<pushChanges>false</pushChanges>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -52,5 +99,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
