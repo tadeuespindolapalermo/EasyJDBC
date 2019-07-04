@@ -22,3 +22,4 @@ customs.json
 vim.exe.stackdump
 /.idea/
 *.iml
+target/maven-archiver/pom.properties
