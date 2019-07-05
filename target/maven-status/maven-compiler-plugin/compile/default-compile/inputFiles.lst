@@ -1,6 +1,9 @@
-C:\eclipse-workspace\easy-jdbc\src\main\java\com\github\tadeuespindolapalermo\enumeration\EnumConnectionPostgreSQL.java
-C:\eclipse-workspace\easy-jdbc\src\main\java\com\github\tadeuespindolapalermo\enumeration\EnumLogMessages.java
-C:\eclipse-workspace\easy-jdbc\src\main\java\com\github\tadeuespindolapalermo\main\Main.java
-C:\eclipse-workspace\easy-jdbc\src\main\java\com\github\tadeuespindolapalermo\enumeration\EnumDatabase.java
-C:\eclipse-workspace\easy-jdbc\src\main\java\com\github\tadeuespindolapalermo\connection\SingletonConnection.java
-C:\eclipse-workspace\easy-jdbc\src\main\java\com\github\tadeuespindolapalermo\util\LogUtil.java
+/home/tadeu/eclipse-workspace/java-ee-2019-03/easy-jdbc/src/main/java/com/github/tadeuespindolapalermo/enumeration/EnumLogMessages.java
+/home/tadeu/eclipse-workspace/java-ee-2019-03/easy-jdbc/src/main/java/com/github/tadeuespindolapalermo/enumeration/EnumConnectionPostgreSQL.java
+/home/tadeu/eclipse-workspace/java-ee-2019-03/easy-jdbc/src/main/java/com/github/tadeuespindolapalermo/connection/SingletonConnection.java
+/home/tadeu/eclipse-workspace/java-ee-2019-03/easy-jdbc/src/main/java/com/github/tadeuespindolapalermo/main/Main.java
+/home/tadeu/eclipse-workspace/java-ee-2019-03/easy-jdbc/src/main/java/com/github/tadeuespindolapalermo/connection/InfoConnection.java
+/home/tadeu/eclipse-workspace/java-ee-2019-03/easy-jdbc/src/main/java/com/github/tadeuespindolapalermo/util/ValidatorUtil.java
+/home/tadeu/eclipse-workspace/java-ee-2019-03/easy-jdbc/src/main/java/com/github/tadeuespindolapalermo/enumeration/EnumDatabase.java
+/home/tadeu/eclipse-workspace/java-ee-2019-03/easy-jdbc/src/main/java/com/github/tadeuespindolapalermo/enumeration/EnumConnectionOracle.java
+/home/tadeu/eclipse-workspace/java-ee-2019-03/easy-jdbc/src/main/java/com/github/tadeuespindolapalermo/util/LogUtil.java

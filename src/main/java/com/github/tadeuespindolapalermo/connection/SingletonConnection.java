@@ -52,10 +52,10 @@ public class SingletonConnection {
 	private static String mountOracleURL(String initialURL) {			
 		return new StringBuilder(initialURL)
 			.append(ValidatorUtil.isNotNull(InfoConnection.getHost()) 
-				? InfoConnection.getHost() : EnumConnectionOracle.HOST_DAFAULT)
+				? InfoConnection.getHost() : EnumConnectionOracle.HOST_DAFAULT.getParameter())
 			.append(":")
 			.append(ValidatorUtil.isNotNull(InfoConnection.getPort()) 
-				? InfoConnection.getPort() : EnumConnectionOracle.PORT_DAFAULT)
+				? InfoConnection.getPort() : EnumConnectionOracle.PORT_DAFAULT.getParameter())
 			.append("/")
 			.append(InfoConnection.getNameDatabase())
 			.toString();
@@ -64,10 +64,10 @@ public class SingletonConnection {
 	private static String mountPostgreSQLURL(String initialURL) {			
 		return new StringBuilder(initialURL)
 			.append(ValidatorUtil.isNotNull(InfoConnection.getHost()) 
-				? InfoConnection.getHost() : EnumConnectionPostgreSQL.HOST_DAFAULT)
+				? InfoConnection.getHost() : EnumConnectionPostgreSQL.HOST_DAFAULT.getParameter())
 			.append(":")
 			.append(ValidatorUtil.isNotNull(InfoConnection.getPort()) 
-				? InfoConnection.getPort() : EnumConnectionPostgreSQL.PORT_DAFAULT)
+				? InfoConnection.getPort() : EnumConnectionPostgreSQL.PORT_DAFAULT.getParameter())
 			.append("/")
 			.append(InfoConnection.getNameDatabase())
 			.toString();
