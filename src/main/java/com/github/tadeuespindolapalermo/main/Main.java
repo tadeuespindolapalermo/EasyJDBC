@@ -23,7 +23,9 @@ public class Main {
 		
 		Persistence persistence = new Persistence();
 		String[] columns = {"id", "name", "lastname", "cpf", "weight", "approved", "age"};
-		persistence.save(entity, "entyty", columns);		
+		
+		persistence.save(entity, "entyty");
+		persistence.save(entity, "entyty", columns);
 	}
 
 }
