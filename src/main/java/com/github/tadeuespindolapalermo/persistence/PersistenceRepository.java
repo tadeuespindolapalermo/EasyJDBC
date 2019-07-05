@@ -1,7 +1,7 @@
 package com.github.tadeuespindolapalermo.persistence;
 
-public interface PersistenceRepository {
+public interface PersistenceRepository {	
 	
-	public void save (Object object);
+	void save (Object object, String table, String[] columnsName);	
 
 }

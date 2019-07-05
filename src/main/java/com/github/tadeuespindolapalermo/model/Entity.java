@@ -5,9 +5,10 @@ public class Entity {
 	private Long id;
 	private String name;
 	private String lastname;
-	private Integer CPF;
+	private String cpf;
 	private Double weight;
 	private Boolean approved;
+	private Integer age;
 
 	public Long getId() {
 		return id;
@@ -33,12 +34,12 @@ public class Entity {
 		this.lastname = lastname;
 	}
 
-	public Integer getCPF() {
-		return CPF;
+	public String getCpf() {
+		return cpf;
 	}
 
-	public void setCPF(Integer cPF) {
-		CPF = cPF;
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
 	}
 
 	public Double getWeight() {
@@ -55,6 +56,14 @@ public class Entity {
 
 	public void setApproved(Boolean approved) {
 		this.approved = approved;
+	}
+
+	public Integer getAge() {
+		return age;
+	}
+
+	public void setAge(Integer age) {
+		this.age = age;
 	}
 
 	@Override
@@ -84,8 +93,8 @@ public class Entity {
 
 	@Override
 	public String toString() {
-		return "Entity [id=" + id + ", name=" + name + ", lastname=" + lastname + ", CPF=" + CPF + ", weight=" + weight
-				+ ", approved=" + approved + "]";
+		return "Entity [id=" + id + ", name=" + name + ", lastname=" + lastname + ", cpf=" + cpf + ", weight=" + weight
+				+ ", approved=" + approved + ", age=" + age + "]";
 	}
 
 }
