@@ -18,5 +18,13 @@ public class ValidatorUtil {
 			return Boolean.FALSE;
 		}
 	}
+	
+	public static Boolean isArrayValid(Object[] array) {
+    	return array != null && array.length > 0;
+    }
+	
+	public static Boolean isArrayNotValid(Object[] array) {
+    	return array == null || array.length <= 0;
+    }
 
 }
