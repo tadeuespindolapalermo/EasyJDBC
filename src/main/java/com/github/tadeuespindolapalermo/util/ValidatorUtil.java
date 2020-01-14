@@ -1,8 +1,10 @@
 package com.github.tadeuespindolapalermo.util;
 
 public class ValidatorUtil {
+	
+	private ValidatorUtil() {}
 
-	public static Boolean isNotNull(Object object) {
+	public static boolean isNotNull(Object object) {
 		return object != null;
 	}
 
@@ -19,11 +21,11 @@ public class ValidatorUtil {
 		}
 	}
 	
-	public static Boolean isArrayValid(Object[] array) {
+	public static boolean isArrayValid(Object[] array) {
     	return array != null && array.length > 0;
     }
 	
-	public static Boolean isArrayNotValid(Object[] array) {
+	public static boolean isArrayNotValid(Object[] array) {
     	return array == null || array.length <= 0;
     }
 

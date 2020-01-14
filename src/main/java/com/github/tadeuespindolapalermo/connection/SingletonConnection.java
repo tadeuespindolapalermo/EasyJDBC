@@ -13,6 +13,8 @@ import com.github.tadeuespindolapalermo.util.ValidatorUtil;
 public class SingletonConnection {
 	
 	private static Connection connection = null;	
+	
+	private SingletonConnection() { }
 
 	static {
 		toConnect();
@@ -28,6 +30,7 @@ public class SingletonConnection {
 						InfoConnection.getUser(),
 						InfoConnection.getPassword()
 					);
+					connection.setAutoCommit(false);	
 				}
 				
 				if (InfoConnection.getDatabase() == EnumDatabase.POSTGRE) {				
@@ -37,15 +40,13 @@ public class SingletonConnection {
 						InfoConnection.getUser(),
 						InfoConnection.getPassword()
 					);
-				}
-				
-				connection.setAutoCommit(false);				
+					connection.setAutoCommit(false);	
+				}							
 				LogUtil.getLogger(SingletonConnection.class).info(EnumLogMessages.CONN_SUCCESS.getMessage());				
 			}
 		} catch (Exception e) {
 			LogUtil.getLogger(SingletonConnection.class).error(EnumLogMessages.CONN_FAILED.getMessage()
-				+ "\n" + e.getCause().toString());
-			e.printStackTrace();						
+				+ "\n" + e.getCause().toString());							
 		}
 	}
 	
@@ -71,11 +72,7 @@ public class SingletonConnection {
 			.append("/")
 			.append(InfoConnection.getNameDatabase())
 			.toString();
-	}
-
-	public SingletonConnection() {
-		toConnect();
-	}
+	}	
 
 	public static Connection getConnection() {
 		return connection;

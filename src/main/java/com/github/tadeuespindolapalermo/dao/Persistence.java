@@ -17,7 +17,7 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	}
 	
 	@Override
-	public Boolean delete(T t, Long id) throws SQLException {	
+	public boolean delete(T t, Long id) throws SQLException {	
 		
 		String sql = mountSQLDelete(t.getClass().getSimpleName(), id);
 		
@@ -38,32 +38,33 @@ public class Persistence<T> implements PersistenceRepository<T> {
 		
 		String sql = mountSQLInsert(t.getClass().getSimpleName(), t.getClass().getDeclaredFields());
 		
-		PreparedStatement statement = connection.prepareStatement(sql);		
+		try (PreparedStatement statement = connection.prepareStatement(sql)) { 		
 		
-		t.getClass().getDeclaredFields()[0].getType();				
-		
-		statement.setObject(1, t.getClass().getDeclaredFields()[0]);
-		statement.setObject(2, t.getClass().getDeclaredFields()[1]);
-		statement.setObject(3, t.getClass().getDeclaredFields()[2]);
-		statement.setObject(4, t.getClass().getDeclaredFields()[3]);
-		
-		statement.setLong(1, 26);
-		statement.setString(2, "");
-		statement.setString(3, "");
-		statement.setLong(4, 4);
-		
-		for (int i = 0; i <= t.getClass().getDeclaredFields().length - 1; i++) {
-			if (t.getClass().getDeclaredFields()[i].getType().equals(Long.class)) {
-				statement.setLong(i + 1, 26);
-				break;
-			}
-		}		
-		
-		statement.setString(2, "");
-		statement.setString(3, "");
-		statement.setLong(4, 4);
-		
-		statement.executeUpdate();
+			t.getClass().getDeclaredFields()[0].getType();				
+			
+			statement.setObject(1, t.getClass().getDeclaredFields()[0]);
+			statement.setObject(2, t.getClass().getDeclaredFields()[1]);
+			statement.setObject(3, t.getClass().getDeclaredFields()[2]);
+			statement.setObject(4, t.getClass().getDeclaredFields()[3]);
+			
+			statement.setLong(1, 26);
+			statement.setString(2, "");
+			statement.setString(3, "");
+			statement.setLong(4, 4);
+			
+			for (int i = 0; i <= t.getClass().getDeclaredFields().length - 1; i++) {
+				if (t.getClass().getDeclaredFields()[i].getType().equals(Long.class)) {
+					statement.setLong(i + 1, 26);
+					break;
+				}
+			}		
+			
+			statement.setString(2, "");
+			statement.setString(3, "");
+			statement.setLong(4, 4);
+			
+			statement.executeUpdate();
+		}
 		connection.commit();		
 	}
 	

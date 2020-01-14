@@ -3,6 +3,8 @@ package com.github.tadeuespindolapalermo.connection;
 import com.github.tadeuespindolapalermo.enumeration.EnumDatabase;
 
 public class InfoConnection {
+	
+	private InfoConnection() { }
 
 	private static String nameDatabase;
 	private static String password;

@@ -12,6 +12,6 @@ public interface PersistenceRepository<T> {
 	
 	void save (Object object, String table, String[] columns) throws SQLException;
 	
-	Boolean delete (T t, Long id) throws SQLException;
+	boolean delete (T t, Long id) throws SQLException;
 
 }
