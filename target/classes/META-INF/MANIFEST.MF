@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Built-By: Tadeu
+Built-By: Tadeu Espindola
 Build-Jdk: 1.8.0_212-8u
 Created-By: Maven Integration for Eclipse
 

@@ -28,44 +28,27 @@ public class Persistence<T> implements PersistenceRepository<T> {
 			} else {			
 				connection.rollback();
 			}			
-		}	
-		
+		}			
 		return Boolean.FALSE;
 	}	
 
 	@Override
-	public void save(T t) throws SQLException {
+	public T save(T t) throws SQLException {	
 		
-		String sql = mountSQLInsert(t.getClass().getSimpleName(), t.getClass().getDeclaredFields());
+		String sql = mountSQLInsert(t.getClass().getSimpleName().toLowerCase(), t.getClass().getDeclaredFields());
 		
-		try (PreparedStatement statement = connection.prepareStatement(sql)) { 		
-		
-			t.getClass().getDeclaredFields()[0].getType();				
-			
-			statement.setObject(1, t.getClass().getDeclaredFields()[0]);
-			statement.setObject(2, t.getClass().getDeclaredFields()[1]);
-			statement.setObject(3, t.getClass().getDeclaredFields()[2]);
-			statement.setObject(4, t.getClass().getDeclaredFields()[3]);
-			
-			statement.setLong(1, 26);
-			statement.setString(2, "");
-			statement.setString(3, "");
-			statement.setLong(4, 4);
+		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 			
 			for (int i = 0; i <= t.getClass().getDeclaredFields().length - 1; i++) {
 				if (t.getClass().getDeclaredFields()[i].getType().equals(Long.class)) {
-					statement.setLong(i + 1, 26);
+					stmt.setLong(i + 1, 1);					
 					break;
 				}
-			}		
-			
-			statement.setString(2, "");
-			statement.setString(3, "");
-			statement.setLong(4, 4);
-			
-			statement.executeUpdate();
+			}			
+			stmt.executeUpdate();
 		}
-		connection.commit();		
+		connection.commit();	
+		return t;
 	}
 	
 	@Override
@@ -101,10 +84,10 @@ public class Persistence<T> implements PersistenceRepository<T> {
 		}
 
 		StringBuilder sql = new StringBuilder("INSERT INTO ")		
-		.append(table)
-		.append(" (" + columnsName.toString() + ") ")
-		.append("VALUES")
-		.append(" (" + values.toString() + ") ");
+			.append(table)
+			.append(" (" + columnsName.toString() + ") ")
+			.append("VALUES")
+			.append(" (" + values.toString() + ") ");
 
 		return sql.toString();
 	}
@@ -127,10 +110,10 @@ public class Persistence<T> implements PersistenceRepository<T> {
 		}
 
 		StringBuilder sql = new StringBuilder("INSERT INTO ")		
-		.append(table)
-		.append(" (" + columnsName.toString() + ") ")
-		.append("VALUES")
-		.append(" (" + values.toString() + ") ");
+			.append(table)
+			.append(" (" + columnsName.toString() + ") ")
+			.append("VALUES")
+			.append(" (" + values.toString() + ") ");
 
 		return sql.toString();
 	}	
@@ -138,11 +121,11 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	private String mountSQLDelete(String table, Long id) {
 		
 		StringBuilder sql = new StringBuilder("DELETE FROM ")		
-		.append(table)
-		.append(" WHERE ")
-		.append(" ")
-		.append(" = ")
-		.append(id);
+			.append(table)
+			.append(" WHERE ")
+			.append(" ")
+			.append(" = ")
+			.append(id);
 		
 		return sql.toString();
 	}	

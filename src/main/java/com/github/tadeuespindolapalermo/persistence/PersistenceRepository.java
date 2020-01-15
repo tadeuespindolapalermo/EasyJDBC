@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 public interface PersistenceRepository<T> {	
 	
-	void save (T t) throws SQLException;
+	T save (T t) throws SQLException;
 	
 	void save (Object object, String table) throws SQLException;
 	
