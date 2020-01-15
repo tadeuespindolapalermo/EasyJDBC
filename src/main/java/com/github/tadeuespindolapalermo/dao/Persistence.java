@@ -37,18 +37,50 @@ public class Persistence<T> implements PersistenceRepository<T> {
 		
 		String sql = mountSQLInsert(t.getClass().getSimpleName().toLowerCase(), t.getClass().getDeclaredFields());
 		
-		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-			
+		try (PreparedStatement stmt = connection.prepareStatement(sql)) {			
 			for (int i = 0; i <= t.getClass().getDeclaredFields().length - 1; i++) {
-				if (t.getClass().getDeclaredFields()[i].getType().equals(Long.class)) {
-					stmt.setLong(i + 1, 1);					
-					break;
-				}
+				setStatement(t, stmt, i);
 			}			
 			stmt.executeUpdate();
 		}
 		connection.commit();	
 		return t;
+	}
+
+	private void setStatement(T t, PreparedStatement stmt, int i) throws SQLException {
+		if (t.getClass().getDeclaredFields()[i].getType().equals(Long.class)) {
+			stmt.setLong(i + 1, 4);					
+			return;
+		}
+		if (t.getClass().getDeclaredFields()[i].getType().equals(Double.class)) {
+			stmt.setDouble(i + 1, 10.0);					
+			return;
+		}
+		if (t.getClass().getDeclaredFields()[i].getType().equals(Float.class)) {
+			stmt.setFloat(i + 1, 15.5f);					
+			return;
+		}
+		if (t.getClass().getDeclaredFields()[i].getType().equals(Integer.class)) {
+			stmt.setInt(i + 1, 20);					
+			return;
+		}
+		/*if (t.getClass().getDeclaredFields()[i].getType().equals(Character.class)) {								
+			return;
+		}*/
+		if (t.getClass().getDeclaredFields()[i].getType().equals(String.class)) {
+			stmt.setString(i + 1, "OK");					
+			return;
+		}
+		if (t.getClass().getDeclaredFields()[i].getType().equals(Boolean.class)) {
+			stmt.setBoolean(i + 1, false);					
+			return;
+		}
+		/*if (t.getClass().getDeclaredFields()[i].getType().equals(Byte.class)) {							
+			return;
+		}*/
+		if (t.getClass().getDeclaredFields()[i].getType().equals(Short.class)) {
+			stmt.setShort(i + 1, (short) 2);			
+		}		
 	}
 	
 	@Override
