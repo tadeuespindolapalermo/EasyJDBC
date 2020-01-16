@@ -1,6 +1,8 @@
 package com.github.tadeuespindolapalermo.dao;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -17,69 +19,75 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	}
 	
 	@Override
-	public boolean delete(T t, Long id) throws SQLException {	
-		
-		String sql = mountSQLDelete(t.getClass().getSimpleName(), id);
-		
+	public boolean delete(Class<T> t, Long id) throws SQLException {		
+		String sql = mountSQLDelete(t.getSimpleName().toLowerCase(), id);		
 		try (PreparedStatement statement = connection.prepareStatement(sql)) {
 			if(statement.executeUpdate() == 1) {
 				connection.commit();
-				return  Boolean.TRUE;						
-			} else {			
-				connection.rollback();
-			}			
+				return Boolean.TRUE;						
+			}
 		}			
 		return Boolean.FALSE;
 	}	
 
 	@Override
-	public T save(T t) throws SQLException {	
+	public T save(T entity) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException {	
 		
-		String sql = mountSQLInsert(t.getClass().getSimpleName().toLowerCase(), t.getClass().getDeclaredFields());
+		String sql = mountSQLInsert(entity.getClass().getSimpleName().toLowerCase(), entity.getClass().getDeclaredFields());		
+		
+		Class<?> entityClass = entity.getClass();
 		
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {			
-			for (int i = 0; i <= t.getClass().getDeclaredFields().length - 1; i++) {
-				setStatement(t, stmt, i);
+			for (int i = 0; i <= entity.getClass().getDeclaredFields().length - 1; i++) {			   	   
+				setStatement(entity, stmt, i, getMethod(entity, entityClass, i).invoke(entity));
 			}			
 			stmt.executeUpdate();
 		}
 		connection.commit();	
-		return t;
+		return entity;
 	}
 
-	private void setStatement(T t, PreparedStatement stmt, int i) throws SQLException {
-		if (t.getClass().getDeclaredFields()[i].getType().equals(Long.class)) {
-			stmt.setLong(i + 1, 4);					
+    private Method getMethod(T t, Class<?> tClass, int i) throws NoSuchMethodException {
+        Field field = t.getClass().getDeclaredFields()[i];
+        String firstCharacterUppercase = String.valueOf(Character.toUpperCase(field.getName().charAt(0)));
+        String[] token = field.getName().split(firstCharacterUppercase.toLowerCase());			    
+        return tClass.getDeclaredMethod("get" + firstCharacterUppercase + token[1]);
+    }
+
+	private void setStatement(T entity, PreparedStatement stmt, int i, Object value) throws SQLException {
+	  
+		if (entity.getClass().getDeclaredFields()[i].getType().equals(Long.class)) {
+			stmt.setLong(i + 1, (Long) value);					
 			return;
 		}
-		if (t.getClass().getDeclaredFields()[i].getType().equals(Double.class)) {
-			stmt.setDouble(i + 1, 10.0);					
+		
+		if (entity.getClass().getDeclaredFields()[i].getType().equals(Double.class)) {
+			stmt.setDouble(i + 1, (Double) value);					
 			return;
 		}
-		if (t.getClass().getDeclaredFields()[i].getType().equals(Float.class)) {
-			stmt.setFloat(i + 1, 15.5f);					
+		
+		if (entity.getClass().getDeclaredFields()[i].getType().equals(Float.class)) {
+			stmt.setFloat(i + 1, (Float) value);					
 			return;
 		}
-		if (t.getClass().getDeclaredFields()[i].getType().equals(Integer.class)) {
-			stmt.setInt(i + 1, 20);					
+		
+		if (entity.getClass().getDeclaredFields()[i].getType().equals(Integer.class)) {
+			stmt.setInt(i + 1, (Integer) value);					
 			return;
 		}
-		/*if (t.getClass().getDeclaredFields()[i].getType().equals(Character.class)) {								
-			return;
-		}*/
-		if (t.getClass().getDeclaredFields()[i].getType().equals(String.class)) {
-			stmt.setString(i + 1, "OK");					
+
+		if (entity.getClass().getDeclaredFields()[i].getType().equals(String.class)) {
+			stmt.setString(i + 1, (String) value);					
 			return;
 		}
-		if (t.getClass().getDeclaredFields()[i].getType().equals(Boolean.class)) {
-			stmt.setBoolean(i + 1, false);					
+		
+		if (entity.getClass().getDeclaredFields()[i].getType().equals(Boolean.class)) {
+			stmt.setBoolean(i + 1, (Boolean) value);					
 			return;
 		}
-		/*if (t.getClass().getDeclaredFields()[i].getType().equals(Byte.class)) {							
-			return;
-		}*/
-		if (t.getClass().getDeclaredFields()[i].getType().equals(Short.class)) {
-			stmt.setShort(i + 1, (short) 2);			
+
+		if (entity.getClass().getDeclaredFields()[i].getType().equals(Short.class)) {
+			stmt.setShort(i + 1, (Short) value);			
 		}		
 	}
 	
@@ -155,7 +163,7 @@ public class Persistence<T> implements PersistenceRepository<T> {
 		StringBuilder sql = new StringBuilder("DELETE FROM ")		
 			.append(table)
 			.append(" WHERE ")
-			.append(" ")
+			.append("id")
 			.append(" = ")
 			.append(id);
 		

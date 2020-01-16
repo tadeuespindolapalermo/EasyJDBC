@@ -8,7 +8,7 @@ public class ValidatorUtil {
 		return object != null;
 	}
 
-	public static Boolean isNotNull(Object... objects) {
+	public static boolean isNotNull(Object... objects) {
 		if (objects != null) {
 			for (Object object : objects) {
 				if (object == null) {

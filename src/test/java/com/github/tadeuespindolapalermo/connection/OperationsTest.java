@@ -1,8 +1,7 @@
 package com.github.tadeuespindolapalermo.connection;
 
 import static org.junit.Assert.assertNotNull;
-
-import java.sql.SQLException;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -27,18 +26,24 @@ public class OperationsTest {
 	}
 
 	@Test
-	public void insertTest() throws SQLException {
+	public void insertTest() throws Exception {
 		Entity e = createEntity();
 		Persistence<Entity> p = new Persistence<>();
 		assertNotNull(p.save(e));
 	}
+	
+	@Test
+    public void deleteTest() throws Exception {
+        Persistence<Entity> p = new Persistence<>();
+        assertTrue(p.delete(Entity.class, 6L));
+    }
 	
 	private Entity createEntity() {
 		Entity e = new Entity();
 		e.setAge(34);
 		e.setApproved(true);
 		e.setCpf("90253056012");
-		e.setId(1L);
+		e.setId(6L);
 		e.setLastname("Espíndola Palermo");
 		e.setName("Tadeu");
 		e.setWeight(82D);

@@ -17,36 +17,47 @@ public class Utils {
 	}
 	
 	public static Class<?> verifyType(Object type) {
+	  
 		if (type instanceof Long) {
 			return Long.class;
 		}
+		
 		if (type instanceof Double) {
 			return Double.class;
 		}
+		
 		if (type instanceof Float) {
 			return Float.class;
 		}
+		
 		if (type instanceof Integer) {
 			return Integer.class;
 		}
+		
 		if (type instanceof Character) {
 			return Character.class;
 		}
+		
 		if (type instanceof String) {
 			return String.class;
 		}
+		
 		if (type instanceof Boolean) {
 			return Boolean.class;
 		}
+		
 		if (type instanceof Byte) {
 			return Byte.class;
 		}
+		
 		if (type instanceof Short) {
 			return Short.class;
 		}
+		
 		if (type instanceof Number) {
 			return Number.class;
 		}
+		
 		return Object.class;
 	}
 
