@@ -10,6 +10,10 @@ import com.github.tadeuespindolapalermo.enumeration.EnumDatabase;
 import com.github.tadeuespindolapalermo.model.Entity;
 
 public class OperationsTest {
+	
+	private static final String[] COLUMNS = {"id", "name", "lastname", "cpf", "weight", "approved", "age"};
+	
+	private static final String ENTITY = "entity";
 
 	static {
 		connection();
@@ -26,10 +30,38 @@ public class OperationsTest {
 	}
 
 	@Test
-	public void insertTest() throws Exception {
-		Entity e = createEntity();
+	public void insertTestA() throws Exception {
+		Entity e = createEntityInsert();
 		Persistence<Entity> p = new Persistence<>();
 		assertNotNull(p.save(e));
+	}
+	
+	@Test
+	public void insertTestB() throws Exception {
+		Entity e = createEntityInsert();
+		Persistence<Entity> p = new Persistence<>();
+		assertNotNull(p.save(e, ENTITY));
+	}
+	
+	@Test
+	public void insertTestC() throws Exception {
+		Entity e = createEntityInsert();
+		Persistence<Entity> p = new Persistence<>();		
+		assertNotNull(p.save(e, COLUMNS));
+	}
+	
+	@Test
+	public void insertTestD() throws Exception {
+		Entity e = createEntityInsert();
+		Persistence<Entity> p = new Persistence<>();
+		assertNotNull(p.save(e, ENTITY, COLUMNS));
+	}
+	
+	@Test
+	public void updateTest() throws Exception {
+		Entity e = createEntityUpdate();
+		Persistence<Entity> p = new Persistence<>();
+		assertNotNull(p.update(e, 10L));
 	}
 	
 	@Test
@@ -38,15 +70,27 @@ public class OperationsTest {
         assertTrue(p.delete(Entity.class, 6L));
     }
 	
-	private Entity createEntity() {
+	private Entity createEntityInsert() {
 		Entity e = new Entity();
 		e.setAge(34);
 		e.setApproved(true);
 		e.setCpf("90253056012");
-		e.setId(6L);
+		e.setId(12L);
 		e.setLastname("Espíndola Palermo");
 		e.setName("Tadeu");
 		e.setWeight(82D);
+		return e;
+	}
+	
+	private Entity createEntityUpdate() {
+		Entity e = new Entity();
+		e.setAge(55);
+		e.setApproved(false);
+		e.setCpf("17731193039");
+		e.setId(6L);
+		e.setLastname("Pereira da Cruz");
+		e.setName("Osvaldo");
+		e.setWeight(105D);
 		return e;
 	}
 
