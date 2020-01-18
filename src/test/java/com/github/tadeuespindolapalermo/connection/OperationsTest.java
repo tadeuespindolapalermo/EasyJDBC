@@ -8,6 +8,7 @@ import org.junit.Test;
 import com.github.tadeuespindolapalermo.dao.Persistence;
 import com.github.tadeuespindolapalermo.enumeration.EnumDatabase;
 import com.github.tadeuespindolapalermo.model.Entity;
+import com.github.tadeuespindolapalermo.util.Utils;
 
 public class OperationsTest {
 	
@@ -30,44 +31,58 @@ public class OperationsTest {
 	}
 
 	@Test
-	public void insertTestA() throws Exception {
+	public void saveTestA() throws Exception {
 		Entity e = createEntityInsert();
 		Persistence<Entity> p = new Persistence<>();
 		assertNotNull(p.save(e));
 	}
 	
 	@Test
-	public void insertTestB() throws Exception {
+	public void saveTestB() throws Exception {
 		Entity e = createEntityInsert();
 		Persistence<Entity> p = new Persistence<>();
 		assertNotNull(p.save(e, ENTITY));
 	}
 	
 	@Test
-	public void insertTestC() throws Exception {
+	public void saveTestC() throws Exception {
 		Entity e = createEntityInsert();
 		Persistence<Entity> p = new Persistence<>();		
 		assertNotNull(p.save(e, COLUMNS));
 	}
 	
 	@Test
-	public void insertTestD() throws Exception {
+	public void saveTestD() throws Exception {
 		Entity e = createEntityInsert();
 		Persistence<Entity> p = new Persistence<>();
 		assertNotNull(p.save(e, ENTITY, COLUMNS));
 	}
 	
 	@Test
+    public void deleteTest() throws Exception {
+        Persistence<Entity> p = new Persistence<>();
+        assertTrue(p.delete(Entity.class, 6L));
+    }
+	
+	@Test
 	public void updateTest() throws Exception {
 		Entity e = createEntityUpdate();
 		Persistence<Entity> p = new Persistence<>();
 		assertNotNull(p.update(e, 10L));
-	}
+	}	
 	
 	@Test
-    public void deleteTest() throws Exception {
+    public void getAllTest() throws Exception {
         Persistence<Entity> p = new Persistence<>();
-        assertTrue(p.delete(Entity.class, 6L));
+        Utils.print(p.getAll());
+        assertNotNull(p.getAll());
+    }
+	
+	@Test
+    public void searchByIdTest() throws Exception {
+        Persistence<Entity> p = new Persistence<>();
+        Utils.print(p.searchById(12L));
+        assertNotNull(p.searchById(12L));
     }
 	
 	private Entity createEntityInsert() {

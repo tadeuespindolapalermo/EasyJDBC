@@ -5,14 +5,18 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.github.tadeuespindolapalermo.connection.SingletonConnection;
+import com.github.tadeuespindolapalermo.model.Entity;
 import com.github.tadeuespindolapalermo.persistence.PersistenceRepository;
 
 public class Persistence<T> implements PersistenceRepository<T> {	
 	
-	private Connection connection;
+	private Connection connection;	
 	
 	private static final String METHOD_GETTER_PREFIX = "get";
 	
@@ -21,6 +25,8 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	private static final String INSERT = "insert";
 	
 	private static final int INDEX_DIFERENCE_UPDATE = 1;
+	
+	private static final int SINGLE_ELEMENT_COLLECTION = 0;
 	
 	public Persistence() {
 		connection = SingletonConnection.getConnection();
@@ -35,7 +41,7 @@ public class Persistence<T> implements PersistenceRepository<T> {
 				entity.getClass().getSimpleName().toLowerCase(), 
 				entity.getClass().getDeclaredFields());	
 		
-		processInsertion(entity, sql, INSERT);	
+		processInsertionUpdate(entity, sql, INSERT);	
 		return entity;
 	}
 	
@@ -45,7 +51,7 @@ public class Persistence<T> implements PersistenceRepository<T> {
 			IllegalAccessException, InvocationTargetException {
 		
 		String sql = mountSQLInsert(table, entity.getClass().getDeclaredFields());
-		processInsertion(entity, sql, INSERT);
+		processInsertionUpdate(entity, sql, INSERT);
 		return entity;
 	}
 	
@@ -55,7 +61,7 @@ public class Persistence<T> implements PersistenceRepository<T> {
 			IllegalAccessException, InvocationTargetException {
 		
 		String sql = mountSQLInsert(entity.getClass().getSimpleName(), columns);
-		processInsertion(entity, sql, INSERT);
+		processInsertionUpdate(entity, sql, INSERT);
 		return entity;
 	}
 	
@@ -65,7 +71,7 @@ public class Persistence<T> implements PersistenceRepository<T> {
 			IllegalAccessException, InvocationTargetException {
 		
 		String sql = mountSQLInsert(table, columns);
-		processInsertion(entity, sql, INSERT);
+		processInsertionUpdate(entity, sql, INSERT);
 		return entity;
 	}
 	
@@ -78,13 +84,13 @@ public class Persistence<T> implements PersistenceRepository<T> {
 				entity.getClass().getSimpleName().toLowerCase(), 				
 				entity.getClass().getDeclaredFields(), id);
 		
-		processInsertion(entity, sql, UPDATE);		
+		processInsertionUpdate(entity, sql, UPDATE);		
 		return entity;
 	}	
 	
 	@Override
-	public boolean delete(Class<T> t, Long id) throws SQLException {		
-		String sql = mountSQLDelete(t.getSimpleName().toLowerCase(), id);		
+	public boolean delete(Class<T> entity, Long id) throws SQLException {		
+		String sql = mountSQLDelete(entity.getSimpleName().toLowerCase(), id);		
 		try (PreparedStatement statement = connection.prepareStatement(sql)) {
 			if(statement.executeUpdate() == 1) {
 				connection.commit();
@@ -92,9 +98,45 @@ public class Persistence<T> implements PersistenceRepository<T> {
 			}
 		}			
 		return Boolean.FALSE;
-	}	
+	}
+	
+	@Override
+	public Entity searchById(Long id) throws SQLException, InstantiationException, IllegalAccessException {		
+		String sql = mountSQLSearchById("entity", id);
+		List<Entity> entities = new ArrayList<>();
+		processSearch(sql, entities);
+		return entities.get(SINGLE_ELEMENT_COLLECTION);
+	}
+	
+	@Override
+	public List<Entity> getAll() throws SQLException, InstantiationException, IllegalAccessException {		
+		String sql = mountSQLGetAll("entity");
+		List<Entity> entities = new ArrayList<>();
+		processSearch(sql, entities);
+		return entities;
+	}
+	
+	private void processSearch(String sql, List<Entity> entities) 
+			throws SQLException {	
+		
+		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+			try (ResultSet result = stmt.executeQuery()) {
+				while (result.next()) {					
+					Entity e = new Entity();
+					e.setAge(result.getInt("age"));
+					e.setApproved(result.getBoolean("approved"));
+					e.setCpf(result.getString("cpf"));
+					e.setId(result.getLong("id"));
+					e.setLastname(result.getString("lastname"));
+					e.setName(result.getString("name"));
+					e.setWeight(result.getDouble("weight"));
+					entities.add(e);
+				}
+			}
+		}
+	}
 
-	private void processInsertion(T entity, String sql, String operation)
+	private void processInsertionUpdate(T entity, String sql, String operation)
 			throws SQLException, IllegalAccessException, 
 			InvocationTargetException, NoSuchMethodException {
 		
@@ -110,7 +152,7 @@ public class Persistence<T> implements PersistenceRepository<T> {
 			stmt.executeUpdate();
 		}
 		connection.commit();
-	}
+	}	
 
     private Method getMethod(T t, Class<?> tClass, int i) throws NoSuchMethodException {
         Field field = t.getClass().getDeclaredFields()[i];
@@ -255,6 +297,24 @@ public class Persistence<T> implements PersistenceRepository<T> {
 			.append(id);
 		
 		return sql.toString();
-	}	
+	}		
+	
+	private String mountSQLGetAll(String table) {
+		
+		StringBuilder sql = new StringBuilder("SELECT * FROM ")		
+			.append(table);			
+		
+		return sql.toString();
+	}
+	
+	private String mountSQLSearchById(String table, Long id) {
+		
+		StringBuilder sql = new StringBuilder("SELECT * FROM ")		
+			.append(table)
+			.append(" WHERE id = ")
+			.append(id);			
+		
+		return sql.toString();
+	}
 
 }

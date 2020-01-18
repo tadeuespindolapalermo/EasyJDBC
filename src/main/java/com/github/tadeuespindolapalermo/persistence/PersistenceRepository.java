@@ -2,6 +2,9 @@ package com.github.tadeuespindolapalermo.persistence;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
+import java.util.List;
+
+import com.github.tadeuespindolapalermo.model.Entity;
 
 public interface PersistenceRepository<T> {	
 	
@@ -16,5 +19,9 @@ public interface PersistenceRepository<T> {
 	boolean delete (Class<T> t, Long id) throws SQLException;
 	
 	T update (T entity, Long id) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException;
+	
+	List<Entity> getAll() throws SQLException, InstantiationException, IllegalAccessException;
+	
+	Entity searchById(Long id) throws SQLException, InstantiationException, IllegalAccessException;
 
 }

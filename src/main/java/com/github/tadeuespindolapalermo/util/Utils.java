@@ -6,15 +6,25 @@ public class Utils {
 
 	private Utils() { }
 
-	public static void printOut(Collection<?> objects) {
+	public static void printLogError(Collection<?> objects) {
 		for (Object object : objects) {
 			LogUtil.getLogger(Utils.class).error(object);
 		}
 	}
-
-	public static void printOut(Object object) {
+	
+	public static void printLogError(Object object) {
 		LogUtil.getLogger(Utils.class).error(object);
 	}
+	
+	public static void print(Collection<?> objects) {
+		for (Object object : objects) {
+			LogUtil.getLogger(Utils.class).info(object);
+		}
+	}
+	
+	public static void print(Object object) {
+		LogUtil.getLogger(Utils.class).error(object);
+	}	
 	
 	public static Class<?> verifyType(Object type) {
 	  
