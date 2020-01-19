@@ -33,54 +33,54 @@ public class OperationsTest {
 	@Test
 	public void saveTestA() throws Exception {
 		Entity e = createEntityInsert();
-		Persistence<Entity> p = new Persistence<>();
+		Persistence<Entity> p = new Persistence<>(Entity.class);
 		assertNotNull(p.save(e));
 	}
 	
 	@Test
 	public void saveTestB() throws Exception {
 		Entity e = createEntityInsert();
-		Persistence<Entity> p = new Persistence<>();
+		Persistence<Entity> p = new Persistence<>(Entity.class);
 		assertNotNull(p.save(e, ENTITY));
 	}
 	
 	@Test
 	public void saveTestC() throws Exception {
 		Entity e = createEntityInsert();
-		Persistence<Entity> p = new Persistence<>();		
+		Persistence<Entity> p = new Persistence<>(Entity.class);		
 		assertNotNull(p.save(e, COLUMNS));
 	}
 	
 	@Test
 	public void saveTestD() throws Exception {
 		Entity e = createEntityInsert();
-		Persistence<Entity> p = new Persistence<>();
+		Persistence<Entity> p = new Persistence<>(Entity.class);
 		assertNotNull(p.save(e, ENTITY, COLUMNS));
 	}
 	
 	@Test
     public void deleteTest() throws Exception {
-        Persistence<Entity> p = new Persistence<>();
+        Persistence<Entity> p = new Persistence<>(Entity.class);
         assertTrue(p.delete(Entity.class, 6L));
     }
 	
 	@Test
 	public void updateTest() throws Exception {
 		Entity e = createEntityUpdate();
-		Persistence<Entity> p = new Persistence<>();
+		Persistence<Entity> p = new Persistence<>(Entity.class);
 		assertNotNull(p.update(e, 10L));
 	}	
 	
 	@Test
     public void getAllTest() throws Exception {
-        Persistence<Entity> p = new Persistence<>();
+        Persistence<Entity> p = new Persistence<>(Entity.class);
         Utils.print(p.getAll());
         assertNotNull(p.getAll());
     }
 	
 	@Test
     public void searchByIdTest() throws Exception {
-        Persistence<Entity> p = new Persistence<>();
+        Persistence<Entity> p = new Persistence<>(Entity.class);
         Utils.print(p.searchById(12L));
         assertNotNull(p.searchById(12L));
     }

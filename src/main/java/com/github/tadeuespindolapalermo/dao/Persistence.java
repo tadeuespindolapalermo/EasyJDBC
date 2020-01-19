@@ -16,7 +16,9 @@ import com.github.tadeuespindolapalermo.persistence.PersistenceRepository;
 
 public class Persistence<T> implements PersistenceRepository<T> {	
 	
-	private Connection connection;	
+	private Connection connection;
+	
+	private Class<T> entity;
 	
 	private static final String METHOD_GETTER_PREFIX = "get";
 	
@@ -28,7 +30,8 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	
 	private static final int SINGLE_ELEMENT_COLLECTION = 0;
 	
-	public Persistence() {
+	public Persistence(Class<T> entity) {
+		this.entity = entity;
 		connection = SingletonConnection.getConnection();
 	}
 	
@@ -101,20 +104,20 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	}
 	
 	@Override
-	public Entity searchById(Long id) throws SQLException, InstantiationException, IllegalAccessException {		
-		String sql = mountSQLSearchById("entity", id);
-		List<Entity> entities = new ArrayList<>();
-		processSearch(sql, entities);
-		return entities.get(SINGLE_ELEMENT_COLLECTION);
-	}
-	
-	@Override
-	public List<Entity> getAll() throws SQLException, InstantiationException, IllegalAccessException {		
-		String sql = mountSQLGetAll("entity");
+	public List<Entity> getAll() throws SQLException, InstantiationException, IllegalAccessException {
+		String sql = mountSQLGetAll(entity.getSimpleName().toLowerCase());
 		List<Entity> entities = new ArrayList<>();
 		processSearch(sql, entities);
 		return entities;
 	}
+	
+	@Override
+	public Entity searchById(Long id) throws SQLException, InstantiationException, IllegalAccessException {		
+		String sql = mountSQLSearchById(entity.getSimpleName().toLowerCase(), id);
+		List<Entity> entities = new ArrayList<>();
+		processSearch(sql, entities);
+		return entities.get(SINGLE_ELEMENT_COLLECTION);
+	}	
 	
 	private void processSearch(String sql, List<Entity> entities) 
 			throws SQLException {	
