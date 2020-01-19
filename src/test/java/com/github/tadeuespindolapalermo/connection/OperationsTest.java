@@ -8,6 +8,7 @@ import org.junit.Test;
 import com.github.tadeuespindolapalermo.dao.Persistence;
 import com.github.tadeuespindolapalermo.enumeration.EnumDatabase;
 import com.github.tadeuespindolapalermo.model.Entity;
+import com.github.tadeuespindolapalermo.model.EntityNamed;
 import com.github.tadeuespindolapalermo.util.Utils;
 
 public class OperationsTest {
@@ -31,28 +32,35 @@ public class OperationsTest {
 	}
 
 	@Test
-	public void saveTestA() throws Exception {
+	public void savePersistenceClassTestA() throws Exception {
 		Entity e = createEntityInsert();
 		Persistence<Entity> p = new Persistence<>(Entity.class);
 		assertNotNull(p.save(e));
 	}
 	
 	@Test
-	public void saveTestB() throws Exception {
+	public void savePersistenceClassNamedTest() throws Exception {
+		EntityNamed e = createEntityNamedInsert();
+		Persistence<EntityNamed> p = new Persistence<>(EntityNamed.class);
+		assertNotNull(p.save(e));
+	}
+	
+	@Test
+	public void savePersistenceClassTestB() throws Exception {
 		Entity e = createEntityInsert();
 		Persistence<Entity> p = new Persistence<>(Entity.class);
 		assertNotNull(p.save(e, ENTITY));
 	}
 	
 	@Test
-	public void saveTestC() throws Exception {
+	public void savePersistenceClassTestC() throws Exception {
 		Entity e = createEntityInsert();
 		Persistence<Entity> p = new Persistence<>(Entity.class);		
 		assertNotNull(p.save(e, COLUMNS));
 	}
 	
 	@Test
-	public void saveTestD() throws Exception {
+	public void savePersistenceClassTestD() throws Exception {
 		Entity e = createEntityInsert();
 		Persistence<Entity> p = new Persistence<>(Entity.class);
 		assertNotNull(p.save(e, ENTITY, COLUMNS));
@@ -90,7 +98,19 @@ public class OperationsTest {
 		e.setAge(34);
 		e.setApproved(true);
 		e.setCpf("90253056012");
-		e.setId(12L);
+		e.setId(16L);
+		e.setLastname("Espíndola Palermo");
+		e.setName("Tadeu");
+		e.setWeight(82D);
+		return e;
+	}
+	
+	private EntityNamed createEntityNamedInsert() {
+		EntityNamed e = new EntityNamed();
+		e.setAge(34);
+		e.setApproved(true);
+		e.setCpf("90253056012");
+		e.setId(16L);
 		e.setLastname("Espíndola Palermo");
 		e.setName("Tadeu");
 		e.setWeight(82D);

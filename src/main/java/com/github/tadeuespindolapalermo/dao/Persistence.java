@@ -12,7 +12,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.tadeuespindolapalermo.annotation.PersistentClass;
+import com.github.tadeuespindolapalermo.annotation.PersistentClassNamed;
 import com.github.tadeuespindolapalermo.connection.SingletonConnection;
+import com.github.tadeuespindolapalermo.enumeration.EnumExceptionMessages;
+import com.github.tadeuespindolapalermo.exception.NotPersistentClass;
 import com.github.tadeuespindolapalermo.persistence.PersistenceRepository;
 
 public class Persistence<T> implements PersistenceRepository<T> {	
@@ -33,7 +37,10 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	
 	private static final int SINGLE_ELEMENT_COLLECTION = 0;
 	
-	public Persistence(Class<T> entity) {
+	private static final String STRING_EMPTY = "";
+	
+	public Persistence(Class<T> entity) throws NotPersistentClass {	
+		validatePersistentClass(entity);	
 		this.entity = entity;
 		connection = SingletonConnection.getConnection();
 	}
@@ -41,20 +48,17 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	@Override
 	public T save(T entity) 
 			throws SQLException, NoSuchMethodException, 
-			IllegalAccessException, InvocationTargetException {	
-		
-		String sql = mountSQLInsert(
-				entity.getClass().getSimpleName().toLowerCase(), 
-				entity.getClass().getDeclaredFields());	
-		
+			IllegalAccessException, InvocationTargetException, NotPersistentClass {		
+				
+		String sql = mountSQLInsert(defineTableName(entity), entity.getClass().getDeclaredFields());		
 		processInsertionUpdate(entity, sql, INSERT);	
 		return entity;
-	}
+	}	
 	
 	@Override
 	public T save(T entity, String table) 
 			throws SQLException, NoSuchMethodException, 
-			IllegalAccessException, InvocationTargetException {
+			IllegalAccessException, InvocationTargetException, NotPersistentClass {		
 		
 		String sql = mountSQLInsert(table, entity.getClass().getDeclaredFields());
 		processInsertionUpdate(entity, sql, INSERT);
@@ -64,9 +68,9 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	@Override
 	public T save(T entity, String[] columns) 
 			throws SQLException, NoSuchMethodException, 
-			IllegalAccessException, InvocationTargetException {
+			IllegalAccessException, InvocationTargetException, NotPersistentClass {		
 		
-		String sql = mountSQLInsert(entity.getClass().getSimpleName(), columns);
+		String sql = mountSQLInsert(defineTableName(entity), columns);
 		processInsertionUpdate(entity, sql, INSERT);
 		return entity;
 	}
@@ -74,7 +78,7 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	@Override
 	public T save(T entity, String table, String[] columns) 
 			throws SQLException, NoSuchMethodException, 
-			IllegalAccessException, InvocationTargetException {
+			IllegalAccessException, InvocationTargetException, NotPersistentClass {		
 		
 		String sql = mountSQLInsert(table, columns);
 		processInsertionUpdate(entity, sql, INSERT);
@@ -129,6 +133,28 @@ public class Persistence<T> implements PersistenceRepository<T> {
 		processSearch(sql, entities);
 		return entities.get(SINGLE_ELEMENT_COLLECTION);
 	}	
+	
+	private String defineTableName(T entity) {
+		return !verifyEntityName(entity).isEmpty() 
+				? verifyEntityName(entity) 
+				: entity.getClass().getSimpleName().toLowerCase();
+	}
+	
+	private String verifyEntityName(T entity) {
+		PersistentClassNamed annotClassNamed = entity.getClass().getDeclaredAnnotation(PersistentClassNamed.class);
+		if (annotClassNamed != null) {
+			return annotClassNamed.value();
+		}
+		return STRING_EMPTY;
+	}	
+	
+	private void validatePersistentClass(Class<T> entity) throws NotPersistentClass {		
+		PersistentClass annotClass = entity.getDeclaredAnnotation(PersistentClass.class);
+		PersistentClassNamed annotClassNamed = entity.getDeclaredAnnotation(PersistentClassNamed.class);
+		if (annotClass == null && annotClassNamed == null) {
+			throw new NotPersistentClass(EnumExceptionMessages.NOT_PERSISTENT_CLASS.getMessage());
+		}	
+	}
 	
 	private void processSearch(String sql, List<T> entities) 
 			throws SQLException, NoSuchMethodException, 

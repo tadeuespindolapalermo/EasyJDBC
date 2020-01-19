@@ -1,9 +1,9 @@
 package com.github.tadeuespindolapalermo.model;
 
-import com.github.tadeuespindolapalermo.annotation.PersistentClass;
+import com.github.tadeuespindolapalermo.annotation.PersistentClassNamed;
 
-@PersistentClass()
-public class Entity {
+@PersistentClassNamed("entityNamed")
+public class EntityNamed {
 
 	private Long id;
 	private String name;
@@ -85,7 +85,7 @@ public class Entity {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Entity other = (Entity) obj;
+		EntityNamed other = (EntityNamed) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
