@@ -103,7 +103,7 @@ public class OperationsTest {
 		e.setApproved(false);
 		e.setCpf("17731193039");
 		e.setId(6L);
-		e.setLastname("Pereira da Cruz");
+		e.setLastname("Pereira da Cruz Moreira");
 		e.setName("Osvaldo");
 		e.setWeight(105D);
 		return e;

@@ -1,5 +1,7 @@
 package com.github.tadeuespindolapalermo.dao;
 
+import static com.github.tadeuespindolapalermo.util.Utils.defineResultSetAttribute;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -20,6 +22,8 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	private Class<T> entity;
 	
 	private static final String METHOD_GETTER_PREFIX = "get";
+	
+	private static final String METHOD_SETTER_PREFIX = "set";
 	
 	private static final String UPDATE = "update";
 	
@@ -133,35 +137,23 @@ public class Persistence<T> implements PersistenceRepository<T> {
 		
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 			try (ResultSet result = stmt.executeQuery()) {
-				while (result.next()) {
-					
+				Field[] fields = entity.getDeclaredFields();
+				while (result.next()) {					
 					T entityResult = entity.newInstance();
-					
-					Method setAge = entity.getDeclaredMethod("setAge", Integer.class);
-					setAge.invoke(entityResult, result.getInt("age"));
-					
-					Method setApproved = entity.getDeclaredMethod("setApproved", Boolean.class);
-					setApproved.invoke(entityResult, result.getBoolean("approved"));
-					
-					Method setCpf = entity.getDeclaredMethod("setCpf", String.class);
-					setCpf.invoke(entityResult, result.getString("cpf"));
-					
-					Method setId = entity.getDeclaredMethod("setId", Long.class);
-					setId.invoke(entityResult, result.getLong("id"));
-					
-					Method setLastname = entity.getDeclaredMethod("setLastname", String.class);
-					setLastname.invoke(entityResult, result.getString("lastname"));
-					
-					Method setName = entity.getDeclaredMethod("setName", String.class);
-					setName.invoke(entityResult, result.getString("name"));
-					
-					Method setWeight = entity.getDeclaredMethod("setWeight", Double.class);
-					setWeight.invoke(entityResult, result.getDouble("weight"));
-					
+					for (Field field : fields) {						
+						Method methodSetAttribute = entityResult.getClass().getDeclaredMethod(getMethodSetterName(field), field.getType());
+						methodSetAttribute.invoke(entityResult, defineResultSetAttribute(result, field));						
+					}										
 					entities.add(entityResult);
 				}
 			}
 		}
+	}
+
+	private String getMethodSetterName(Field field) {
+		String firstCharacterUppercase = String.valueOf(Character.toUpperCase(field.getName().charAt(0)));
+		String[] token = field.getName().split(firstCharacterUppercase.toLowerCase());	
+		return METHOD_SETTER_PREFIX + firstCharacterUppercase + token[1];
 	}
 
 	private void processInsertionUpdate(T entity, String sql, String operation)
@@ -175,18 +167,18 @@ public class Persistence<T> implements PersistenceRepository<T> {
 				if (operation.equals(UPDATE) && entity.getClass().getDeclaredFields()[i].getName().equals("id")) {
 					continue;
 				}
-				setStatement(entity, stmt, i, getMethod(entity, entityClass, i).invoke(entity), operation);
+				setStatement(entity, stmt, i, getMethodGetter(entity, entityClass, i).invoke(entity), operation);
 			}			
 			stmt.executeUpdate();
 		}
 		connection.commit();
 	}	
 
-    private Method getMethod(T t, Class<?> tClass, int i) throws NoSuchMethodException {
-        Field field = t.getClass().getDeclaredFields()[i];
+    private Method getMethodGetter(T entity, Class<?> entityClass, int i) throws NoSuchMethodException {
+        Field field = entity.getClass().getDeclaredFields()[i];
         String firstCharacterUppercase = String.valueOf(Character.toUpperCase(field.getName().charAt(0)));
         String[] token = field.getName().split(firstCharacterUppercase.toLowerCase());			    
-        return tClass.getDeclaredMethod(METHOD_GETTER_PREFIX + firstCharacterUppercase + token[1]);
+        return entityClass.getDeclaredMethod(METHOD_GETTER_PREFIX + firstCharacterUppercase + token[1]);
     }
     
     private int computeIndexUpdate(int i) {
