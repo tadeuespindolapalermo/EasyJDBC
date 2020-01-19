@@ -4,8 +4,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
 
-import com.github.tadeuespindolapalermo.model.Entity;
-
 public interface PersistenceRepository<T> {	
 	
 	T save (T entity) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException;
@@ -20,8 +18,8 @@ public interface PersistenceRepository<T> {
 	
 	T update (T entity, Long id) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException;
 	
-	List<Entity> getAll() throws SQLException, InstantiationException, IllegalAccessException;
+	List<T> getAll() throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException;
 	
-	Entity searchById(Long id) throws SQLException, InstantiationException, IllegalAccessException;
+	T searchById(Long id) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException;
 
 }

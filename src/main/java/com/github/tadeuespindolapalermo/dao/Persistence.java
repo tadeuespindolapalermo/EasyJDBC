@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.github.tadeuespindolapalermo.connection.SingletonConnection;
-import com.github.tadeuespindolapalermo.model.Entity;
 import com.github.tadeuespindolapalermo.persistence.PersistenceRepository;
 
 public class Persistence<T> implements PersistenceRepository<T> {	
@@ -104,36 +103,62 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	}
 	
 	@Override
-	public List<Entity> getAll() throws SQLException, InstantiationException, IllegalAccessException {
+	public List<T> getAll() 
+			throws SQLException, InstantiationException, 
+			IllegalAccessException, NoSuchMethodException, 
+			InvocationTargetException {
+		
 		String sql = mountSQLGetAll(entity.getSimpleName().toLowerCase());
-		List<Entity> entities = new ArrayList<>();
+		List<T> entities = new ArrayList<>();
 		processSearch(sql, entities);
 		return entities;
 	}
 	
 	@Override
-	public Entity searchById(Long id) throws SQLException, InstantiationException, IllegalAccessException {		
+	public T searchById(Long id) 
+			throws SQLException, NoSuchMethodException, 
+			IllegalAccessException, InvocationTargetException, 
+			InstantiationException {
+		
 		String sql = mountSQLSearchById(entity.getSimpleName().toLowerCase(), id);
-		List<Entity> entities = new ArrayList<>();
+		List<T> entities = new ArrayList<>();
 		processSearch(sql, entities);
 		return entities.get(SINGLE_ELEMENT_COLLECTION);
 	}	
 	
-	private void processSearch(String sql, List<Entity> entities) 
-			throws SQLException {	
+	private void processSearch(String sql, List<T> entities) 
+			throws SQLException, NoSuchMethodException, 
+			IllegalAccessException, InvocationTargetException, 
+			InstantiationException {	
 		
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 			try (ResultSet result = stmt.executeQuery()) {
-				while (result.next()) {					
-					Entity e = new Entity();
-					e.setAge(result.getInt("age"));
-					e.setApproved(result.getBoolean("approved"));
-					e.setCpf(result.getString("cpf"));
-					e.setId(result.getLong("id"));
-					e.setLastname(result.getString("lastname"));
-					e.setName(result.getString("name"));
-					e.setWeight(result.getDouble("weight"));
-					entities.add(e);
+				while (result.next()) {
+					
+					T entityResult = entity.newInstance();
+					
+					Method setAge = entity.getDeclaredMethod("setAge", Integer.class);
+					setAge.invoke(entityResult, result.getInt("age"));
+					
+					Method setApproved = entity.getDeclaredMethod("setApproved", Boolean.class);
+					setApproved.invoke(entityResult, result.getBoolean("approved"));
+					
+					Method setCpf = entity.getDeclaredMethod("setCpf", String.class);
+					setCpf.invoke(entityResult, result.getString("cpf"));
+					
+					Method setId = entity.getDeclaredMethod("setId", Long.class);
+					setId.invoke(entityResult, result.getLong("id"));
+					
+					Method setLastname = entity.getDeclaredMethod("setLastname", String.class);
+					setLastname.invoke(entityResult, result.getString("lastname"));
+					
+					Method setName = entity.getDeclaredMethod("setName", String.class);
+					setName.invoke(entityResult, result.getString("name"));
+					
+					Method setWeight = entity.getDeclaredMethod("setWeight", Double.class);
+					setWeight.invoke(entityResult, result.getDouble("weight"));
+					
+					entities.add(entityResult);
 				}
 			}
 		}
