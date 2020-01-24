@@ -21,6 +21,10 @@ public class ValidatorUtil {
 		}
 	}
 	
+	public static boolean isNull(Object object) {
+		return object == null;
+	}	
+	
 	public static boolean isArrayValid(Object[] array) {
     	return array != null && array.length > 0;
     }

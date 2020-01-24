@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.tadeuespindolapalermo.annotation.Identifier;
 import com.github.tadeuespindolapalermo.annotation.PersistentClass;
 import com.github.tadeuespindolapalermo.annotation.PersistentClassNamed;
 import com.github.tadeuespindolapalermo.connection.SingletonConnection;
@@ -24,6 +25,8 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	private Connection connection;
 	
 	private Class<T> entity;
+	
+	private boolean flag;
 	
 	private static final String METHOD_GETTER_PREFIX = "get";
 	
@@ -39,6 +42,8 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	
 	private static final String STRING_EMPTY = "";
 	
+	private static final String WHERE_CLAUSE = " WHERE ";	
+	
 	public Persistence(Class<T> entity) throws NotPersistentClass {	
 		validatePersistentClass(entity);	
 		this.entity = entity;
@@ -48,10 +53,14 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	@Override
 	public T save(T entity) 
 			throws SQLException, NoSuchMethodException, 
-			IllegalAccessException, InvocationTargetException, NotPersistentClass {		
+			IllegalAccessException, InvocationTargetException, NotPersistentClass {				
 				
-		String sql = mountSQLInsert(defineTableName(entity), entity.getClass().getDeclaredFields());		
-		processInsertionUpdate(entity, sql, INSERT);	
+		String sql = mountSQLInsert(
+				defineTableName(entity.getClass()),
+				entity.getClass().getDeclaredFields(), 
+				getAutoIncrementIdentifierValue());
+		
+		processInsertionUpdate(entity, sql, INSERT, getAutoIncrementIdentifierValue());	
 		return entity;
 	}	
 	
@@ -60,8 +69,12 @@ public class Persistence<T> implements PersistenceRepository<T> {
 			throws SQLException, NoSuchMethodException, 
 			IllegalAccessException, InvocationTargetException, NotPersistentClass {		
 		
-		String sql = mountSQLInsert(table, entity.getClass().getDeclaredFields());
-		processInsertionUpdate(entity, sql, INSERT);
+		String sql = mountSQLInsert(
+				table, 
+				entity.getClass().getDeclaredFields(), 
+				getAutoIncrementIdentifierValue());
+		
+		processInsertionUpdate(entity, sql, INSERT, getAutoIncrementIdentifierValue());
 		return entity;
 	}
 	
@@ -70,8 +83,12 @@ public class Persistence<T> implements PersistenceRepository<T> {
 			throws SQLException, NoSuchMethodException, 
 			IllegalAccessException, InvocationTargetException, NotPersistentClass {		
 		
-		String sql = mountSQLInsert(defineTableName(entity), columns);
-		processInsertionUpdate(entity, sql, INSERT);
+		String sql = mountSQLInsert(
+				defineTableName(entity.getClass()), 
+				columns,
+				getAutoIncrementIdentifierValue());
+		
+		processInsertionUpdate(entity, sql, INSERT, getAutoIncrementIdentifierValue());
 		return entity;
 	}
 	
@@ -80,8 +97,9 @@ public class Persistence<T> implements PersistenceRepository<T> {
 			throws SQLException, NoSuchMethodException, 
 			IllegalAccessException, InvocationTargetException, NotPersistentClass {		
 		
-		String sql = mountSQLInsert(table, columns);
-		processInsertionUpdate(entity, sql, INSERT);
+		String sql = mountSQLInsert(table, columns, getAutoIncrementIdentifierValue());
+		
+		processInsertionUpdate(entity, sql, INSERT, getAutoIncrementIdentifierValue());
 		return entity;
 	}
 	
@@ -91,15 +109,32 @@ public class Persistence<T> implements PersistenceRepository<T> {
 			IllegalAccessException, InvocationTargetException {
 		
 		String sql = mountSQLUpdate(
-				entity.getClass().getSimpleName().toLowerCase(), 				
-				entity.getClass().getDeclaredFields(), id);
+				defineTableName(entity.getClass()), 				
+				entity.getClass().getDeclaredFields(), 
+				id,
+				getAutoIncrementIdentifierValue());
 		
-		processInsertionUpdate(entity, sql, UPDATE);		
+		processInsertionUpdate(entity, sql, UPDATE, getAutoIncrementIdentifierValue());		
 		return entity;
 	}	
 	
 	@Override
-	public boolean delete(Class<T> entity, Long id) throws SQLException {		
+	public T update(T entity)
+			throws SQLException, NoSuchMethodException, 
+			IllegalAccessException, InvocationTargetException {	
+		
+		String sql = mountSQLUpdate(
+				defineTableName(entity.getClass()), 				
+				entity.getClass().getDeclaredFields(), 
+				getIdValue(entity), 
+				getIdName(entity.getClass()));
+		
+		processInsertionUpdate(entity, sql, UPDATE, getAutoIncrementIdentifierValue());		
+		return entity;
+	}
+	
+	@Override
+	public boolean delete(Class<T> entity, Object id) throws SQLException {		
 		String sql = mountSQLDelete(entity.getSimpleName().toLowerCase(), id);		
 		try (PreparedStatement statement = connection.prepareStatement(sql)) {
 			if(statement.executeUpdate() == 1) {
@@ -116,37 +151,57 @@ public class Persistence<T> implements PersistenceRepository<T> {
 			IllegalAccessException, NoSuchMethodException, 
 			InvocationTargetException {
 		
-		String sql = mountSQLGetAll(entity.getSimpleName().toLowerCase());
+		String sql = mountSQLGetAll(defineTableName(entity));
 		List<T> entities = new ArrayList<>();
 		processSearch(sql, entities);
 		return entities;
 	}
 	
 	@Override
-	public T searchById(Long id) 
+	public T searchById(Object id) 
 			throws SQLException, NoSuchMethodException, 
 			IllegalAccessException, InvocationTargetException, 
-			InstantiationException {
+			InstantiationException {			
 		
-		String sql = mountSQLSearchById(entity.getSimpleName().toLowerCase(), id);
+		String sql = mountSQLSearchById(defineTableName(entity), id, getIdName(entity));
 		List<T> entities = new ArrayList<>();
 		processSearch(sql, entities);
 		return entities.get(SINGLE_ELEMENT_COLLECTION);
 	}	
 	
-	private String defineTableName(T entity) {
+	private Object getIdValue(T entity) throws IllegalAccessException, InvocationTargetException {
+		for (Method m : entity.getClass().getDeclaredMethods()) {
+			Identifier annotId = m.getDeclaredAnnotation(Identifier.class);	
+			if (annotId != null) {
+				return m.invoke(entity);
+			}			
+		}
+		return new Object();
+	}	
+	
+	private String getIdName(Class<?> entity) {
+		for (Method m : entity.getDeclaredMethods()) {
+			Identifier annotId = m.getDeclaredAnnotation(Identifier.class);	
+			if (annotId != null) {
+				return m.getName().replace("get", "").toLowerCase();
+			}			
+		}
+		return STRING_EMPTY;
+	}	
+	
+	private String defineTableName(Class<?> entity) {
 		return !verifyEntityName(entity).isEmpty() 
 				? verifyEntityName(entity) 
-				: entity.getClass().getSimpleName().toLowerCase();
-	}
+				: entity.getSimpleName().toLowerCase();
+	}	
 	
-	private String verifyEntityName(T entity) {
-		PersistentClassNamed annotClassNamed = entity.getClass().getDeclaredAnnotation(PersistentClassNamed.class);
+	private String verifyEntityName(Class<?> entity) {
+		PersistentClassNamed annotClassNamed = entity.getDeclaredAnnotation(PersistentClassNamed.class);
 		if (annotClassNamed != null) {
 			return annotClassNamed.value();
 		}
 		return STRING_EMPTY;
-	}	
+	}
 	
 	private void validatePersistentClass(Class<T> entity) throws NotPersistentClass {		
 		PersistentClass annotClass = entity.getDeclaredAnnotation(PersistentClass.class);
@@ -182,7 +237,7 @@ public class Persistence<T> implements PersistenceRepository<T> {
 		return METHOD_SETTER_PREFIX + firstCharacterUppercase + token[1];
 	}
 
-	private void processInsertionUpdate(T entity, String sql, String operation)
+	private void processInsertionUpdate(T entity, String sql, String operation, boolean idAutoIncrement)
 			throws SQLException, IllegalAccessException, 
 			InvocationTargetException, NoSuchMethodException {
 		
@@ -190,10 +245,11 @@ public class Persistence<T> implements PersistenceRepository<T> {
 		
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {			
 			for (int i = 0; i <= entity.getClass().getDeclaredFields().length - 1; i++) {
-				if (operation.equals(UPDATE) && entity.getClass().getDeclaredFields()[i].getName().equals("id")) {
+				if (operation.equals(UPDATE) && entity.getClass().getDeclaredFields()[i].getName().equals(getIdValue(entity))) {
 					continue;
 				}
-				setStatement(entity, stmt, i, getMethodGetter(entity, entityClass, i).invoke(entity), operation);
+				if (!(idAutoIncrement && entity.getClass().getDeclaredFields()[i].getName().equals(getIdName(entity.getClass()))))
+					setStatement(entity, stmt, i, getMethodGetter(entity, entityClass, i).invoke(entity), operation, idAutoIncrement);
 			}			
 			stmt.executeUpdate();
 		}
@@ -207,21 +263,36 @@ public class Persistence<T> implements PersistenceRepository<T> {
         return entityClass.getDeclaredMethod(METHOD_GETTER_PREFIX + firstCharacterUppercase + token[1]);
     }
     
-    private int computeIndexUpdate(int i) {
-    	return ++ i - INDEX_DIFERENCE_UPDATE;
+    private int computeIndexUpdate(int i, boolean idAutoIncrement) {
+    	return i == 0 && !idAutoIncrement ? ++ i : ++ i - INDEX_DIFERENCE_UPDATE;
     } 
     
-    private int computeIndexInsert(int i) {
-    	return ++ i;
+    private int computeIndexInsert(int i, boolean idAutoIncrement) {
+    	return i != 0 && idAutoIncrement ? i : ++ i;
     } 
 
-	private void setStatement(T entity, PreparedStatement stmt, int i, Object value, String operation) throws SQLException {
+	private void setStatement(T entity, PreparedStatement stmt, int i, Object value, String operation, boolean idAutoIncrement) throws SQLException {
 		
-		int index = computeIndexInsert(i);
+		if (operation.equals(UPDATE) 
+				&& entity.getClass().getDeclaredFields()[i].getName().equals(getIdName(entity.getClass()))
+				&& !idAutoIncrement) {
+			flag = true;
+			return;
+		}
+		
+		if (flag)
+			i --;
+			
+		int index = computeIndexInsert(i, idAutoIncrement);
 		
 	    if (operation.equals(UPDATE)) {
-	    	index = computeIndexUpdate(i);
+	    	index = computeIndexUpdate(i, idAutoIncrement);
+	    	if (!idAutoIncrement && i != 0)
+	    		index ++;
 	    } 
+	    
+	    if (flag)
+	    	i ++;
 	    
 		if (entity.getClass().getDeclaredFields()[i].getType().equals(Long.class)) {
 			stmt.setLong(index, (Long) value);					
@@ -254,19 +325,21 @@ public class Persistence<T> implements PersistenceRepository<T> {
 		}
 
 		if (entity.getClass().getDeclaredFields()[i].getType().equals(Short.class)) {
-			stmt.setShort(index, (Short) value);			
-		}		
+			stmt.setShort(index, (Short) value);				
+		}
 	}
 
-	private String mountSQLInsert(String table, Field[] fields) {
+	private String mountSQLInsert(String table, Field[] fields, boolean idAutoIncrement) {					
 
 		StringBuilder columnsName = new StringBuilder();
-		StringBuilder values = new StringBuilder();
-		
+		StringBuilder values = new StringBuilder();		
+
 		int qtdColumns = fields.length;
 
 		for (int i = 0; qtdColumns - 1 >= i; i++) {
 			if (i != qtdColumns - 1) {
+				if (idAutoIncrement && fields[i].getName().equals(getIdName(entity)))
+					continue;
 				columnsName.append(fields[i].getName()).append(", ");
 				values.append("?").append(", ");
 			} else {
@@ -274,17 +347,17 @@ public class Persistence<T> implements PersistenceRepository<T> {
 				values.append("?");
 			}
 		}
-
+		
 		StringBuilder sql = new StringBuilder("INSERT INTO ")		
 			.append(table)
-			.append(" (" + columnsName.toString() + ") ")
+			.append(" (" + columnsName + ") ")
 			.append("VALUES")
-			.append(" (" + values.toString() + ") ");
+			.append(" (" + values + ") ");
 
 		return sql.toString();
-	}
+	}	
 	
-	private String mountSQLInsert(String table, String[] columns) {
+	private String mountSQLInsert(String table, String[] columns, boolean idAutoIncrement) {
 
 		StringBuilder columnsName = new StringBuilder();
 		StringBuilder values = new StringBuilder();
@@ -292,7 +365,9 @@ public class Persistence<T> implements PersistenceRepository<T> {
 		int qtdColumns = columns.length;
 
 		for (int i = 0; qtdColumns - 1 >= i; i++) {
-			if (i != qtdColumns - 1) {
+			if (i != qtdColumns - 1) {	
+				if (idAutoIncrement && columns[i].equals(getIdName(entity)))
+					continue;
 				columnsName.append(columns[i]).append(", ");
 				values.append("?").append(", ");
 			} else {
@@ -310,7 +385,7 @@ public class Persistence<T> implements PersistenceRepository<T> {
 		return sql.toString();
 	}	
 	
-	private String mountSQLUpdate(String table, Field[] fields, Long id) {
+	private String mountSQLUpdate(String table, Field[] fields, Long id, boolean idAutoIncrement) {
 		
 		StringBuilder columnsName = new StringBuilder();		
 		
@@ -318,6 +393,8 @@ public class Persistence<T> implements PersistenceRepository<T> {
 
 		for (int i = 0; qtdColumns - 1 >= i; i++) {
 			if (i != qtdColumns - 1) {
+				if (idAutoIncrement && fields[i].getName().equals(getIdName(entity)))
+					continue;
 				columnsName.append(fields[i].getName()).append(" = ?").append(", ");
 			} else {
 				columnsName.append(fields[i].getName()).append(" = ?");
@@ -326,21 +403,46 @@ public class Persistence<T> implements PersistenceRepository<T> {
 
 		StringBuilder sql = new StringBuilder("UPDATE ")		
 			.append(table)
-			.append(" SET")
+			.append(" SET ")
 			.append(columnsName.toString())
 			.append(" WHERE id = " + id);		
 
 		return sql.toString().replace("id = ?,", "");		
 	}
 	
-	private String mountSQLDelete(String table, Long id) {
+	private String mountSQLUpdate(String table, Field[] fields, Object idValue, String idName) {
+		
+		StringBuilder columnsName = new StringBuilder();		
+		
+		int qtdColumns = fields.length;
+
+		for (int i = 0; qtdColumns - 1 >= i; i++) {
+			if (i != qtdColumns - 1) {
+				if (fields[i].getName().equals(getIdName(entity)))
+					continue;
+				columnsName.append(fields[i].getName()).append(" = ?").append(", ");
+			} else {
+				columnsName.append(fields[i].getName()).append(" = ?");
+			}
+		}
+
+		StringBuilder sql = new StringBuilder("UPDATE ")		
+			.append(table)
+			.append(" SET ")
+			.append(columnsName.toString())
+			.append(WHERE_CLAUSE + idName + " = '" + idValue + "'");		
+
+		return sql.toString().replace("id = ?,", "");		
+	}
+	
+	private String mountSQLDelete(String table, Object id) {
 		
 		StringBuilder sql = new StringBuilder("DELETE FROM ")		
 			.append(table)
-			.append(" WHERE ")
-			.append("id")
+			.append(WHERE_CLAUSE)
+			.append(getIdName(entity))
 			.append(" = ")
-			.append(id);
+			.append("'" + id + "'");
 		
 		return sql.toString();
 	}		
@@ -353,14 +455,25 @@ public class Persistence<T> implements PersistenceRepository<T> {
 		return sql.toString();
 	}
 	
-	private String mountSQLSearchById(String table, Long id) {
+	private String mountSQLSearchById(String table, Object idValue, String idName) {
 		
 		StringBuilder sql = new StringBuilder("SELECT * FROM ")		
 			.append(table)
-			.append(" WHERE id = ")
-			.append(id);			
+			.append(WHERE_CLAUSE + idName + " = '")
+			.append(idValue).append("'");			
 		
 		return sql.toString();
+	}
+	
+	private boolean getAutoIncrementIdentifierValue() {
+		boolean value = false;
+		for (Method method : entity.getDeclaredMethods()) {
+			Identifier annotAttribute = method.getDeclaredAnnotation(Identifier.class);
+			if (annotAttribute != null) {
+				value = annotAttribute.autoIncrement();
+			}
+		}
+		return value;
 	}
 
 }

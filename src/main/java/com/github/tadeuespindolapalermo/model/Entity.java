@@ -1,11 +1,12 @@
 package com.github.tadeuespindolapalermo.model;
 
+import com.github.tadeuespindolapalermo.annotation.Identifier;
 import com.github.tadeuespindolapalermo.annotation.PersistentClass;
 
-@PersistentClass()
+@PersistentClass
 public class Entity {
-
-	private Long id;
+	
+	private Long id;	
 	private String name;
 	private String lastname;
 	private String cpf;
@@ -13,6 +14,7 @@ public class Entity {
 	private Boolean approved;
 	private Integer age;
 
+	@Identifier(autoIncrement = true)
 	public Long getId() {
 		return id;
 	}

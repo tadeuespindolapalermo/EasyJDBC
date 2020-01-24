@@ -1,25 +1,17 @@
 package com.github.tadeuespindolapalermo.model;
 
+import com.github.tadeuespindolapalermo.annotation.Identifier;
 import com.github.tadeuespindolapalermo.annotation.PersistentClassNamed;
 
-@PersistentClassNamed("entityNamed")
+@PersistentClassNamed("entitynamed")
 public class EntityNamed {
 
-	private Long id;
 	private String name;
 	private String lastname;
 	private String cpf;
 	private Double weight;
 	private Boolean approved;
 	private Integer age;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
 
 	public String getName() {
 		return name;
@@ -37,6 +29,7 @@ public class EntityNamed {
 		this.lastname = lastname;
 	}
 
+	@Identifier
 	public String getCpf() {
 		return cpf;
 	}
@@ -73,7 +66,7 @@ public class EntityNamed {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((cpf == null) ? 0 : cpf.hashCode());
 		return result;
 	}
 
@@ -86,19 +79,17 @@ public class EntityNamed {
 		if (getClass() != obj.getClass())
 			return false;
 		EntityNamed other = (EntityNamed) obj;
-		if (id == null) {
-			if (other.id != null)
+		if (cpf == null) {
+			if (other.cpf != null)
 				return false;
-		} else {
-			if (!id.equals(other.id))
-				return false;
-		}
+		} else if (!cpf.equals(other.cpf))
+			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Entity [id=" + id + ", name=" + name + ", lastname=" + lastname + ", cpf=" + cpf + ", weight=" + weight
+		return "EntityNamed [name=" + name + ", lastname=" + lastname + ", cpf=" + cpf + ", weight=" + weight
 				+ ", approved=" + approved + ", age=" + age + "]";
 	}
 
