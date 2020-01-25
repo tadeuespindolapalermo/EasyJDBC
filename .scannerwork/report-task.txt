@@ -1,6 +1,6 @@
-projectKey=teste:easyjdbc
+projectKey=com.github.tadeuespindolapalermo.easyjdbc:easy-jdbc
 serverUrl=http://localhost:9000
 serverVersion=8.1.0.31237
-dashboardUrl=http://localhost:9000/dashboard?id=teste%3Aeasyjdbc
-ceTaskId=AW_Yicp3p4Qr2wj6FIKo
-ceTaskUrl=http://localhost:9000/api/ce/task?id=AW_Yicp3p4Qr2wj6FIKo
+dashboardUrl=http://localhost:9000/dashboard?id=com.github.tadeuespindolapalermo.easyjdbc%3Aeasy-jdbc
+ceTaskId=AW_d5_oM4SHgdCQhFFl2
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AW_d5_oM4SHgdCQhFFl2
