@@ -1,5 +1,6 @@
 package com.github.tadeuespindolapalermo.connection;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -22,7 +23,7 @@ public class OperationsTest {
 	
 	private static final String CPF_MOCK = "12121212121";	
 	
-	private static final Integer AGE_MOCK = 22;
+	private static final String DESCRIPTION_MOCK = "Mock Description";
 
 	static {
 		connectionTest();
@@ -108,7 +109,7 @@ public class OperationsTest {
         	if (deleted)
         		break;
         	for (EntityNamed entity : entities) {
-        		deleted = p.delete(EntityNamed.class, entity.getCpf());
+        		deleted = p.delete(EntityNamed.class, entity.getNumber());
         		break;
 			}
         }        
@@ -182,12 +183,24 @@ public class OperationsTest {
     		entities = p.getAll();
         }
         for (EntityNamed entity : entities) {
-			idSearch = entity.getCpf();
+			idSearch = entity.getNumber();
 			break;
 		}
         EntityNamed e = p.searchById(idSearch);		
-		e.setAge(AGE_MOCK);
+		e.setDescription(DESCRIPTION_MOCK);
 		assertNotNull(p.update(e));
+	}
+	
+	@Test
+	public void entityNamedTest() {
+		EntityNamed e1 = new EntityNamed();
+		e1.setDescription("Test");
+		e1.setNumber("98565245");
+		EntityNamed e2 = new EntityNamed();
+		e2.setDescription("Test");
+		e2.setNumber("98565245");
+		Utils.print(e1);
+		assertEquals(e1, e2);		
 	}
 	
 	@Test
@@ -228,13 +241,9 @@ public class OperationsTest {
 	
 	private EntityNamed createEntityNamedInsert() {
 		EntityNamed e = new EntityNamed();
-		Integer cpf = new Random().nextInt(999999999);
-		e.setAge(34);
-		e.setApproved(true);
-		e.setCpf(cpf.toString());		
-		e.setLastname("Espíndola Palermo");
-		e.setName("Tadeu");
-		e.setWeight(82D);
+		Integer number = new Random().nextInt(999999999);		
+		e.setDescription("Test");
+		e.setNumber(number.toString());
 		return e;
 	}
 	

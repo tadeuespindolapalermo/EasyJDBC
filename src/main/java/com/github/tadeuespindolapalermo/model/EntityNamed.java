@@ -6,67 +6,31 @@ import com.github.tadeuespindolapalermo.annotation.PersistentClassNamed;
 @PersistentClassNamed("entitynamed")
 public class EntityNamed {
 
-	private String name;
-	private String lastname;
-	private String cpf;
-	private Double weight;
-	private Boolean approved;
-	private Integer age;
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getLastname() {
-		return lastname;
-	}
-
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
+	private String number;
+	private String description;	
 
 	@Identifier
-	public String getCpf() {
-		return cpf;
+	public String getNumber() {
+		return number;
 	}
 
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
+	public void setNumber(String number) {
+		this.number = number;
 	}
 
-	public Double getWeight() {
-		return weight;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setWeight(Double weight) {
-		this.weight = weight;
-	}
-
-	public Boolean getApproved() {
-		return approved;
-	}
-
-	public void setApproved(Boolean approved) {
-		this.approved = approved;
-	}
-
-	public Integer getAge() {
-		return age;
-	}
-
-	public void setAge(Integer age) {
-		this.age = age;
-	}
+	public void setDescription(String description) {
+		this.description = description;
+	}	
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((cpf == null) ? 0 : cpf.hashCode());
+		result = prime * result + ((number == null) ? 0 : number.hashCode());
 		return result;
 	}
 
@@ -79,18 +43,19 @@ public class EntityNamed {
 		if (getClass() != obj.getClass())
 			return false;
 		EntityNamed other = (EntityNamed) obj;
-		if (cpf == null) {
-			if (other.cpf != null)
+		if (number == null) {
+			if (other.number != null)
 				return false;
-		} else if (!cpf.equals(other.cpf))
-			return false;
+		} else {
+			if (!number.equals(other.number))
+				return false;
+		}			
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "EntityNamed [name=" + name + ", lastname=" + lastname + ", cpf=" + cpf + ", weight=" + weight
-				+ ", approved=" + approved + ", age=" + age + "]";
-	}
+		return "EntityNamed [number=" + number + ", description=" + description + "]";
+	}	
 
 }
