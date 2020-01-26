@@ -1,7 +1,6 @@
 package com.github.tadeuespindolapalermo.easyjdbc.operations;
 
 import java.lang.reflect.InvocationTargetException;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,7 @@ public class OperationsInterfaceRepositoryImpl<T> extends OperationsUtils<T> imp
 				entity.getClass().getDeclaredFields(), 
 				getAutoIncrementIdentifierValue());
 		
-		processInsertionUpdate(entity, sql, INSERT, getAutoIncrementIdentifierValue());	
+		processInsertUpdate(entity, sql, INSERT, getAutoIncrementIdentifierValue());	
 		return entity;
 	}	
 	
@@ -39,7 +38,7 @@ public class OperationsInterfaceRepositoryImpl<T> extends OperationsUtils<T> imp
 				entity.getClass().getDeclaredFields(), 
 				getAutoIncrementIdentifierValue());
 		
-		processInsertionUpdate(entity, sql, INSERT, getAutoIncrementIdentifierValue());
+		processInsertUpdate(entity, sql, INSERT, getAutoIncrementIdentifierValue());
 		return entity;
 	}
 	
@@ -49,11 +48,11 @@ public class OperationsInterfaceRepositoryImpl<T> extends OperationsUtils<T> imp
 			IllegalAccessException, InvocationTargetException, NotPersistentClassException {		
 		
 		String sql = mountSQLInsert(
-				defineTableName(entity.getClass()), 
+				defineTableName(entity.getClass()),
 				columns,
 				getAutoIncrementIdentifierValue());
 		
-		processInsertionUpdate(entity, sql, INSERT, getAutoIncrementIdentifierValue());
+		processInsertUpdate(entity, sql, INSERT, getAutoIncrementIdentifierValue());
 		return entity;
 	}
 	
@@ -62,9 +61,8 @@ public class OperationsInterfaceRepositoryImpl<T> extends OperationsUtils<T> imp
 			throws SQLException, NoSuchMethodException, 
 			IllegalAccessException, InvocationTargetException, NotPersistentClassException {		
 		
-		String sql = mountSQLInsert(table, columns, getAutoIncrementIdentifierValue());
-		
-		processInsertionUpdate(entity, sql, INSERT, getAutoIncrementIdentifierValue());
+		String sql = mountSQLInsert(table, columns, getAutoIncrementIdentifierValue());		
+		processInsertUpdate(entity, sql, INSERT, getAutoIncrementIdentifierValue());
 		return entity;
 	}
 	
@@ -79,7 +77,7 @@ public class OperationsInterfaceRepositoryImpl<T> extends OperationsUtils<T> imp
 				id,
 				getAutoIncrementIdentifierValue());
 		
-		processInsertionUpdate(entity, sql, UPDATE, getAutoIncrementIdentifierValue());		
+		processInsertUpdate(entity, sql, UPDATE, getAutoIncrementIdentifierValue());		
 		return entity;
 	}	
 	
@@ -94,20 +92,14 @@ public class OperationsInterfaceRepositoryImpl<T> extends OperationsUtils<T> imp
 				getIdValue(entity), 
 				getIdName(entity.getClass()));
 		
-		processInsertionUpdate(entity, sql, UPDATE, getAutoIncrementIdentifierValue());		
+		processInsertUpdate(entity, sql, UPDATE, getAutoIncrementIdentifierValue());		
 		return entity;
 	}
 	
 	@Override
 	public boolean delete(Class<T> entity, Object id) throws SQLException {		
 		String sql = mountSQLDelete(entity.getSimpleName().toLowerCase(), id);		
-		try (PreparedStatement statement = connection.prepareStatement(sql)) {
-			if(statement.executeUpdate() == 1) {
-				connection.commit();
-				return Boolean.TRUE;						
-			}
-		}			
-		return Boolean.FALSE;
+		return processDelete(sql);
 	}
 	
 	@Override
@@ -116,9 +108,9 @@ public class OperationsInterfaceRepositoryImpl<T> extends OperationsUtils<T> imp
 			IllegalAccessException, NoSuchMethodException, 
 			InvocationTargetException {
 		
-		String sql = mountSQLGetAll(defineTableName(entity));
+		String sql = mountSQLGetAll(defineTableName(entity));		
 		List<T> entities = new ArrayList<>();
-		processSearch(sql, entities);
+		processSelect(sql, entities);
 		return entities;
 	}
 	
@@ -128,9 +120,9 @@ public class OperationsInterfaceRepositoryImpl<T> extends OperationsUtils<T> imp
 			IllegalAccessException, InvocationTargetException, 
 			InstantiationException {			
 		
-		String sql = mountSQLSearchById(defineTableName(entity), id, getIdName(entity));
+		String sql = mountSQLSearchById(defineTableName(entity), id, getIdName(entity));		
 		List<T> entities = new ArrayList<>();
-		processSearch(sql, entities);
+		processSelect(sql, entities);
 		return entities.get(SINGLE_ELEMENT_COLLECTION);
 	}		
 	

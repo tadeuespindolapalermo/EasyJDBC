@@ -25,27 +25,27 @@ public class OperationsUtils<T> {
 	
 	protected Class<T> entity;
 	
-	protected boolean flag;
+	private boolean flag;
 	
-	protected static final String METHOD_GETTER_PREFIX = "get";
+	private static final String METHOD_GETTER_PREFIX = "get";
 	
-	protected static final String METHOD_SETTER_PREFIX = "set";
+	private static final String METHOD_SETTER_PREFIX = "set";
 	
-	protected static final String METHOD_GETTER_IS_PREFIX = "is";
+	private static final String METHOD_GETTER_IS_PREFIX = "is";
 	
 	protected static final String UPDATE = "update";
 	
 	protected static final String INSERT = "insert";
 	
-	protected static final int INDEX_DIFERENCE_UPDATE = 1;
+	private static final int INDEX_DIFERENCE_UPDATE = 1;
 	
 	protected static final int SINGLE_ELEMENT_COLLECTION = 0;
 	
-	protected static final int LIMIT_TOKEN_SPLIT = 2;
+	private static final int LIMIT_TOKEN_SPLIT = 2;
 	
-	protected static final String STRING_EMPTY = "";
+	private static final String STRING_EMPTY = "";
 	
-	protected static final String WHERE_CLAUSE = " WHERE ";	
+	private static final String WHERE_CLAUSE = " WHERE ";	
 	
 	public OperationsUtils(Class<T> entity) throws NotPersistentClassException {	
 		validatePersistentClass(entity);	
@@ -79,7 +79,7 @@ public class OperationsUtils<T> {
 				: entity.getSimpleName().toLowerCase();
 	}	
 	
-	protected String verifyEntityName(Class<?> entity) {
+	private String verifyEntityName(Class<?> entity) {
 		PersistentClassNamed annotClassNamed = entity.getDeclaredAnnotation(PersistentClassNamed.class);
 		if (annotClassNamed != null) {
 			return annotClassNamed.value();
@@ -87,7 +87,7 @@ public class OperationsUtils<T> {
 		return STRING_EMPTY;
 	}
 	
-	protected void validatePersistentClass(Class<T> entity) throws NotPersistentClassException {		
+	private void validatePersistentClass(Class<T> entity) throws NotPersistentClassException {		
 		PersistentClass annotClass = entity.getDeclaredAnnotation(PersistentClass.class);
 		PersistentClassNamed annotClassNamed = entity.getDeclaredAnnotation(PersistentClassNamed.class);
 		if (annotClass == null && annotClassNamed == null) {
@@ -95,7 +95,7 @@ public class OperationsUtils<T> {
 		}	
 	}
 	
-	protected void processSearch(String sql, List<T> entities) 
+	protected void processSelect(String sql, List<T> entities) 
 			throws SQLException, NoSuchMethodException, 
 			IllegalAccessException, InvocationTargetException, 
 			InstantiationException {	
@@ -114,14 +114,24 @@ public class OperationsUtils<T> {
 			}
 		}
 	}
+	
+	protected boolean processDelete(String sql) throws SQLException {
+		try (PreparedStatement statement = connection.prepareStatement(sql)) {
+			if(statement.executeUpdate() == 1) {
+				connection.commit();
+				return Boolean.TRUE;						
+			}
+		}			
+		return Boolean.FALSE;
+	}
 
-	protected String getMethodSetterName(Field field) {
+	private String getMethodSetterName(Field field) {
 		String firstCharacterUppercase = String.valueOf(Character.toUpperCase(field.getName().charAt(0)));
 		String[] token = field.getName().split(firstCharacterUppercase.toLowerCase());	
 		return METHOD_SETTER_PREFIX + firstCharacterUppercase + token[1];
 	}
 
-	protected void processInsertionUpdate(T entity, String sql, String operation, boolean idAutoIncrement)
+	protected void processInsertUpdate(T entity, String sql, String operation, boolean idAutoIncrement)
 			throws SQLException, IllegalAccessException, 
 			InvocationTargetException, NoSuchMethodException {
 		
@@ -140,7 +150,7 @@ public class OperationsUtils<T> {
 		connection.commit();
 	}	
 
-    protected Method getMethodGetter(T entity, Class<?> entityClass, int i) throws NoSuchMethodException { // Tadeu
+    private Method getMethodGetter(T entity, Class<?> entityClass, int i) throws NoSuchMethodException { // Tadeu
         Field field = entity.getClass().getDeclaredFields()[i];
         String firstCharacterUppercase = String.valueOf(Character.toUpperCase(field.getName().charAt(0)));        
         String[] token = field.getName().split(firstCharacterUppercase.toLowerCase(), LIMIT_TOKEN_SPLIT);	        
@@ -148,19 +158,19 @@ public class OperationsUtils<T> {
         return entityClass.getDeclaredMethod(prefix + firstCharacterUppercase + token[1]);
     }
     
-    protected boolean isTypeBooleanPrimitive(Class<?> type) {
+    private boolean isTypeBooleanPrimitive(Class<?> type) {
     	return Utils.verifyTypeBooleanPrimitive(type);
     }
     
-    protected int computeIndexUpdate(int i, boolean idAutoIncrement) {
+    private int computeIndexUpdate(int i, boolean idAutoIncrement) {
     	return i == 0 && !idAutoIncrement ? ++ i : ++ i - INDEX_DIFERENCE_UPDATE;
     } 
     
-    protected int computeIndexInsert(int i, boolean idAutoIncrement) {
+    private int computeIndexInsert(int i, boolean idAutoIncrement) {
     	return i != 0 && idAutoIncrement ? i : ++ i;
     } 
 
-	protected void setStatement(T entity, PreparedStatement stmt, int i, Object value, String operation, boolean idAutoIncrement) throws SQLException {
+	private void setStatement(T entity, PreparedStatement stmt, int i, Object value, String operation, boolean idAutoIncrement) throws SQLException {
 		
 		if (operation.equals(UPDATE) 
 				&& entity.getClass().getDeclaredFields()[i].getName().equals(getIdName(entity.getClass()))
@@ -218,37 +228,37 @@ public class OperationsUtils<T> {
 		}
 	}
 
-	protected boolean verifyTypeWrapperPrimitiveLong(T entity, int i) {
+	private boolean verifyTypeWrapperPrimitiveLong(T entity, int i) {
 		return entity.getClass().getDeclaredFields()[i].getType().equals(Long.class)
 				|| entity.getClass().getDeclaredFields()[i].getType().equals(long.class);
 	}
 	
-	protected boolean verifyTypeWrapperPrimitiveDouble(T entity, int i) {
+	private boolean verifyTypeWrapperPrimitiveDouble(T entity, int i) {
 		return entity.getClass().getDeclaredFields()[i].getType().equals(Double.class)
 				|| entity.getClass().getDeclaredFields()[i].getType().equals(double.class);
 	}
 	
-	protected boolean verifyTypeWrapperPrimitiveFloat(T entity, int i) {
+	private boolean verifyTypeWrapperPrimitiveFloat(T entity, int i) {
 		return entity.getClass().getDeclaredFields()[i].getType().equals(Float.class)
 				|| entity.getClass().getDeclaredFields()[i].getType().equals(float.class);
 	}
 	
-	protected boolean verifyTypeWrapperPrimitiveInteger(T entity, int i) {
+	private boolean verifyTypeWrapperPrimitiveInteger(T entity, int i) {
 		return entity.getClass().getDeclaredFields()[i].getType().equals(Integer.class)
 				|| entity.getClass().getDeclaredFields()[i].getType().equals(int.class);
 	}
 	
-	protected boolean verifyTypeWrapperPrimitiveBoolean(T entity, int i) {
+	private boolean verifyTypeWrapperPrimitiveBoolean(T entity, int i) {
 		return entity.getClass().getDeclaredFields()[i].getType().equals(Boolean.class)
 				|| entity.getClass().getDeclaredFields()[i].getType().equals(boolean.class);
 	}
 	
-	protected boolean verifyTypeWrapperPrimitiveShort(T entity, int i) {
+	private boolean verifyTypeWrapperPrimitiveShort(T entity, int i) {
 		return entity.getClass().getDeclaredFields()[i].getType().equals(Short.class)
 				|| entity.getClass().getDeclaredFields()[i].getType().equals(short.class);
 	}
 	
-	protected boolean verifyTypeClassString(T entity, int i) {
+	private boolean verifyTypeClassString(T entity, int i) {
 		return entity.getClass().getDeclaredFields()[i].getType().equals(String.class);
 	}
 
