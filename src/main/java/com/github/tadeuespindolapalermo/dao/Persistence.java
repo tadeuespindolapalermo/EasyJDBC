@@ -19,6 +19,7 @@ import com.github.tadeuespindolapalermo.connection.SingletonConnection;
 import com.github.tadeuespindolapalermo.enumeration.EnumExceptionMessages;
 import com.github.tadeuespindolapalermo.exception.NotPersistentClass;
 import com.github.tadeuespindolapalermo.persistence.PersistenceRepository;
+import com.github.tadeuespindolapalermo.util.Utils;
 
 public class Persistence<T> implements PersistenceRepository<T> {	
 	
@@ -32,6 +33,8 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	
 	private static final String METHOD_SETTER_PREFIX = "set";
 	
+	private static final String METHOD_GETTER_IS_PREFIX = "is";
+	
 	private static final String UPDATE = "update";
 	
 	private static final String INSERT = "insert";
@@ -39,6 +42,8 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	private static final int INDEX_DIFERENCE_UPDATE = 1;
 	
 	private static final int SINGLE_ELEMENT_COLLECTION = 0;
+	
+	private static final int LIMIT_TOKEN_SPLIT = 2;
 	
 	private static final String STRING_EMPTY = "";
 	
@@ -256,11 +261,16 @@ public class Persistence<T> implements PersistenceRepository<T> {
 		connection.commit();
 	}	
 
-    private Method getMethodGetter(T entity, Class<?> entityClass, int i) throws NoSuchMethodException {
+    private Method getMethodGetter(T entity, Class<?> entityClass, int i) throws NoSuchMethodException { // Tadeu
         Field field = entity.getClass().getDeclaredFields()[i];
-        String firstCharacterUppercase = String.valueOf(Character.toUpperCase(field.getName().charAt(0)));
-        String[] token = field.getName().split(firstCharacterUppercase.toLowerCase());			    
-        return entityClass.getDeclaredMethod(METHOD_GETTER_PREFIX + firstCharacterUppercase + token[1]);
+        String firstCharacterUppercase = String.valueOf(Character.toUpperCase(field.getName().charAt(0)));        
+        String[] token = field.getName().split(firstCharacterUppercase.toLowerCase(), LIMIT_TOKEN_SPLIT);	        
+        String prefix = isTypeBooleanPrimitive(field.getType()) ? METHOD_GETTER_IS_PREFIX : METHOD_GETTER_PREFIX;
+        return entityClass.getDeclaredMethod(prefix + firstCharacterUppercase + token[1]);
+    }
+    
+    private boolean isTypeBooleanPrimitive(Class<?> type) {
+    	return Utils.verifyTypeBooleanPrimitive(type);
     }
     
     private int computeIndexUpdate(int i, boolean idAutoIncrement) {
@@ -294,39 +304,73 @@ public class Persistence<T> implements PersistenceRepository<T> {
 	    if (flag)
 	    	i ++;
 	    
-		if (entity.getClass().getDeclaredFields()[i].getType().equals(Long.class)) {
+		if (verifyTypeWrapperPrimitiveLong(entity, i)) {
 			stmt.setLong(index, (Long) value);					
 			return;
 		}
 		
-		if (entity.getClass().getDeclaredFields()[i].getType().equals(Double.class)) {
+		if (verifyTypeWrapperPrimitiveDouble(entity, i)) {
 			stmt.setDouble(index, (Double) value);					
 			return;
 		}
 		
-		if (entity.getClass().getDeclaredFields()[i].getType().equals(Float.class)) {
+		if (verifyTypeWrapperPrimitiveFloat(entity, i)) {
 			stmt.setFloat(index, (Float) value);					
 			return;
 		}
 		
-		if (entity.getClass().getDeclaredFields()[i].getType().equals(Integer.class)) {
+		if (verifyTypeWrapperPrimitiveInteger(entity, i)) {
 			stmt.setInt(index, (Integer) value);					
 			return;
 		}
 
-		if (entity.getClass().getDeclaredFields()[i].getType().equals(String.class)) {
+		if (verifyTypeClassString(entity, i)) {
 			stmt.setString(index, (String) value);					
 			return;
 		}
 		
-		if (entity.getClass().getDeclaredFields()[i].getType().equals(Boolean.class)) {
+		if (verifyTypeWrapperPrimitiveBoolean(entity, i)) {
 			stmt.setBoolean(index, (Boolean) value);					
 			return;
 		}
 
-		if (entity.getClass().getDeclaredFields()[i].getType().equals(Short.class)) {
+		if (verifyTypeWrapperPrimitiveShort(entity, i)) {
 			stmt.setShort(index, (Short) value);				
 		}
+	}
+
+	private boolean verifyTypeWrapperPrimitiveLong(T entity, int i) {
+		return entity.getClass().getDeclaredFields()[i].getType().equals(Long.class)
+				|| entity.getClass().getDeclaredFields()[i].getType().equals(long.class);
+	}
+	
+	private boolean verifyTypeWrapperPrimitiveDouble(T entity, int i) {
+		return entity.getClass().getDeclaredFields()[i].getType().equals(Double.class)
+				|| entity.getClass().getDeclaredFields()[i].getType().equals(double.class);
+	}
+	
+	private boolean verifyTypeWrapperPrimitiveFloat(T entity, int i) {
+		return entity.getClass().getDeclaredFields()[i].getType().equals(Float.class)
+				|| entity.getClass().getDeclaredFields()[i].getType().equals(float.class);
+	}
+	
+	private boolean verifyTypeWrapperPrimitiveInteger(T entity, int i) {
+		return entity.getClass().getDeclaredFields()[i].getType().equals(Integer.class)
+				|| entity.getClass().getDeclaredFields()[i].getType().equals(int.class);
+	}
+	
+	private boolean verifyTypeWrapperPrimitiveBoolean(T entity, int i) {
+		return entity.getClass().getDeclaredFields()[i].getType().equals(Boolean.class)
+				|| entity.getClass().getDeclaredFields()[i].getType().equals(boolean.class);
+	}
+	
+	private boolean verifyTypeWrapperPrimitiveShort(T entity, int i) {
+		return entity.getClass().getDeclaredFields()[i].getType().equals(Short.class)
+				|| entity.getClass().getDeclaredFields()[i].getType().equals(short.class);
+	}
+	
+	private boolean verifyTypeClassString(T entity, int i) {
+		return entity.getClass().getDeclaredFields()[i].getType().equals(String.class);
 	}
 
 	private String mountSQLInsert(String table, Field[] fields, boolean idAutoIncrement) {					

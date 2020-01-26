@@ -7,9 +7,6 @@
 **/*.log
 **/temp
 **/test-output
-**/bower_components
-**/node_modules
-**/.sass-cache
 **/dist
 **/.tmp
 **/lib/vendors

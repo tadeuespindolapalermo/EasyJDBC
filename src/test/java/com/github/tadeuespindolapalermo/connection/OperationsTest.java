@@ -1,6 +1,5 @@
 package com.github.tadeuespindolapalermo.connection;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -13,6 +12,7 @@ import com.github.tadeuespindolapalermo.dao.Persistence;
 import com.github.tadeuespindolapalermo.enumeration.EnumDatabase;
 import com.github.tadeuespindolapalermo.model.Entity;
 import com.github.tadeuespindolapalermo.model.EntityNamed;
+import com.github.tadeuespindolapalermo.model.EntityUniqueAttribute;
 import com.github.tadeuespindolapalermo.util.Utils;
 
 public class OperationsTest {
@@ -37,6 +37,13 @@ public class OperationsTest {
 		InfoConnection.setHost("127.0.0.1");
 		InfoConnection.setPort("5432");
 		SingletonConnection.getConnection();
+	}
+	
+	@Test
+	public void savePersistenceEntityUniqueAttribute() throws Exception {
+		EntityUniqueAttribute e = createEntityUniqueAttribute();
+		Persistence<EntityUniqueAttribute> p = new Persistence<>(EntityUniqueAttribute.class);
+		assertNotNull(p.save(e));
 	}
 
 	@Test
@@ -189,19 +196,7 @@ public class OperationsTest {
         EntityNamed e = p.searchById(idSearch);		
 		e.setDescription(DESCRIPTION_MOCK);
 		assertNotNull(p.update(e));
-	}
-	
-	@Test
-	public void entityNamedTest() {
-		EntityNamed e1 = new EntityNamed();
-		e1.setDescription("Test");
-		e1.setNumber("98565245");
-		EntityNamed e2 = new EntityNamed();
-		e2.setDescription("Test");
-		e2.setNumber("98565245");
-		Utils.print(e1);
-		assertEquals(e1, e2);		
-	}
+	}	
 	
 	@Test
     public void getAllTest() throws Exception {
@@ -238,6 +233,12 @@ public class OperationsTest {
 		e.setWeight(82D);
 		return e;
 	}
+	
+	private EntityUniqueAttribute createEntityUniqueAttribute() {
+		EntityUniqueAttribute e = new EntityUniqueAttribute();
+		e.setCanceled(true);
+		return e;
+	}	
 	
 	private EntityNamed createEntityNamedInsert() {
 		EntityNamed e = new EntityNamed();

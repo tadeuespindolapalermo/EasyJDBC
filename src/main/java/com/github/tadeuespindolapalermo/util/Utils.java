@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 public class Utils {
+	
+	private static final String BOOLEAN = "boolean";
 
 	private Utils() { }
 
@@ -71,6 +73,10 @@ public class Utils {
 			return Number.class;
 		}
 		return Object.class;
+	}
+	
+	public static boolean verifyTypeBooleanPrimitive(Object type) {
+		return type.toString().equals(BOOLEAN);
 	}
 
 	public static Object defineResultSetAttribute(ResultSet result, Field field) throws SQLException {
