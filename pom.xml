@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -22,8 +24,8 @@
 		<url>https://github.com/tadeuespindolapalermo/EasyJDBC</url>
 		<connection>scm:git:https://github.com/tadeuespindolapalermo/EasyJDBC.git</connection>
 		<developerConnection>scm:git:https://github.com/tadeuespindolapalermo/EasyJDBC.git</developerConnection>
-	  <tag>1.0-beta</tag>
-  </scm>
+		<tag>1.0-beta</tag>
+	</scm>
 
 	<licenses>
 		<license>
@@ -53,7 +55,7 @@
 		<junit.version>4.13</junit.version>
 		<postgresql.version>42.2.9</postgresql.version>
 		<log4j.version>1.2.17</log4j.version>
-		<oracle.version>12.1.0</oracle.version>		
+		<oracle.version>12.1.0</oracle.version>
 		<sonar.host.url>http://localhost:9000</sonar.host.url>
 		<sonar.projectKey>com.github.tadeuespindolapalermo.easyjdbc:easy-jdbc</sonar.projectKey>
 		<sonar.projectName>Easy JDBC</sonar.projectName>
@@ -96,6 +98,26 @@
 	</dependencies>
 
 	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>				
+				<configuration>
+					<pushChanges>false</pushChanges>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>8</source>
+					<target>8</target>
+				</configuration>
+			</plugin>
+		</plugins>
+		
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -103,26 +125,8 @@
 					<artifactId>sonar-maven-plugin</artifactId>
 					<version>3.6.0.1398</version>
 				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-release-plugin</artifactId>					
-					<configuration>
-						<pushChanges>false</pushChanges>
-					</configuration>
-				</plugin>
-
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.7.0</version>
-					<configuration>
-						<source>8</source>
-						<target>8</target>
-					</configuration>
-				</plugin>
 			</plugins>
 		</pluginManagement>
+		
 	</build>
-
 </project>
