@@ -8,11 +8,11 @@
 	<artifactId>easy-jdbc</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<!-- <parent>
+	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
 		<version>7</version>
-	</parent> -->
+	</parent>
 
 	<packaging>jar</packaging>
 
@@ -54,8 +54,7 @@
 		<junit.version>4.13</junit.version>
 		<postgresql.version>42.2.9</postgresql.version>
 		<log4j.version>1.2.17</log4j.version>
-		<oracle.version>12.1.0</oracle.version>
-		
+		<oracle.version>12.1.0</oracle.version>		
 		<sonar.host.url>http://localhost:9000</sonar.host.url>
 		<sonar.projectKey>com.github.tadeuespindolapalermo.easyjdbc:easy-jdbc</sonar.projectKey>
 		<sonar.projectName>Easy JDBC</sonar.projectName>
@@ -109,6 +108,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>
+					<version>2.5.3</version>
 					<configuration>
 						<pushChanges>false</pushChanges>
 					</configuration>
