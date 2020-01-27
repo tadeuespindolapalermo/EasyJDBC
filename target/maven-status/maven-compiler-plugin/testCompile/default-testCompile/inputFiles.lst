@@ -1,2 +1,2 @@
-D:\eclipse-workspace\EasyJDBC\src\test\java\com\github\tadeuespindolapalermo\connection\OperationsTest.java
-D:\eclipse-workspace\EasyJDBC\src\test\java\com\github\tadeuespindolapalermo\connection\ConnectionTest.java
+D:\eclipse-workspace\EasyJDBC\src\test\java\com\github\tadeuespindolapalermo\easyjdbc\connection\SingletonConnectionTest.java
+D:\eclipse-workspace\EasyJDBC\src\test\java\com\github\tadeuespindolapalermo\easyjdbc\operations\OperationsInterfaceRepositoryImplTest.java
