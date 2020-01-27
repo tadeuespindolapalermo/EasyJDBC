@@ -6,7 +6,7 @@
 
 	<groupId>com.github.tadeuespindolapalermo.easyjdbc</groupId>
 	<artifactId>easy-jdbc</artifactId>
-	<version>1.0-beta</version>
+	<version>1.0-beta-SNAPSHOT</version>
 
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
