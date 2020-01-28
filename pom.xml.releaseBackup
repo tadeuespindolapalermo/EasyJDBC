@@ -20,7 +20,7 @@
 		<url>https://github.com/tadeuespindolapalermo/EasyJDBC</url>
 		<connection>scm:git:https://github.com/tadeuespindolapalermo/EasyJDBC.git</connection>
 		<developerConnection>scm:git:https://github.com/tadeuespindolapalermo/EasyJDBC.git</developerConnection>
-		<tag>easy-jdbc-1.0-beta</tag>
+		<tag>1.0-beta</tag>
 	</scm>
 
 	<licenses>
