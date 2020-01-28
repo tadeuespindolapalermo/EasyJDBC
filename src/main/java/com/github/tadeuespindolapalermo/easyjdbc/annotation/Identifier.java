@@ -6,6 +6,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+/**
+ * Identifier
+ */
 @Retention(RUNTIME)
 @Target(METHOD)
 public @interface Identifier {	 
