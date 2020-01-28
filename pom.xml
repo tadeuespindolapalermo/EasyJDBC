@@ -1,22 +1,20 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-
 	<groupId>com.github.tadeuespindolapalermo.easyjdbc</groupId>
 	<artifactId>easy-jdbc</artifactId>
 	<version>1.0-beta-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	
+	<name>Easy JDBC Library</name>
+	<description>Library for easy persistence with JDBC!</description>
+	<url>https://github.com/tadeuespindolapalermo/EasyJDBC</url>
 
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
 		<version>7</version>
-	</parent>
-
-	<packaging>jar</packaging>
-
-	<name>Easy JDBC Library</name>
-	<description>Library for easy persistence with JDBC!</description>
-	<url>https://github.com/tadeuespindolapalermo/EasyJDBC</url>
+	</parent>		
 
 	<scm>
 		<url>https://github.com/tadeuespindolapalermo/EasyJDBC</url>
@@ -54,7 +52,7 @@
 		<postgresql.version>42.2.9</postgresql.version>
 		<log4j.version>1.2.17</log4j.version>
 		<oracle.version>12.1.0</oracle.version>
-		<sonar.host.url>http://localhost:9000</sonar.host.url>
+		<!--<sonar.host.url>http://localhost:9000</sonar.host.url>
 		<sonar.projectKey>com.github.tadeuespindolapalermo.easyjdbc:easy-jdbc</sonar.projectKey>
 		<sonar.projectName>Easy JDBC</sonar.projectName>
 		<sonar.projectVersion>0.0.1-SNAPSHOT</sonar.projectVersion>
@@ -65,7 +63,7 @@
 		<sonar.links.scm>https://github.com/tadeuespindolapalermo/EasyJDBC</sonar.links.scm>
 		<sonar.sources>src/main/java</sonar.sources>
 		<sonar.tests>src/test/java</sonar.tests>
-		<sonar.java.binaries>target/classes</sonar.java.binaries>
+		<sonar.java.binaries>target/classes</sonar.java.binaries>-->
 	</properties>
 
 	<dependencies>
@@ -95,31 +93,7 @@
 		</dependency>
 	</dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>				
-				<configuration>
-					<pushChanges>false</pushChanges>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>				
-				<configuration>
-					<source>8</source>
-					<target>8</target>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>				
-			</plugin>
-		</plugins>
-
+	<!--<build>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -129,6 +103,28 @@
 				</plugin>
 			</plugins>
 		</pluginManagement>
-
+	</build>-->
+	
+	<build>
+		<plugins>		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
+				<configuration>
+					<pushChanges>false</pushChanges>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>8</source>
+					<target>8</target>
+				</configuration>
+			</plugin>			
+		</plugins>
 	</build>
 </project>
