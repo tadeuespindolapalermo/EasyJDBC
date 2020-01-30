@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.tadeuespindolapalermo.easyjdbc</groupId>
 	<artifactId>easy-jdbc</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.1-beta</version>
 	<packaging>jar</packaging>
 	
 	<name>Easy JDBC Library</name>
