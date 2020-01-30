@@ -8,9 +8,9 @@ import java.util.List;
 import com.github.tadeuespindolapalermo.easyjdbc.exception.NotPersistentClassException;
 import com.github.tadeuespindolapalermo.easyjdbc.repository.OperationsInterfaceRepository;
 
-public class OperationsInterfaceRepositoryImpl<T> extends OperationsUtils<T> implements OperationsInterfaceRepository<T> {	
+public class Persistence<T> extends OperationsUtils<T> implements OperationsInterfaceRepository<T> {	
 	
-	public OperationsInterfaceRepositoryImpl(Class<T> entity) throws NotPersistentClassException {
+	public Persistence(Class<T> entity) throws NotPersistentClassException {
 		super(entity);		
 	}
 
@@ -97,8 +97,8 @@ public class OperationsInterfaceRepositoryImpl<T> extends OperationsUtils<T> imp
 	}
 	
 	@Override
-	public boolean delete(Class<T> entity, Object id) throws SQLException {		
-		String sql = mountSQLDelete(entity.getSimpleName().toLowerCase(), id);		
+	public boolean delete(Object id) throws SQLException {		
+		String sql = mountSQLDelete(defineTableName(entity), id);		
 		return processDelete(sql);
 	}
 	

@@ -16,7 +16,7 @@ public interface OperationsInterfaceRepository<T> {
 	
 	T save (T entity, String table, String[] columns) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, NotPersistentClassException;
 	
-	boolean delete (Class<T> t, Object id) throws SQLException;
+	boolean delete (Object id) throws SQLException;
 	
 	T update (T entity, Long id) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException;
 	

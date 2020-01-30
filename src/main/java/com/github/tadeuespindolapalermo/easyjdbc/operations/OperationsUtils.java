@@ -1,11 +1,14 @@
 package com.github.tadeuespindolapalermo.easyjdbc.operations;
 
-import static com.github.tadeuespindolapalermo.easyjdbc.util.Utils.defineResultSetAttribute;
-
+import java.io.Reader;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.sql.Array;
+import java.sql.Blob;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,7 +20,6 @@ import com.github.tadeuespindolapalermo.easyjdbc.annotation.PersistentClassNamed
 import com.github.tadeuespindolapalermo.easyjdbc.connection.SingletonConnection;
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumExceptionMessages;
 import com.github.tadeuespindolapalermo.easyjdbc.exception.NotPersistentClassException;
-import com.github.tadeuespindolapalermo.easyjdbc.util.Utils;
 
 public class OperationsUtils<T> {	
 	
@@ -46,6 +48,8 @@ public class OperationsUtils<T> {
 	private static final String STRING_EMPTY = "";
 	
 	private static final String WHERE_CLAUSE = " WHERE ";	
+	
+	private static final String BOOLEAN = "boolean";
 	
 	public OperationsUtils(Class<T> entity) throws NotPersistentClassException {	
 		validatePersistentClass(entity);	
@@ -143,7 +147,7 @@ public class OperationsUtils<T> {
 					continue;
 				}
 				if (!(idAutoIncrement && entity.getClass().getDeclaredFields()[i].getName().equals(getIdName(entity.getClass()))))
-					setStatement(entity, stmt, i, getMethodGetter(entity, entityClass, i).invoke(entity), operation, idAutoIncrement);
+					setStatementProcess(entity, stmt, i, getMethodGetter(entity, entityClass, i).invoke(entity), operation, idAutoIncrement);
 			}			
 			stmt.executeUpdate();
 		}
@@ -159,7 +163,7 @@ public class OperationsUtils<T> {
     }
     
     private boolean isTypeBooleanPrimitive(Class<?> type) {
-    	return Utils.verifyTypeBooleanPrimitive(type);
+    	return verifyTypeBooleanPrimitive(type);
     }
     
     private int computeIndexUpdate(int i, boolean idAutoIncrement) {
@@ -170,7 +174,7 @@ public class OperationsUtils<T> {
     	return i != 0 && idAutoIncrement ? i : ++ i;
     } 
 
-	private void setStatement(T entity, PreparedStatement stmt, int i, Object value, String operation, boolean idAutoIncrement) throws SQLException {
+	private void setStatementProcess(T entity, PreparedStatement stmt, int i, Object value, String operation, boolean idAutoIncrement) throws SQLException {
 		
 		if (operation.equals(UPDATE) 
 				&& entity.getClass().getDeclaredFields()[i].getName().equals(getIdName(entity.getClass()))
@@ -193,13 +197,18 @@ public class OperationsUtils<T> {
 	    if (flag)
 	    	i ++;
 	    
+		setStatement(entity, stmt, i, value, index);
+	}
+
+	private void setStatement(T entity, PreparedStatement stmt, int i, Object value, int index) throws SQLException {
+		
 		if (verifyTypeWrapperPrimitiveLong(entity, i)) {
 			stmt.setLong(index, (Long) value);					
 			return;
 		}
 		
 		if (verifyTypeWrapperPrimitiveDouble(entity, i)) {
-			stmt.setDouble(index, (Double) value);					
+			stmt.setDouble(index, (Double) value);				
 			return;
 		}
 		
@@ -211,10 +220,10 @@ public class OperationsUtils<T> {
 		if (verifyTypeWrapperPrimitiveInteger(entity, i)) {
 			stmt.setInt(index, (Integer) value);					
 			return;
-		}
-
-		if (verifyTypeClassString(entity, i)) {
-			stmt.setString(index, (String) value);					
+		}	
+		
+		if (verifyTypeWrapperPrimitiveCharacter(entity, i)) {
+			stmt.setCharacterStream(index, (Reader) value);				
 			return;
 		}
 		
@@ -222,9 +231,34 @@ public class OperationsUtils<T> {
 			stmt.setBoolean(index, (Boolean) value);					
 			return;
 		}
+		
+		if (verifyTypeWrapperPrimitiveByte(entity, i)) {
+			stmt.setByte(index, (Byte) value);			
+		}
 
 		if (verifyTypeWrapperPrimitiveShort(entity, i)) {
-			stmt.setShort(index, (Short) value);				
+			stmt.setShort(index, (Short) value);			
+		}		
+		
+		if (verifyTypeClassString(entity, i)) {
+			stmt.setString(index, (String) value);					
+			return;
+		}
+		
+		if (verifyTypeClassBigDecimal(entity, i)) {			
+			stmt.setBigDecimal(index, (BigDecimal) value);			
+		}
+		
+		if (verifyTypeClassArray(entity, i)) {			
+			stmt.setArray(index, (Array) value);			
+		}
+		
+		if (verifyTypeClassBlob(entity, i)) {			
+			stmt.setBlob(index, (Blob) value);			
+		}
+		
+		if (verifyTypeClassDate(entity, i)) {			
+			stmt.setDate(index, (Date) value);			
 		}
 	}
 
@@ -248,18 +282,44 @@ public class OperationsUtils<T> {
 				|| entity.getClass().getDeclaredFields()[i].getType().equals(int.class);
 	}
 	
+	private boolean verifyTypeWrapperPrimitiveCharacter(T entity, int i) {
+		return entity.getClass().getDeclaredFields()[i].getType().equals(Character.class)
+				|| entity.getClass().getDeclaredFields()[i].getType().equals(char.class);
+	}
+	
 	private boolean verifyTypeWrapperPrimitiveBoolean(T entity, int i) {
 		return entity.getClass().getDeclaredFields()[i].getType().equals(Boolean.class)
 				|| entity.getClass().getDeclaredFields()[i].getType().equals(boolean.class);
 	}
 	
+	private boolean verifyTypeWrapperPrimitiveByte(T entity, int i) {
+		return entity.getClass().getDeclaredFields()[i].getType().equals(Byte.class)
+				|| entity.getClass().getDeclaredFields()[i].getType().equals(byte.class);
+	}
+	
 	private boolean verifyTypeWrapperPrimitiveShort(T entity, int i) {
 		return entity.getClass().getDeclaredFields()[i].getType().equals(Short.class)
 				|| entity.getClass().getDeclaredFields()[i].getType().equals(short.class);
-	}
+	}	
 	
 	private boolean verifyTypeClassString(T entity, int i) {
 		return entity.getClass().getDeclaredFields()[i].getType().equals(String.class);
+	}
+	
+	private boolean verifyTypeClassBigDecimal(T entity, int i) {		
+		return entity.getClass().getDeclaredFields()[i].getType().equals(BigDecimal.class);
+	}
+	
+	private boolean verifyTypeClassArray(T entity, int i) {		
+		return entity.getClass().getDeclaredFields()[i].getType().equals(Array.class);
+	}
+	
+	private boolean verifyTypeClassBlob(T entity, int i) {		
+		return entity.getClass().getDeclaredFields()[i].getType().equals(Blob.class);
+	}
+	
+	private boolean verifyTypeClassDate(T entity, int i) {		
+		return entity.getClass().getDeclaredFields()[i].getType().equals(Date.class);
 	}
 
 	protected String mountSQLInsert(String table, Field[] fields, boolean idAutoIncrement) {					
@@ -407,6 +467,120 @@ public class OperationsUtils<T> {
 			}
 		}
 		return value;
+	}	
+	
+	private boolean verifyTypeBooleanPrimitive(Object type) {
+		return type.toString().equals(BOOLEAN);
+	}
+
+	private Object defineResultSetAttribute(ResultSet result, Field field) throws SQLException {
+
+		Object type = field.getType().getName();
+
+		if (verifyTypeWrapperPrimitiveLong(type)) {
+			return result.getLong(field.getName());
+		}
+
+		if (verifyTypeWrapperPrimitiveDouble(type)) {
+			return result.getDouble(field.getName());
+		}
+
+		if (verifyTypeWrapperPrimitiveFloat(type)) {
+			return result.getFloat(field.getName());
+		}
+
+		if (verifyTypeWrapperPrimitiveInteger(type)) {
+			return result.getInt(field.getName());
+		}
+
+		if (verifyTypeWrapperPrimitiveCharacter(type)) {
+			return result.getCharacterStream(field.getName());
+		}		
+
+		if (verifyTypeWrapperPrimitiveBoolean(type)) {
+			return result.getBoolean(field.getName());
+		}
+
+		if (verifyTypeWrapperPrimitiveByte(type)) {
+			return result.getByte(field.getName());
+		}
+
+		if (verifyTypeWrapperPrimitiveShort(type)) {
+			return result.getShort(field.getName());
+		}		
+		
+		if (verifyTypeClassString(type)) {
+			return result.getString(field.getName());
+		}
+		
+		if (verifyTypeClassBigDecimal(type)) {
+			return result.getBigDecimal(field.getName());
+		}
+		
+		if (verifyTypeClassArray(type)) {
+			return result.getArray(field.getName());
+		}
+		
+		if (verifyTypeClassBlob(type)) {
+			return result.getBlob(field.getName());
+		}
+		
+		if (verifyTypeClassDate(type)) {
+			return result.getDate(field.getName());
+		}
+		return new Object();
+	}
+	
+	private boolean verifyTypeWrapperPrimitiveLong(Object type) {
+		return type.equals(Long.class.getName()) || type.equals(long.class.getName());
+	}
+	
+	private boolean verifyTypeWrapperPrimitiveDouble(Object type) {
+		return type.equals(Double.class.getName()) || type.equals(double.class.getName());
+	}
+	
+	private boolean verifyTypeWrapperPrimitiveFloat(Object type) {
+		return type.equals(Float.class.getName()) || type.equals(float.class.getName());
+	}
+	
+	private boolean verifyTypeWrapperPrimitiveInteger(Object type) {
+		return type.equals(Integer.class.getName()) || type.equals(int.class.getName());
+	}
+	
+	private boolean verifyTypeWrapperPrimitiveCharacter(Object type) {
+		return type.equals(Character.class.getName()) || type.equals(char.class.getName());
+	}
+	
+	private boolean verifyTypeWrapperPrimitiveBoolean(Object type) {
+		return type.equals(Boolean.class.getName()) || type.equals(boolean.class.getName());
+	}
+	
+	private boolean verifyTypeWrapperPrimitiveByte(Object type) {
+		return type.equals(Byte.class.getName()) || type.equals(byte.class.getName());
+	}
+	
+	private boolean verifyTypeWrapperPrimitiveShort(Object type) {
+		return type.equals(Short.class.getName()) || type.equals(short.class.getName());
+	}	
+	
+	private boolean verifyTypeClassString(Object type) {
+		return type.equals(String.class.getName());
+	}
+	
+	private boolean verifyTypeClassBigDecimal(Object type) {
+		return type.equals(BigDecimal.class.getName());
+	}
+	
+	private boolean verifyTypeClassArray(Object type) {
+		return type.equals(Array.class.getName());
+	}
+	
+	private boolean verifyTypeClassBlob(Object type) {
+		return type.equals(Blob.class.getName());
+	}
+	
+	private boolean verifyTypeClassDate(Object type) {
+		return type.equals(Date.class.getName());
 	}
 
 }

@@ -14,10 +14,10 @@ import com.github.tadeuespindolapalermo.easyjdbc.entity.Entity;
 import com.github.tadeuespindolapalermo.easyjdbc.entity.EntityNamed;
 import com.github.tadeuespindolapalermo.easyjdbc.entity.EntityUniqueAttribute;
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumDatabase;
-import com.github.tadeuespindolapalermo.easyjdbc.operations.OperationsInterfaceRepositoryImpl;
+import com.github.tadeuespindolapalermo.easyjdbc.operations.Persistence;
 import com.github.tadeuespindolapalermo.easyjdbc.util.Utils;
 
-public class OperationsInterfaceRepositoryImplTest {
+public class PersistenceTest {
 	
 	private static final String[] COLUMNS = {"id", "name", "lastname", "cpf", "weight", "approved", "age"};
 	
@@ -44,48 +44,48 @@ public class OperationsInterfaceRepositoryImplTest {
 	@Test
 	public void savePersistenceEntityUniqueAttribute() throws Exception {
 		EntityUniqueAttribute e = createEntityUniqueAttribute();
-		OperationsInterfaceRepositoryImpl<EntityUniqueAttribute> p = new OperationsInterfaceRepositoryImpl<>(EntityUniqueAttribute.class);
+		Persistence<EntityUniqueAttribute> p = new Persistence<>(EntityUniqueAttribute.class);
 		assertNotNull(p.save(e));
 	}
 
 	@Test
 	public void savePersistenceClassTestA() throws Exception {
 		Entity e = createEntityInsert();
-		OperationsInterfaceRepositoryImpl<Entity> p = new OperationsInterfaceRepositoryImpl<>(Entity.class);
+		Persistence<Entity> p = new Persistence<>(Entity.class);
 		assertNotNull(p.save(e));
 	}
 	
 	@Test
 	public void savePersistenceClassNamedTest() throws Exception {
 		EntityNamed e = createEntityNamedInsert();
-		OperationsInterfaceRepositoryImpl<EntityNamed> p = new OperationsInterfaceRepositoryImpl<>(EntityNamed.class);
+		Persistence<EntityNamed> p = new Persistence<>(EntityNamed.class);
 		assertNotNull(p.save(e));
 	}
 	
 	@Test
 	public void savePersistenceClassTestB() throws Exception {
 		Entity e = createEntityInsert();
-		OperationsInterfaceRepositoryImpl<Entity> p = new OperationsInterfaceRepositoryImpl<>(Entity.class);
+		Persistence<Entity> p = new Persistence<>(Entity.class);
 		assertNotNull(p.save(e, ENTITY));
 	}
 	
 	@Test
 	public void savePersistenceClassTestC() throws Exception {
 		Entity e = createEntityInsert();
-		OperationsInterfaceRepositoryImpl<Entity> p = new OperationsInterfaceRepositoryImpl<>(Entity.class);		
+		Persistence<Entity> p = new Persistence<>(Entity.class);		
 		assertNotNull(p.save(e, COLUMNS));
 	}
 	
 	@Test
 	public void savePersistenceClassTestD() throws Exception {
 		Entity e = createEntityInsert();
-		OperationsInterfaceRepositoryImpl<Entity> p = new OperationsInterfaceRepositoryImpl<>(Entity.class);
+		Persistence<Entity> p = new Persistence<>(Entity.class);
 		assertNotNull(p.save(e, ENTITY, COLUMNS));
 	}
 	
 	@Test
     public void deleteTest() throws Exception {
-        OperationsInterfaceRepositoryImpl<Entity> p = new OperationsInterfaceRepositoryImpl<>(Entity.class);
+        Persistence<Entity> p = new Persistence<>(Entity.class);
         List<Entity> entities = p.getAll();
         if (entities.size() == 0 ||entities.isEmpty()) {
         	Entity e = createEntityInsert();    		
@@ -97,7 +97,7 @@ public class OperationsInterfaceRepositoryImplTest {
         	if (deleted)
         		break;
         	for (Entity entity : entities) {
-        		deleted = p.delete(Entity.class, entity.getId());
+        		deleted = p.delete(entity.getId());
         		break;
 			}
         }        
@@ -106,7 +106,7 @@ public class OperationsInterfaceRepositoryImplTest {
 	
 	@Test
     public void deleteEntityNamedTest() throws Exception {
-        OperationsInterfaceRepositoryImpl<EntityNamed> p = new OperationsInterfaceRepositoryImpl<>(EntityNamed.class);
+        Persistence<EntityNamed> p = new Persistence<>(EntityNamed.class);
         List<EntityNamed> entities = p.getAll();
         if (entities.size() == 0 ||entities.isEmpty()) {
         	EntityNamed e = createEntityNamedInsert();    		
@@ -118,7 +118,7 @@ public class OperationsInterfaceRepositoryImplTest {
         	if (deleted)
         		break;
         	for (EntityNamed entity : entities) {
-        		deleted = p.delete(EntityNamed.class, entity.getNumber());
+        		deleted = p.delete(entity.getNumber());
         		break;
 			}
         }        
@@ -127,7 +127,7 @@ public class OperationsInterfaceRepositoryImplTest {
 	
 	@Test
 	public void updateIdTest() throws Exception {
-		OperationsInterfaceRepositoryImpl<Entity> p = new OperationsInterfaceRepositoryImpl<>(Entity.class);		
+		Persistence<Entity> p = new Persistence<>(Entity.class);		
 		List<Entity> entities = p.getAll();
 		Entity entityAssert = null;
         if (entities.size() == 0 ||entities.isEmpty()) {
@@ -145,7 +145,7 @@ public class OperationsInterfaceRepositoryImplTest {
 	
 	@Test
 	public void updateEntityTest() throws Exception {
-		OperationsInterfaceRepositoryImpl<Entity> p = new OperationsInterfaceRepositoryImpl<>(Entity.class);		
+		Persistence<Entity> p = new Persistence<>(Entity.class);		
 		List<Entity> entities = p.getAll();
 		Entity entityAssert = null;
         if (entities.size() == 0 ||entities.isEmpty()) {
@@ -164,7 +164,7 @@ public class OperationsInterfaceRepositoryImplTest {
 	
 	@Test
 	public void seacrhByIdAndUpdateEntityTest() throws Exception {		
-		OperationsInterfaceRepositoryImpl<Entity> p = new OperationsInterfaceRepositoryImpl<>(Entity.class);
+		Persistence<Entity> p = new Persistence<>(Entity.class);
 		List<Entity> entities = p.getAll();
         long idSearch = 0;
         if (entities.size() == 0 ||entities.isEmpty()) {
@@ -183,7 +183,7 @@ public class OperationsInterfaceRepositoryImplTest {
 	
 	@Test
 	public void seacrhByIdAndUpdateEntityClassNamedTest() throws Exception {		
-		OperationsInterfaceRepositoryImpl<EntityNamed> p = new OperationsInterfaceRepositoryImpl<>(EntityNamed.class);		
+		Persistence<EntityNamed> p = new Persistence<>(EntityNamed.class);		
 		List<EntityNamed> entities = p.getAll();
 		String idSearch = "";        
         if (entities.size() == 0 ||entities.isEmpty()) {
@@ -202,14 +202,14 @@ public class OperationsInterfaceRepositoryImplTest {
 	
 	@Test
     public void getAllTest() throws Exception {
-        OperationsInterfaceRepositoryImpl<Entity> p = new OperationsInterfaceRepositoryImpl<>(Entity.class);
+        Persistence<Entity> p = new Persistence<>(Entity.class);
         Utils.print(p.getAll());
         assertNotNull(p.getAll());
     }
 	
 	@Test
     public void searchByIdTest() throws Exception {
-        OperationsInterfaceRepositoryImpl<Entity> p = new OperationsInterfaceRepositoryImpl<>(Entity.class);
+        Persistence<Entity> p = new Persistence<>(Entity.class);
         List<Entity> entities = p.getAll();
         long idSearch = 0;
         if (entities.size() == 0 ||entities.isEmpty()) {

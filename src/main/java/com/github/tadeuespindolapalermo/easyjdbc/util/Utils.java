@@ -1,13 +1,8 @@
 package com.github.tadeuespindolapalermo.easyjdbc.util;
 
-import java.lang.reflect.Field;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Collection;
 
-public class Utils {
-	
-	private static final String BOOLEAN = "boolean";
+public class Utils {	
 
 	private Utils() { }
 
@@ -29,8 +24,8 @@ public class Utils {
 
 	public static void print(Object object) {
 		LogUtil.getLogger(Utils.class).info(object);
-	}
-
+	}	
+	
 	public static Class<?> verifyType(Object type) {
 
 		if (type instanceof Long) {
@@ -73,52 +68,6 @@ public class Utils {
 			return Number.class;
 		}
 		return Object.class;
-	}
-	
-	public static boolean verifyTypeBooleanPrimitive(Object type) {
-		return type.toString().equals(BOOLEAN);
-	}
-
-	public static Object defineResultSetAttribute(ResultSet result, Field field) throws SQLException {
-
-		Object type = field.getType().getName();
-
-		if (type.equals(Long.class.getName())) {
-			return result.getLong(field.getName());
-		}
-
-		if (type.equals(Double.class.getName())) {
-			return result.getDouble(field.getName());
-		}
-
-		if (type.equals(Float.class.getName())) {
-			return result.getFloat(field.getName());
-		}
-
-		if (type.equals(Integer.class.getName())) {
-			return result.getInt(field.getName());
-		}
-
-		if (type.equals(Character.class.getName())) {
-			return result.getCharacterStream(field.getName());
-		}
-
-		if (type.equals(String.class.getName())) {
-			return result.getString(field.getName());
-		}
-
-		if (type.equals(Boolean.class.getName())) {
-			return result.getBoolean(field.getName());
-		}
-
-		if (type.equals(Byte.class.getName())) {
-			return result.getByte(field.getName());
-		}
-
-		if (type.equals(Short.class.getName())) {
-			return result.getShort(field.getName());
-		}
-		return new Object();
 	}
 
 }
