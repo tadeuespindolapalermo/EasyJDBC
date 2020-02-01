@@ -12,7 +12,7 @@ import com.github.tadeuespindolapalermo.easyjdbc.util.ValidatorUtil;
 
 public class SingletonConnection {
 	
-	private static Connection connection = null;	
+	private static Connection connection = InfoConnection.getConnection();	
 	
 	private SingletonConnection() { }
 

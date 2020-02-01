@@ -1,5 +1,7 @@
 package com.github.tadeuespindolapalermo.easyjdbc.connection;
 
+import java.sql.Connection;
+
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumDatabase;
 
 public class InfoConnection {
@@ -12,6 +14,7 @@ public class InfoConnection {
 	private static EnumDatabase database;
 	private static String host;
 	private static String port;
+	private static Connection connection;
 
 	public static String getNameDatabase() {
 		return nameDatabase;
@@ -60,5 +63,13 @@ public class InfoConnection {
 	public static void setPort(String port) {
 		InfoConnection.port = port;
 	}	
+	
+	public static Connection getConnection() {
+		return connection;
+	}
+	
+	public static void setConnection(Connection connection) {
+		InfoConnection.connection = connection;
+	}
 
 }
