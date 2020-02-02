@@ -19,7 +19,7 @@ import com.github.tadeuespindolapalermo.easyjdbc.util.Utils;
 
 public class PersistenceTest {
 	
-	private static final String[] COLUMNS = {"id", "name", "lastname", "cpf", "weight", "approved", "age"};
+	private static final String[] COLUMNS = {"id", "name", "lastname", "cpf", "weight", "approved", "age", "curriculum"};
 	
 	private static final String ENTITY = "entity";
 	
@@ -233,6 +233,7 @@ public class PersistenceTest {
 		e.setLastname("Espíndola Palermo");
 		e.setName("Tadeu");
 		e.setWeight(82D);
+		e.setCurriculum("UYT&jkh9878iuhBGUYGT&5t");
 		return e;
 	}
 	
@@ -258,6 +259,7 @@ public class PersistenceTest {
 		e.setLastname("BBBBBBBBBBBBBB");
 		e.setName("Osvaldo");
 		e.setWeight(105D);
+		e.setCurriculum("7634uihfdbjkh345yh");
 		return e;
 	}
 	
@@ -268,6 +270,7 @@ public class PersistenceTest {
 		e.setLastname("ANAANAANAANAANAANAANA");
 		e.setName("Osvaldooooooooo");
 		e.setWeight(199D);
+		e.setCurriculum("iuyUKIH9787&iugIGU");
 		return e;
 	}
 

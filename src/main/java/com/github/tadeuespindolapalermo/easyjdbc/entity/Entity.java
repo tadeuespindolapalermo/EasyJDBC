@@ -8,33 +8,34 @@ import com.github.tadeuespindolapalermo.easyjdbc.annotation.PersistentClass;
 
 @PersistentClass
 public class Entity implements Serializable {
-	
-	private static final long serialVersionUID = -1157838021858283482L;	
-	
-	private Long id;	
+
+	private static final long serialVersionUID = -1157838021858283482L;
+
+	private Long id;
 	private String name;
-	private String lastname;	
+	private String lastname;
 	private String cpf;
 	private Double weight;
 	private Boolean approved;
 	private Integer age;
-	
+	private String curriculum;
+
 	@NotColumn
 	private String nonPersistentAttribute;
-	
+
 	@NotColumn
-	private String nonPersistentAttributeOther;	
-	
+	private String nonPersistentAttributeOther;
+
 	@NotColumn
 	private String nonPersistentAttributeOtherMore;
-	
+
 	@NotColumn
-	private String nonPersistentAttributeOtherMoreOne;	
+	private String nonPersistentAttributeOtherMoreOne;
 
 	@Identifier(autoIncrement = true)
 	public Long getId() {
 		return id;
-	}	
+	}
 
 	public void setId(Long id) {
 		this.id = id;
@@ -87,37 +88,45 @@ public class Entity implements Serializable {
 	public void setAge(Integer age) {
 		this.age = age;
 	}
-	
+
 	public String getNonPersistentAttribute() {
 		return nonPersistentAttribute;
 	}
-	
+
 	public void setNonPersistentAttribute(String nonPersistentAttribute) {
 		this.nonPersistentAttribute = nonPersistentAttribute;
 	}
-	
+
 	public String getNonPersistentAttributeOther() {
 		return nonPersistentAttributeOther;
 	}
-	
+
 	public void setNonPersistentAttributeOther(String nonPersistentAttributeOther) {
 		this.nonPersistentAttributeOther = nonPersistentAttributeOther;
 	}
-	
+
 	public String getNonPersistentAttributeOtherMore() {
 		return nonPersistentAttributeOtherMore;
 	}
-	
+
 	public void setNonPersistentAttributeOtherMore(String nonPersistentAttributeOtherMore) {
 		this.nonPersistentAttributeOtherMore = nonPersistentAttributeOtherMore;
 	}
-	
+
 	public String getNonPersistentAttributeOtherMoreOne() {
 		return nonPersistentAttributeOtherMoreOne;
 	}
-	
+
 	public void setNonPersistentAttributeOtherMoreOne(String nonPersistentAttributeOtherMoreOne) {
 		this.nonPersistentAttributeOtherMoreOne = nonPersistentAttributeOtherMoreOne;
+	}
+
+	public String getCurriculum() {
+		return curriculum;
+	}
+
+	public void setCurriculum(String curriculum) {
+		this.curriculum = curriculum;
 	}
 
 	@Override
@@ -150,7 +159,7 @@ public class Entity implements Serializable {
 	@Override
 	public String toString() {
 		return "Entity [id=" + id + ", name=" + name + ", lastname=" + lastname + ", cpf=" + cpf + ", weight=" + weight
-				+ ", approved=" + approved + ", age=" + age + "]";
+				+ ", approved=" + approved + ", age=" + age + ", curriculum=" + curriculum + "]";
 	}
 
 }

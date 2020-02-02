@@ -135,7 +135,7 @@ public class OperationsUtils<T> {
 
 	private String getMethodSetterName(Field field) {
 		String firstCharacterUppercase = String.valueOf(Character.toUpperCase(field.getName().charAt(0)));
-		String[] token = field.getName().split(firstCharacterUppercase.toLowerCase());	
+		String[] token = field.getName().split(firstCharacterUppercase.toLowerCase(), LIMIT_TOKEN_SPLIT);	
 		return METHOD_SETTER_PREFIX + firstCharacterUppercase + token[1];
 	}
 
