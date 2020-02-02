@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import com.github.tadeuespindolapalermo.easyjdbc.annotation.Identifier;
+import com.github.tadeuespindolapalermo.easyjdbc.annotation.NotColumn;
 import com.github.tadeuespindolapalermo.easyjdbc.annotation.PersistentClass;
 import com.github.tadeuespindolapalermo.easyjdbc.annotation.PersistentClassNamed;
 import com.github.tadeuespindolapalermo.easyjdbc.connection.SingletonConnection;
@@ -50,6 +51,8 @@ public class OperationsUtils<T> {
 	private static final String WHERE_CLAUSE = " WHERE ";	
 	
 	private static final String BOOLEAN = "boolean";
+	
+	private static final String SERIAL_VERSION_UID = "serialVersionUID";
 	
 	public OperationsUtils(Class<T> entity) throws NotPersistentClassException {	
 		validatePersistentClass(entity);	
@@ -106,7 +109,8 @@ public class OperationsUtils<T> {
 		
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 			try (ResultSet result = stmt.executeQuery()) {
-				Field[] fields = entity.getDeclaredFields();
+				Field[] fields = removeSerialVersionUIDAttribute(entity.getDeclaredFields());
+				fields = removeAttributeNotColumn(fields);
 				while (result.next()) {					
 					T entityResult = entity.newInstance();
 					for (Field field : fields) {						
@@ -141,21 +145,24 @@ public class OperationsUtils<T> {
 		
 		Class<?> entityClass = entity.getClass();		
 		
+		Field[] fields = removeSerialVersionUIDAttribute(entity.getClass().getDeclaredFields());
+		fields = removeAttributeNotColumn(fields);
+		
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {			
-			for (int i = 0; i <= entity.getClass().getDeclaredFields().length - 1; i++) {
-				if (operation.equals(UPDATE) && entity.getClass().getDeclaredFields()[i].getName().equals(getIdValue(entity))) {
+			for (int i = 0; i <= fields.length - 1; i++) {
+				if (operation.equals(UPDATE) && fields[i].getName().equals(getIdValue(entity))) {
 					continue;
 				}
-				if (!(idAutoIncrement && entity.getClass().getDeclaredFields()[i].getName().equals(getIdName(entity.getClass()))))
-					setStatementProcess(entity, stmt, i, getMethodGetter(entity, entityClass, i).invoke(entity), operation, idAutoIncrement);
+				if (!(idAutoIncrement && fields[i].getName().equals(getIdName(entity.getClass()))))
+					setStatementProcess(entity, stmt, i, getMethodGetter(entityClass, i, fields).invoke(entity), operation, idAutoIncrement, fields);
 			}			
 			stmt.executeUpdate();
 		}
 		connection.commit();
 	}	
 
-    private Method getMethodGetter(T entity, Class<?> entityClass, int i) throws NoSuchMethodException { // Tadeu
-        Field field = entity.getClass().getDeclaredFields()[i];
+    private Method getMethodGetter(Class<?> entityClass, int i, Field[] fields) throws NoSuchMethodException { // Tadeu
+        Field field = fields[i];
         String firstCharacterUppercase = String.valueOf(Character.toUpperCase(field.getName().charAt(0)));        
         String[] token = field.getName().split(firstCharacterUppercase.toLowerCase(), LIMIT_TOKEN_SPLIT);	        
         String prefix = isTypeBooleanPrimitive(field.getType()) ? METHOD_GETTER_IS_PREFIX : METHOD_GETTER_PREFIX;
@@ -174,10 +181,10 @@ public class OperationsUtils<T> {
     	return i != 0 && idAutoIncrement ? i : ++ i;
     } 
 
-	private void setStatementProcess(T entity, PreparedStatement stmt, int i, Object value, String operation, boolean idAutoIncrement) throws SQLException {
+	private void setStatementProcess(T entity, PreparedStatement stmt, int i, Object value, String operation, boolean idAutoIncrement, Field[] fields) throws SQLException {
 		
 		if (operation.equals(UPDATE) 
-				&& entity.getClass().getDeclaredFields()[i].getName().equals(getIdName(entity.getClass()))
+				&& fields[i].getName().equals(getIdName(entity.getClass()))
 				&& !idAutoIncrement) {
 			flag = true;
 			return;
@@ -197,132 +204,127 @@ public class OperationsUtils<T> {
 	    if (flag)
 	    	i ++;
 	    
-		setStatement(entity, stmt, i, value, index);
+		setStatement(stmt, i, value, index, fields);
 	}
 
-	private void setStatement(T entity, PreparedStatement stmt, int i, Object value, int index) throws SQLException {
+	private void setStatement(PreparedStatement stmt, int i, Object value, int index, Field[] fields) throws SQLException {
 		
-		if (verifyTypeWrapperPrimitiveLong(entity, i)) {
+		if (verifyTypeWrapperPrimitiveLong(i, fields)) {
 			stmt.setLong(index, (Long) value);					
 			return;
 		}
 		
-		if (verifyTypeWrapperPrimitiveDouble(entity, i)) {
+		if (verifyTypeWrapperPrimitiveDouble(i, fields)) {
 			stmt.setDouble(index, (Double) value);				
 			return;
 		}
 		
-		if (verifyTypeWrapperPrimitiveFloat(entity, i)) {
+		if (verifyTypeWrapperPrimitiveFloat(i, fields)) {
 			stmt.setFloat(index, (Float) value);					
 			return;
 		}
 		
-		if (verifyTypeWrapperPrimitiveInteger(entity, i)) {
+		if (verifyTypeWrapperPrimitiveInteger(i, fields)) {
 			stmt.setInt(index, (Integer) value);					
 			return;
 		}	
 		
-		if (verifyTypeWrapperPrimitiveCharacter(entity, i)) {
+		if (verifyTypeWrapperPrimitiveCharacter(i, fields)) {
 			stmt.setCharacterStream(index, (Reader) value);				
 			return;
 		}
 		
-		if (verifyTypeWrapperPrimitiveBoolean(entity, i)) {
+		if (verifyTypeWrapperPrimitiveBoolean(i, fields)) {
 			stmt.setBoolean(index, (Boolean) value);					
 			return;
 		}
 		
-		if (verifyTypeWrapperPrimitiveByte(entity, i)) {
+		if (verifyTypeWrapperPrimitiveByte(i, fields)) {
 			stmt.setByte(index, (Byte) value);			
 		}
 
-		if (verifyTypeWrapperPrimitiveShort(entity, i)) {
+		if (verifyTypeWrapperPrimitiveShort(i, fields)) {
 			stmt.setShort(index, (Short) value);			
 		}		
 		
-		if (verifyTypeClassString(entity, i)) {
+		if (verifyTypeClassString(i, fields)) {
 			stmt.setString(index, (String) value);					
 			return;
 		}
 		
-		if (verifyTypeClassBigDecimal(entity, i)) {			
+		if (verifyTypeClassBigDecimal(i, fields)) {			
 			stmt.setBigDecimal(index, (BigDecimal) value);			
 		}
 		
-		if (verifyTypeClassArray(entity, i)) {			
+		if (verifyTypeClassArray(i, fields)) {			
 			stmt.setArray(index, (Array) value);			
 		}
 		
-		if (verifyTypeClassBlob(entity, i)) {			
+		if (verifyTypeClassBlob(i, fields)) {			
 			stmt.setBlob(index, (Blob) value);			
 		}
 		
-		if (verifyTypeClassDate(entity, i)) {			
+		if (verifyTypeClassDate(i, fields)) {			
 			stmt.setDate(index, (Date) value);			
 		}
 	}
 
-	private boolean verifyTypeWrapperPrimitiveLong(T entity, int i) {
-		return entity.getClass().getDeclaredFields()[i].getType().equals(Long.class)
-				|| entity.getClass().getDeclaredFields()[i].getType().equals(long.class);
+	private boolean verifyTypeWrapperPrimitiveLong(int i, Field[] fields) {
+		return fields[i].getType().equals(Long.class) || fields[i].getType().equals(long.class);
 	}
 	
-	private boolean verifyTypeWrapperPrimitiveDouble(T entity, int i) {
-		return entity.getClass().getDeclaredFields()[i].getType().equals(Double.class)
-				|| entity.getClass().getDeclaredFields()[i].getType().equals(double.class);
+	private boolean verifyTypeWrapperPrimitiveDouble(int i, Field[] fields) {
+		return fields[i].getType().equals(Double.class) || fields[i].getType().equals(double.class);
 	}
 	
-	private boolean verifyTypeWrapperPrimitiveFloat(T entity, int i) {
-		return entity.getClass().getDeclaredFields()[i].getType().equals(Float.class)
-				|| entity.getClass().getDeclaredFields()[i].getType().equals(float.class);
+	private boolean verifyTypeWrapperPrimitiveFloat(int i, Field[] fields) {
+		return fields[i].getType().equals(Float.class) || fields[i].getType().equals(float.class);
 	}
 	
-	private boolean verifyTypeWrapperPrimitiveInteger(T entity, int i) {
-		return entity.getClass().getDeclaredFields()[i].getType().equals(Integer.class)
-				|| entity.getClass().getDeclaredFields()[i].getType().equals(int.class);
+	private boolean verifyTypeWrapperPrimitiveInteger(int i, Field[] fields) {
+		return fields[i].getType().equals(Integer.class) || fields[i].getType().equals(int.class);
 	}
 	
-	private boolean verifyTypeWrapperPrimitiveCharacter(T entity, int i) {
-		return entity.getClass().getDeclaredFields()[i].getType().equals(Character.class)
-				|| entity.getClass().getDeclaredFields()[i].getType().equals(char.class);
+	private boolean verifyTypeWrapperPrimitiveCharacter(int i, Field[] fields) {
+		return fields[i].getType().equals(Character.class) || fields[i].getType().equals(char.class);
 	}
 	
-	private boolean verifyTypeWrapperPrimitiveBoolean(T entity, int i) {
-		return entity.getClass().getDeclaredFields()[i].getType().equals(Boolean.class)
-				|| entity.getClass().getDeclaredFields()[i].getType().equals(boolean.class);
+	private boolean verifyTypeWrapperPrimitiveBoolean(int i, Field[] fields) {
+		return fields[i].getType().equals(Boolean.class) || fields[i].getType().equals(boolean.class);
 	}
 	
-	private boolean verifyTypeWrapperPrimitiveByte(T entity, int i) {
-		return entity.getClass().getDeclaredFields()[i].getType().equals(Byte.class)
-				|| entity.getClass().getDeclaredFields()[i].getType().equals(byte.class);
+	private boolean verifyTypeWrapperPrimitiveByte(int i, Field[] fields) {
+		return fields[i].getType().equals(Byte.class) || fields[i].getType().equals(byte.class);
 	}
 	
-	private boolean verifyTypeWrapperPrimitiveShort(T entity, int i) {
-		return entity.getClass().getDeclaredFields()[i].getType().equals(Short.class)
-				|| entity.getClass().getDeclaredFields()[i].getType().equals(short.class);
+	private boolean verifyTypeWrapperPrimitiveShort(int i, Field[] fields) {
+		return fields[i].getType().equals(Short.class) || fields[i].getType().equals(short.class);
 	}	
 	
-	private boolean verifyTypeClassString(T entity, int i) {
-		return entity.getClass().getDeclaredFields()[i].getType().equals(String.class);
+	private boolean verifyTypeClassString(int i, Field[] fields) {
+		return fields[i].getType().equals(String.class);
 	}
 	
-	private boolean verifyTypeClassBigDecimal(T entity, int i) {		
-		return entity.getClass().getDeclaredFields()[i].getType().equals(BigDecimal.class);
+	private boolean verifyTypeClassBigDecimal(int i, Field[] fields) {		
+		return fields[i].getType().equals(BigDecimal.class);
 	}
 	
-	private boolean verifyTypeClassArray(T entity, int i) {		
-		return entity.getClass().getDeclaredFields()[i].getType().equals(Array.class);
+	private boolean verifyTypeClassArray(int i, Field[] fields) {		
+		return fields[i].getType().equals(Array.class);
 	}
 	
-	private boolean verifyTypeClassBlob(T entity, int i) {		
-		return entity.getClass().getDeclaredFields()[i].getType().equals(Blob.class);
+	private boolean verifyTypeClassBlob(int i, Field[] fields) {		
+		return fields[i].getType().equals(Blob.class);
 	}
 	
-	private boolean verifyTypeClassDate(T entity, int i) {		
-		return entity.getClass().getDeclaredFields()[i].getType().equals(Date.class);
+	private boolean verifyTypeClassDate(int i, Field[] fields) {		
+		return fields[i].getType().equals(Date.class);
 	}
 
-	protected String mountSQLInsert(String table, Field[] fields, boolean idAutoIncrement) {					
+	protected String mountSQLInsert(String table, Field[] fields, boolean idAutoIncrement) {
+		
+		fields = removeSerialVersionUIDAttribute(fields);
+		fields = removeAttributeNotColumn(fields);
 
 		StringBuilder columnsName = new StringBuilder();
 		StringBuilder values = new StringBuilder();		
@@ -348,7 +350,78 @@ public class OperationsUtils<T> {
 			.append(" (" + values + ") ");
 
 		return sql.toString();
-	}	
+	}
+	
+	private Field[] removeSerialVersionUIDAttribute(Field[] fields) {
+		boolean flagExistAttributeSerialVersionUID = false;
+		int fieldsLength = containsAttributeSerialVersionUID(fields)
+				? fields.length - 1 : fields.length;		
+		Field[] fieldsWithoutSerialVersionUIDAttribute = new Field[fieldsLength];
+		for (int i = 0; i <= fields.length - 1; i++) {
+			int indexFieldsWithoutSerialVersionUIDAttribute = 
+					flagExistAttributeSerialVersionUID ? i - 1 : i;
+			if (!fields[i].getName().equalsIgnoreCase(SERIAL_VERSION_UID)) {
+				fieldsWithoutSerialVersionUIDAttribute[indexFieldsWithoutSerialVersionUIDAttribute] = fields[i];
+			} else {
+				flagExistAttributeSerialVersionUID = true;
+			}
+		}
+		return fieldsWithoutSerialVersionUIDAttribute;
+	}
+	
+	private Field[] removeAttributeNotColumn(Field[] fields) {
+		boolean flagExistAttributeNotColumn = false;
+		int indexSubtract = 0;
+		int fieldsLength = containsNotColumnAnnotation(fields)
+				? fields.length - amountNotColumnAnnotationExisting(fields) 
+				: fields.length;	
+		Field[] fieldsWithoutNotColumnAnnotation = new Field[fieldsLength];		
+		for (int i = 0; i <= fields.length - 1; i++) {
+			int indexFieldsWithoutNotColumnAnnotation = 
+					flagExistAttributeNotColumn ? i - indexSubtract : i;					
+			if (!containsNotColumnAnnotation(fields[i])) {
+				fieldsWithoutNotColumnAnnotation[indexFieldsWithoutNotColumnAnnotation] = fields[i];				
+			} else {
+				flagExistAttributeNotColumn = true;
+				indexSubtract ++;
+			}		
+		}		
+		return fieldsWithoutNotColumnAnnotation;
+	}
+	
+	private boolean containsAttributeSerialVersionUID(Field[] fields) {
+		for (int i = 0; i <= fields.length - 1; i++) {
+			if (fields[i].getName().equalsIgnoreCase(SERIAL_VERSION_UID)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean containsNotColumnAnnotation(Field[] fields) {
+		for (Field field : fields) {
+			NotColumn annotAttribute = field.getDeclaredAnnotation(NotColumn.class);
+			if (annotAttribute != null) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean containsNotColumnAnnotation(Field field) {		
+		return field.getDeclaredAnnotation(NotColumn.class) != null; 
+	}
+	
+	private int amountNotColumnAnnotationExisting(Field[] fields) {
+		int amount = 0;
+		for (Field field : fields) {
+			NotColumn annotAttribute = field.getDeclaredAnnotation(NotColumn.class);
+			if (annotAttribute != null) {
+				amount ++;
+			}
+		}
+		return amount;
+	}
 	
 	protected String mountSQLInsert(String table, String[] columns, boolean idAutoIncrement) {
 
@@ -380,6 +453,9 @@ public class OperationsUtils<T> {
 	
 	protected String mountSQLUpdate(String table, Field[] fields, Long id, boolean idAutoIncrement) {
 		
+		fields = removeSerialVersionUIDAttribute(fields);
+		fields = removeAttributeNotColumn(fields);
+		
 		StringBuilder columnsName = new StringBuilder();		
 		
 		int qtdColumns = fields.length;
@@ -404,6 +480,9 @@ public class OperationsUtils<T> {
 	}
 	
 	protected String mountSQLUpdate(String table, Field[] fields, Object idValue, String idName) {
+		
+		fields = removeSerialVersionUIDAttribute(fields);
+		fields = removeAttributeNotColumn(fields);
 		
 		StringBuilder columnsName = new StringBuilder();		
 		

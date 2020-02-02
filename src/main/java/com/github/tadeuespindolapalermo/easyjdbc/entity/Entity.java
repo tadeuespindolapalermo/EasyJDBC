@@ -1,23 +1,40 @@
 package com.github.tadeuespindolapalermo.easyjdbc.entity;
 
+import java.io.Serializable;
+
 import com.github.tadeuespindolapalermo.easyjdbc.annotation.Identifier;
+import com.github.tadeuespindolapalermo.easyjdbc.annotation.NotColumn;
 import com.github.tadeuespindolapalermo.easyjdbc.annotation.PersistentClass;
 
 @PersistentClass
-public class Entity {
+public class Entity implements Serializable {
+	
+	private static final long serialVersionUID = -1157838021858283482L;	
 	
 	private Long id;	
 	private String name;
-	private String lastname;
+	private String lastname;	
 	private String cpf;
 	private Double weight;
 	private Boolean approved;
 	private Integer age;
+	
+	@NotColumn
+	private String nonPersistentAttribute;
+	
+	@NotColumn
+	private String nonPersistentAttributeOther;	
+	
+	@NotColumn
+	private String nonPersistentAttributeOtherMore;
+	
+	@NotColumn
+	private String nonPersistentAttributeOtherMoreOne;	
 
 	@Identifier(autoIncrement = true)
 	public Long getId() {
 		return id;
-	}
+	}	
 
 	public void setId(Long id) {
 		this.id = id;
@@ -69,6 +86,38 @@ public class Entity {
 
 	public void setAge(Integer age) {
 		this.age = age;
+	}
+	
+	public String getNonPersistentAttribute() {
+		return nonPersistentAttribute;
+	}
+	
+	public void setNonPersistentAttribute(String nonPersistentAttribute) {
+		this.nonPersistentAttribute = nonPersistentAttribute;
+	}
+	
+	public String getNonPersistentAttributeOther() {
+		return nonPersistentAttributeOther;
+	}
+	
+	public void setNonPersistentAttributeOther(String nonPersistentAttributeOther) {
+		this.nonPersistentAttributeOther = nonPersistentAttributeOther;
+	}
+	
+	public String getNonPersistentAttributeOtherMore() {
+		return nonPersistentAttributeOtherMore;
+	}
+	
+	public void setNonPersistentAttributeOtherMore(String nonPersistentAttributeOtherMore) {
+		this.nonPersistentAttributeOtherMore = nonPersistentAttributeOtherMore;
+	}
+	
+	public String getNonPersistentAttributeOtherMoreOne() {
+		return nonPersistentAttributeOtherMoreOne;
+	}
+	
+	public void setNonPersistentAttributeOtherMoreOne(String nonPersistentAttributeOtherMoreOne) {
+		this.nonPersistentAttributeOtherMoreOne = nonPersistentAttributeOtherMoreOne;
 	}
 
 	@Override
