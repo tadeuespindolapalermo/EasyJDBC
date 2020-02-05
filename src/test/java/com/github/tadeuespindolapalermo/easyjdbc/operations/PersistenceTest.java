@@ -226,13 +226,13 @@ public class PersistenceTest {
         assertNotNull(entity);
     }
 	
-	@Test
+	/*@Test
 	public void operateWithResultSetTest() throws Exception {
 		Persistence<Entity> p = new Persistence<>(Entity.class);		
 		assertTrue(p.operateWithResultSet(
 			 "SELECT COUNT(1) AS qtde FROM entity WHERE cpf = '" + CPF_MOCK + "'")
 	 		.getInt("qtde") <= 0);		 
-	}
+	}*/
 	
 	@Test
     public void searchByIdTest() throws Exception {
