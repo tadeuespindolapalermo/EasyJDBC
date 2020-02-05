@@ -123,6 +123,15 @@ public class OperationsUtils<T> {
 		}
 	}
 	
+	protected ResultSet processOperateWithResultSet(String query) throws SQLException  {		
+	    PreparedStatement statement = connection.prepareStatement(query);
+		ResultSet result = statement.executeQuery() ;
+		if (result.next()) {
+		    return result;
+		}		
+		return null;
+	}
+	
 	protected boolean processDelete(String sql) throws SQLException {
 		try (PreparedStatement statement = connection.prepareStatement(sql)) {
 			if(statement.executeUpdate() == 1) {
@@ -321,7 +330,7 @@ public class OperationsUtils<T> {
 		return fields[i].getType().equals(Date.class);
 	}
 
-	protected String mountSQLInsert(String table, Field[] fields, boolean idAutoIncrement) {
+	protected String mountQueryInsert(String table, Field[] fields, boolean idAutoIncrement) {
 		
 		fields = removeSerialVersionUIDAttribute(fields);
 		fields = removeAttributeNotColumn(fields);
@@ -423,7 +432,7 @@ public class OperationsUtils<T> {
 		return amount;
 	}
 	
-	protected String mountSQLInsert(String table, String[] columns, boolean idAutoIncrement) {
+	protected String mountQueryInsert(String table, String[] columns, boolean idAutoIncrement) {
 
 		StringBuilder columnsName = new StringBuilder();
 		StringBuilder values = new StringBuilder();
@@ -451,7 +460,7 @@ public class OperationsUtils<T> {
 		return sql.toString();
 	}	
 	
-	protected String mountSQLUpdate(String table, Field[] fields, Long id, boolean idAutoIncrement) {
+	protected String mountQueryUpdate(String table, Field[] fields, Long id, boolean idAutoIncrement) {
 		
 		fields = removeSerialVersionUIDAttribute(fields);
 		fields = removeAttributeNotColumn(fields);
@@ -479,7 +488,7 @@ public class OperationsUtils<T> {
 		return sql.toString().replace("id = ?,", "");		
 	}
 	
-	protected String mountSQLUpdate(String table, Field[] fields, Object idValue, String idName) {
+	protected String mountQueryUpdate(String table, Field[] fields, Object idValue, String idName) {
 		
 		fields = removeSerialVersionUIDAttribute(fields);
 		fields = removeAttributeNotColumn(fields);
@@ -507,7 +516,7 @@ public class OperationsUtils<T> {
 		return sql.toString().replace("id = ?,", "");		
 	}
 	
-	protected String mountSQLDelete(String table, Object id) {
+	protected String mountQueryDelete(String table, Object id) {
 		
 		StringBuilder sql = new StringBuilder("DELETE FROM ")		
 			.append(table)
@@ -519,7 +528,7 @@ public class OperationsUtils<T> {
 		return sql.toString();
 	}		
 	
-	protected String mountSQLGetAll(String table) {
+	protected String mountQueryGetAll(String table) {
 		
 		StringBuilder sql = new StringBuilder("SELECT * FROM ")		
 			.append(table);			
@@ -527,7 +536,7 @@ public class OperationsUtils<T> {
 		return sql.toString();
 	}
 	
-	protected String mountSQLSearchById(String table, Object idValue, String idName) {
+	protected String mountQuerySearchById(String table, Object idValue, String idName) {
 		
 		StringBuilder sql = new StringBuilder("SELECT * FROM ")		
 			.append(table)

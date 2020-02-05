@@ -1,6 +1,7 @@
 package com.github.tadeuespindolapalermo.easyjdbc.operations;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,54 +16,54 @@ public class Persistence<T> extends OperationsUtils<T> implements OperationsInte
 	}
 
 	@Override
-	public T save(T entity) 
+	public <E extends T> E save(E entity) 
 			throws SQLException, NoSuchMethodException, 
 			IllegalAccessException, InvocationTargetException, NotPersistentClassException {				
 				
-		String sql = mountSQLInsert(
+		String query = mountQueryInsert(
 				defineTableName(entity.getClass()),
 				entity.getClass().getDeclaredFields(), 
 				getAutoIncrementIdentifierValue());
 		
-		processInsertUpdate(entity, sql, INSERT, getAutoIncrementIdentifierValue());	
+		processInsertUpdate(entity, query, INSERT, getAutoIncrementIdentifierValue());	
 		return entity;
 	}	
 	
 	@Override
-	public T save(T entity, String table) 
+	public <E extends T> E save(E entity, String table) 
 			throws SQLException, NoSuchMethodException, 
 			IllegalAccessException, InvocationTargetException, NotPersistentClassException {		
 		
-		String sql = mountSQLInsert(
+		String query = mountQueryInsert(
 				table, 
 				entity.getClass().getDeclaredFields(), 
 				getAutoIncrementIdentifierValue());
 		
-		processInsertUpdate(entity, sql, INSERT, getAutoIncrementIdentifierValue());
+		processInsertUpdate(entity, query, INSERT, getAutoIncrementIdentifierValue());
 		return entity;
 	}
 	
 	@Override
-	public T save(T entity, String[] columns) 
+	public <E extends T> E save(E entity, String[] columns) 
 			throws SQLException, NoSuchMethodException, 
 			IllegalAccessException, InvocationTargetException, NotPersistentClassException {		
 		
-		String sql = mountSQLInsert(
+		String query = mountQueryInsert(
 				defineTableName(entity.getClass()),
 				columns,
 				getAutoIncrementIdentifierValue());
 		
-		processInsertUpdate(entity, sql, INSERT, getAutoIncrementIdentifierValue());
+		processInsertUpdate(entity, query, INSERT, getAutoIncrementIdentifierValue());
 		return entity;
 	}
 	
 	@Override
-	public T save(T entity, String table, String[] columns) 
+	public <E extends T> E save(E entity, String table, String[] columns) 
 			throws SQLException, NoSuchMethodException, 
 			IllegalAccessException, InvocationTargetException, NotPersistentClassException {		
 		
-		String sql = mountSQLInsert(table, columns, getAutoIncrementIdentifierValue());		
-		processInsertUpdate(entity, sql, INSERT, getAutoIncrementIdentifierValue());
+		String query = mountQueryInsert(table, columns, getAutoIncrementIdentifierValue());		
+		processInsertUpdate(entity, query, INSERT, getAutoIncrementIdentifierValue());
 		return entity;
 	}
 	
@@ -71,13 +72,13 @@ public class Persistence<T> extends OperationsUtils<T> implements OperationsInte
 			throws SQLException, NoSuchMethodException, 
 			IllegalAccessException, InvocationTargetException {
 		
-		String sql = mountSQLUpdate(
+		String query = mountQueryUpdate(
 				defineTableName(entity.getClass()), 				
 				entity.getClass().getDeclaredFields(), 
 				id,
 				getAutoIncrementIdentifierValue());
 		
-		processInsertUpdate(entity, sql, UPDATE, getAutoIncrementIdentifierValue());		
+		processInsertUpdate(entity, query, UPDATE, getAutoIncrementIdentifierValue());		
 		return entity;
 	}	
 	
@@ -86,20 +87,20 @@ public class Persistence<T> extends OperationsUtils<T> implements OperationsInte
 			throws SQLException, NoSuchMethodException, 
 			IllegalAccessException, InvocationTargetException {	
 		
-		String sql = mountSQLUpdate(
+		String query = mountQueryUpdate(
 				defineTableName(entity.getClass()), 				
 				entity.getClass().getDeclaredFields(), 
 				getIdValue(entity), 
 				getIdName(entity.getClass()));
 		
-		processInsertUpdate(entity, sql, UPDATE, getAutoIncrementIdentifierValue());		
+		processInsertUpdate(entity, query, UPDATE, getAutoIncrementIdentifierValue());		
 		return entity;
 	}
 	
 	@Override
 	public boolean delete(Object id) throws SQLException {		
-		String sql = mountSQLDelete(defineTableName(entity), id);		
-		return processDelete(sql);
+		String query = mountQueryDelete(defineTableName(entity), id);		
+		return processDelete(query);
 	}
 	
 	@Override
@@ -108,9 +109,9 @@ public class Persistence<T> extends OperationsUtils<T> implements OperationsInte
 			IllegalAccessException, NoSuchMethodException, 
 			InvocationTargetException {
 		
-		String sql = mountSQLGetAll(defineTableName(entity));		
+		String query = mountQueryGetAll(defineTableName(entity));		
 		List<T> entities = new ArrayList<>();
-		processSelect(sql, entities);
+		processSelect(query, entities);
 		return entities;
 	}
 	
@@ -120,10 +121,26 @@ public class Persistence<T> extends OperationsUtils<T> implements OperationsInte
 			IllegalAccessException, InvocationTargetException, 
 			InstantiationException {			
 		
-		String sql = mountSQLSearchById(defineTableName(entity), id, getIdName(entity));		
+		String query = mountQuerySearchById(defineTableName(entity), id, getIdName(entity));		
 		List<T> entities = new ArrayList<>();
-		processSelect(sql, entities);
+		processSelect(query, entities);
 		return entities.get(SINGLE_ELEMENT_COLLECTION);
-	}		
+	}	
+
+	@Override
+	public List<T> search(String query) 
+			throws SQLException, InstantiationException, 
+			IllegalAccessException, NoSuchMethodException, 
+			InvocationTargetException {
+		
+		List<T> entities = new ArrayList<>();
+		processSelect(query, entities);
+		return entities;		
+	}
+
+	@Override
+	public ResultSet operateWithResultSet(String query) throws SQLException {
+		return processOperateWithResultSet(query);
+	}
 	
 }

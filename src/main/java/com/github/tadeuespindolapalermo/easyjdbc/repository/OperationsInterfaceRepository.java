@@ -1,6 +1,7 @@
 package com.github.tadeuespindolapalermo.easyjdbc.repository;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -8,13 +9,13 @@ import com.github.tadeuespindolapalermo.easyjdbc.exception.NotPersistentClassExc
 
 public interface OperationsInterfaceRepository<T> {	
 	
-	T save (T entity) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, NotPersistentClassException;
+	<E extends T> E save (E entity) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, NotPersistentClassException;	
 	
-	T save (T entity, String table) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, NotPersistentClassException;
+	<E extends T> E save (E entity, String table) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, NotPersistentClassException;
 	
-	T save (T entity, String[] columns) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, NotPersistentClassException;
+	<E extends T> E save (E entity, String[] columns) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, NotPersistentClassException;
 	
-	T save (T entity, String table, String[] columns) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, NotPersistentClassException;
+	<E extends T> E save (E entity, String table, String[] columns) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, NotPersistentClassException;
 	
 	boolean delete (Object id) throws SQLException;
 	
@@ -25,5 +26,9 @@ public interface OperationsInterfaceRepository<T> {
 	List<T> getAll() throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException;
 	
 	T searchById(Object id) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException;
+	
+	List<T> search(String query) throws SQLException, InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException;
+	
+	ResultSet operateWithResultSet(String query) throws SQLException; 
 
 }

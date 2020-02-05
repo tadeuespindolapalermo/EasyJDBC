@@ -23,7 +23,7 @@ public class PersistenceTest {
 	
 	private static final String ENTITY = "entity";
 	
-	private static final String CPF_MOCK = "12121212121";	
+	private static final String CPF_MOCK = "12121212121AAB7CY7T";	
 	
 	private static final String DESCRIPTION_MOCK = "Mock Description";
 
@@ -206,6 +206,33 @@ public class PersistenceTest {
         Utils.print(p.getAll());
         assertNotNull(p.getAll());
     }
+	
+	@Test
+    public void searchTest() throws Exception {
+		Persistence<Entity> p = new Persistence<>(Entity.class);
+        List<Entity> entities = p.getAll();
+        String cpfSearch = null;
+        if (entities.size() == 0 ||entities.isEmpty()) {
+        	Entity e = createEntityInsert();    		
+    		p.save(e);
+    		entities = p.getAll();
+        }
+        for (Entity entity : entities) {
+			cpfSearch = entity.getCpf();
+			break;
+		}
+        List<Entity> entity = p.search("SELECT * FROM entity WHERE cpf = '"+ cpfSearch +"'");
+        Utils.print(entity);
+        assertNotNull(entity);
+    }
+	
+	@Test
+	public void operateWithResultSetTest() throws Exception {
+		Persistence<Entity> p = new Persistence<>(Entity.class);		
+		assertTrue(p.operateWithResultSet(
+			 "SELECT COUNT(1) AS qtde FROM entity WHERE cpf = '" + CPF_MOCK + "'")
+	 		.getInt("qtde") <= 0);		 
+	}
 	
 	@Test
     public void searchByIdTest() throws Exception {
