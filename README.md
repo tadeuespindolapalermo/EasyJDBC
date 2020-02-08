@@ -4,6 +4,8 @@ Easy JDBC is a library built to facilitate the use of JDBC for data persistence 
 
 Latest version of the library: <b><a href="https://mvnrepository.com/artifact/com.github.tadeuespindolapalermo.easyjdbc/easy-jdbc/1.5-beta" >1.5-beta</a></b>
 
+<hr>
+
 How to incorporate into your project?
 
 <b>Incorporate using Maven:</b><br>
@@ -25,6 +27,8 @@ MVN Repository: <br>
 
 Sonatype: <br>
 <b> https://search.maven.org/artifact/com.github.tadeuespindolapalermo.easyjdbc/easy-jdbc </b><br>
+
+<hr>
 
 Be part of this project reporting bug's or becoming a committer! <br>
 Support this project and be part of the Easy JDBC community!
