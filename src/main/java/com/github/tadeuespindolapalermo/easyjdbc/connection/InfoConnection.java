@@ -15,6 +15,7 @@ public class InfoConnection {
 	private static String host;
 	private static String port;
 	private static Connection connection;
+	private static String url;
 
 	public static String getNameDatabase() {
 		return nameDatabase;
@@ -70,6 +71,14 @@ public class InfoConnection {
 	
 	public static void setConnection(Connection connection) {
 		InfoConnection.connection = connection;
+	}
+	
+	public static String getUrl() {
+		return url;
+	}
+	
+	public static void setUrl(String url) {
+		InfoConnection.url = url;
 	}
 
 }

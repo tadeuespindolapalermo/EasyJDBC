@@ -32,16 +32,14 @@ public class PersistenceTest {
 	}	
 
 	private static void connectionTest() {
-		connectionPostgreSQL();
+		connectionPostgreSQLMain();
 	}
 	
-	private static void connectionPostgreSQL() {
+	private static void connectionPostgreSQLMain() {
 		InfoConnection.setDatabase(EnumDatabase.POSTGRE);
 		InfoConnection.setNameDatabase("easyjdbc");
 		InfoConnection.setPassword("postgres1985");
-		InfoConnection.setUser("postgres");
-		InfoConnection.setHost("127.0.0.1");
-		InfoConnection.setPort("5432");
+		InfoConnection.setUser("postgres");		
 		SingletonConnection.getConnection();
 	}	
 	
@@ -55,10 +53,23 @@ public class PersistenceTest {
 		assertNotNull(SingletonConnection.getConnection());
 	}
 	
+	private static void connectionPostgreSQL() {
+		InfoConnection.setDatabase(EnumDatabase.POSTGRE);		
+		InfoConnection.setPassword("postgres1985");
+		InfoConnection.setUser("postgres");			
+		InfoConnection.setUrl("jdbc:postgresql://127.0.0.1:5432/easyjdbc");
+		assertNotNull(SingletonConnection.getConnection());
+	}	
+	
 	@Test
 	public void connectionMySQLTest() {
 		connectionMySQL();
 	}
+	
+	@Test
+	public void connectionPostgreSQLTest() {
+		connectionPostgreSQL();
+	}	
 	
 	@Test
 	public void savePersistenceEntityUniqueAttribute() throws Exception {

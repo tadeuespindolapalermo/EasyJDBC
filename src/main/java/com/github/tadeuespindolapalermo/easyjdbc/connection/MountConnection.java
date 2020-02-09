@@ -23,13 +23,14 @@ public class MountConnection {
 	
 	protected MountConnection () {}
 	
-	private static String mountURL(
+	private static String mountURL(			
 			String initialURL,
-			String enumConnectionHostParameter,
-			String enumConnectionPortParameter,
+			String hostDefault,
+			String portDefault,
 			String... extraParametersInURL) {
 		
 		StringBuilder extraParameters = new StringBuilder();
+		StringBuilder stringConnection = new StringBuilder(initialURL);
 		
 		for (int i = 0; i <= extraParametersInURL.length - 1; i++) {			
 			extraParameters.append(extraParametersInURL[i]);
@@ -37,17 +38,21 @@ public class MountConnection {
 				extraParameters.append("&");
 		}
 		
-		return new StringBuilder(initialURL)
+		stringConnection
 			.append(isNotNull(InfoConnection.getHost()) 
-				? InfoConnection.getHost() : enumConnectionHostParameter)
+				? InfoConnection.getHost() : hostDefault)
 			.append(":")
 			.append(isNotNull(InfoConnection.getPort()) 
-				? InfoConnection.getPort() : enumConnectionPortParameter)
+				? InfoConnection.getPort() : portDefault)
 			.append("/")
-			.append(InfoConnection.getNameDatabase())
-			.append("?")
-			.append(extraParameters.toString())
-			.toString();
+			.append(InfoConnection.getNameDatabase());
+		
+		if (!extraParameters.toString().isEmpty()) { 
+			stringConnection
+				.append("?")
+				.append(extraParameters.toString());
+		}			
+		return stringConnection.toString();
 	}
 	
 	protected static String mountOracleURL(String initialURL) {		
