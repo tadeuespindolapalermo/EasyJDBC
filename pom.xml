@@ -1,11 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.tadeuespindolapalermo.easyjdbc</groupId>
 	<artifactId>easy-jdbc</artifactId>
 	<version>1.6-beta-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	
+
 	<name>Easy JDBC Library</name>
 	<description>Library for easy persistence with JDBC!</description>
 	<url>https://github.com/tadeuespindolapalermo/EasyJDBC</url>
@@ -14,7 +16,7 @@
 		<groupId>org.sonatype.oss</groupId>
 		<artifactId>oss-parent</artifactId>
 		<version>7</version>
-	</parent>		
+	</parent>
 
 	<scm>
 		<url>https://github.com/tadeuespindolapalermo/EasyJDBC</url>
@@ -49,7 +51,8 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>4.13</junit.version>
-		<postgresql.version>42.2.9</postgresql.version>
+		<postgresql.version>42.2.10</postgresql.version>
+		<mysql.version>8.0.19</mysql.version>
 		<log4j.version>1.2.17</log4j.version>
 		<oracle.version>12.1.0</oracle.version>
 		<sonar.host.url>http://localhost:9000</sonar.host.url>
@@ -91,35 +94,42 @@
 			<artifactId>ojdbc7</artifactId>
 			<version>${oracle.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql.version}</version>
+		</dependency>
+
 	</dependencies>
-	
+
 	<build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.sonarsource.scanner.maven</groupId>
-                    <artifactId>sonar-maven-plugin</artifactId>
-                    <version>3.6.0.1398</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-		<plugins>		
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>3.6.0.1398</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>				
+				<artifactId>maven-release-plugin</artifactId>
 				<configuration>
 					<pushChanges>false</pushChanges>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>				
+				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
 					<source>8</source>
 					<target>8</target>
 				</configuration>
-			</plugin>			
+			</plugin>
 		</plugins>
 	</build>
 </project>

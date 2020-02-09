@@ -32,6 +32,10 @@ public class PersistenceTest {
 	}	
 
 	private static void connectionTest() {
+		connectionPostgreSQL();
+	}
+	
+	private static void connectionPostgreSQL() {
 		InfoConnection.setDatabase(EnumDatabase.POSTGRE);
 		InfoConnection.setNameDatabase("easyjdbc");
 		InfoConnection.setPassword("postgres1985");
@@ -39,6 +43,21 @@ public class PersistenceTest {
 		InfoConnection.setHost("127.0.0.1");
 		InfoConnection.setPort("5432");
 		SingletonConnection.getConnection();
+	}	
+	
+	private void connectionMySQL() {
+		InfoConnection.setDatabase(EnumDatabase.MYSQL);
+		InfoConnection.setNameDatabase("easyjdbc");
+		InfoConnection.setPassword("mysql1985");
+		InfoConnection.setUser("root");
+		InfoConnection.setHost("127.0.0.1");
+		InfoConnection.setPort("3306");		
+		assertNotNull(SingletonConnection.getConnection());
+	}
+	
+	@Test
+	public void connectionMySQLTest() {
+		connectionMySQL();
 	}
 	
 	@Test
