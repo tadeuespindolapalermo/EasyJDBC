@@ -5,10 +5,10 @@ import static com.github.tadeuespindolapalermo.easyjdbc.util.ValidatorUtil.isNot
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumConnectionMySQL;
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumConnectionOracle;
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumConnectionPostgreSQL;
+import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumConnectionSQLite;
+import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumDatabase;
 
-public class MountConnection {
-	
-	private static final String NO_EXTRA_PARAMETERS = "";
+public class MountConnection {	
 	
 	private static final String ORACLE_HOST_DEFAULT = EnumConnectionOracle.HOST_DAFAULT.getParameter();
 	private static final String ORACLE_PORT_DEFAULT = EnumConnectionOracle.PORT_DAFAULT.getParameter();
@@ -21,12 +21,15 @@ public class MountConnection {
 	private static final String MYSQL_EXTRA_PARAMETER_USE_TIMEZONE_PT_BR = EnumConnectionMySQL.EXTRA_PARAMETER_USE_TIMEZONE_PT_BR.getParameter();
 	private static final String MYSQL_EXTRA_PARAMETER_SERVER_TIMEZONE_PT_BR = EnumConnectionMySQL.EXTRA_PARAMETER_SERVER_TIMEZONE_PT_BR.getParameter();
 	
+	private static final String SQLITE_FILE_PATH_DATABASE_DAFAULT = EnumConnectionSQLite.FILE_PATH_DATABASE_DAFAULT.getParameter();
+	private static final String SQLITE_FILE_DATABASE_DAFAULT = EnumConnectionSQLite.FILE_DATABASE_DAFAULT.getParameter();
+	
 	protected MountConnection () {}
 	
 	private static String mountURL(			
 			String initialURL,
-			String hostDefault,
-			String portDefault,
+			String hostOrFilePathDatabaseDefault,
+			String portOrFileDatabaseDefault,
 			String... extraParametersInURL) {
 		
 		StringBuilder extraParameters = new StringBuilder();
@@ -38,14 +41,22 @@ public class MountConnection {
 				extraParameters.append("&");
 		}
 		
-		stringConnection
-			.append(isNotNull(InfoConnection.getHost()) 
-				? InfoConnection.getHost() : hostDefault)
-			.append(":")
-			.append(isNotNull(InfoConnection.getPort()) 
-				? InfoConnection.getPort() : portDefault)
-			.append("/")
-			.append(InfoConnection.getNameDatabase());
+		if (!InfoConnection.getDatabase().equals(EnumDatabase.SQLITE)) {
+			stringConnection
+				.append(isNotNull(InfoConnection.getHost()) 
+					? InfoConnection.getHost() : hostOrFilePathDatabaseDefault)
+				.append(":")
+				.append(isNotNull(InfoConnection.getPort()) 
+					? InfoConnection.getPort() : portOrFileDatabaseDefault)
+				.append("/")
+				.append(InfoConnection.getNameDatabase());
+		} else {
+			stringConnection
+				.append(isNotNull(InfoConnection.getDatabaseFilePath()) 
+					? InfoConnection.getDatabaseFilePath() : hostOrFilePathDatabaseDefault)				
+				.append(isNotNull(InfoConnection.getDatabaseFile()) 
+					? InfoConnection.getDatabaseFile() : portOrFileDatabaseDefault);				
+		}
 		
 		if (!extraParameters.toString().isEmpty()) { 
 			stringConnection
@@ -56,15 +67,19 @@ public class MountConnection {
 	}
 	
 	protected static String mountOracleURL(String initialURL) {		
-		return mountURL(initialURL, ORACLE_HOST_DEFAULT, ORACLE_PORT_DEFAULT, NO_EXTRA_PARAMETERS);		
+		return mountURL(initialURL, ORACLE_HOST_DEFAULT, ORACLE_PORT_DEFAULT);		
 	}
 	
 	protected static String mountPostgreSQLURL(String initialURL) {			
-		return mountURL(initialURL, POSTGRESQL_HOST_DEFAULT, POSTGRESQL_PORT_DEFAULT, NO_EXTRA_PARAMETERS);		
+		return mountURL(initialURL, POSTGRESQL_HOST_DEFAULT, POSTGRESQL_PORT_DEFAULT);		
 	}	
 	
 	protected static String mountMySQLURL(String initialURL) {			
 		return mountURL(initialURL, MYSQL_HOST_DEFAULT, MYSQL_PORT_DEFAULT, MYSQL_EXTRA_PARAMETER_USE_TIMEZONE_PT_BR, MYSQL_EXTRA_PARAMETER_SERVER_TIMEZONE_PT_BR);
-	}		
+	}	
+	
+	protected static String mountSQLiteURL(String initialURL) {			
+		return mountURL(initialURL, SQLITE_FILE_PATH_DATABASE_DAFAULT, SQLITE_FILE_DATABASE_DAFAULT);
+	}	
 
 }

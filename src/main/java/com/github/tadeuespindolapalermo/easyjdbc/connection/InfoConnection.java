@@ -16,6 +16,8 @@ public class InfoConnection {
 	private static String port;
 	private static Connection connection;
 	private static String url;
+	private static String databaseFilePath;
+	private static String databaseFile;
 
 	public static String getNameDatabase() {
 		return nameDatabase;
@@ -79,6 +81,22 @@ public class InfoConnection {
 	
 	public static void setUrl(String url) {
 		InfoConnection.url = url;
+	}
+	
+	public static String getDatabaseFilePath() {
+		return databaseFilePath;
+	}
+	
+	public static void setDatabaseFilePath(String databaseFilePath) {
+		InfoConnection.databaseFilePath = databaseFilePath;
+	}
+	
+	public static String getDatabaseFile() {
+		return databaseFile;
+	}
+	
+	public static void setDatabaseFile(String databaseFile) {
+		InfoConnection.databaseFile = databaseFile;
 	}
 
 }

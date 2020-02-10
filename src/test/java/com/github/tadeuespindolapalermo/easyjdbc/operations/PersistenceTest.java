@@ -14,7 +14,6 @@ import com.github.tadeuespindolapalermo.easyjdbc.entity.Entity;
 import com.github.tadeuespindolapalermo.easyjdbc.entity.EntityNamed;
 import com.github.tadeuespindolapalermo.easyjdbc.entity.EntityUniqueAttribute;
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumDatabase;
-import com.github.tadeuespindolapalermo.easyjdbc.operations.Persistence;
 import com.github.tadeuespindolapalermo.easyjdbc.util.Utils;
 
 public class PersistenceTest {
@@ -32,7 +31,7 @@ public class PersistenceTest {
 	}	
 
 	private static void connectionTest() {
-		connectionPostgreSQLMain();
+		connectionPostgreSQLMain();		
 	}
 	
 	private static void connectionPostgreSQLMain() {
@@ -61,6 +60,13 @@ public class PersistenceTest {
 		assertNotNull(SingletonConnection.getConnection());
 	}	
 	
+	private static void connectionSQLite() {
+		InfoConnection.setDatabase(EnumDatabase.SQLITE);			
+		InfoConnection.setDatabaseFilePath("src/main/resources/data/");
+		InfoConnection.setDatabaseFile("sqlite_database.db");
+		assertNotNull(SingletonConnection.getConnection());
+	}	
+	
 	@Test
 	public void connectionMySQLTest() {
 		connectionMySQL();
@@ -70,6 +76,11 @@ public class PersistenceTest {
 	public void connectionPostgreSQLTest() {
 		connectionPostgreSQL();
 	}	
+	
+	@Test
+	public void connectionSQLiteTest() {
+		connectionSQLite();
+	}
 	
 	@Test
 	public void savePersistenceEntityUniqueAttribute() throws Exception {
@@ -231,11 +242,18 @@ public class PersistenceTest {
 	}	
 	
 	@Test
-    public void getAllTest() throws Exception {
+    public void getAllEntityTest() throws Exception {
         Persistence<Entity> p = new Persistence<>(Entity.class);
         Utils.print(p.getAll());
         assertNotNull(p.getAll());
     }
+	
+	/*@Test
+    public void getAllEntityQuestionsTest() throws Exception {
+        Persistence<EntityQuestions> p = new Persistence<>(EntityQuestions.class);
+        Utils.print(p.getAll());
+        assertNotNull(p.getAll());
+    }*/
 	
 	@Test
     public void searchTest() throws Exception {

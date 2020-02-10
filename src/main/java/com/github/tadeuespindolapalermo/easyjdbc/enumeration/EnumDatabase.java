@@ -4,8 +4,7 @@ public enum EnumDatabase {
 	
 	POSTGRE,
 	MYSQL,
-	ORACLE,
-	MARIADB,
+	ORACLE,	
 	SQLITE
 	
 }

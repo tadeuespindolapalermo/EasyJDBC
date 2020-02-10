@@ -1,15 +1,15 @@
 package com.github.tadeuespindolapalermo.easyjdbc.connection;
 
-import static com.github.tadeuespindolapalermo.easyjdbc.util.ValidatorUtil.isNull;
 import static com.github.tadeuespindolapalermo.easyjdbc.util.ValidatorUtil.isNotNull;
+import static com.github.tadeuespindolapalermo.easyjdbc.util.ValidatorUtil.isNull;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumConnectionMySQL;
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumConnectionOracle;
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumConnectionPostgreSQL;
+import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumConnectionSQLite;
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumDatabase;
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumLogMessages;
 import com.github.tadeuespindolapalermo.easyjdbc.util.LogUtil;
@@ -17,6 +17,8 @@ import com.github.tadeuespindolapalermo.easyjdbc.util.LogUtil;
 public class SingletonConnection extends MountConnection {
 	
 	private static Connection connection = InfoConnection.getConnection();	
+	
+	private static final String STRING_EMPTY = "";
 	
 	private SingletonConnection() { }
 
@@ -28,17 +30,28 @@ public class SingletonConnection extends MountConnection {
 		try {
 			if (isNull(connection)) {	
 				
-				if (InfoConnection.getDatabase().equals(EnumDatabase.ORACLE)) {		
-					establishOracleConnection();
+				String url = STRING_EMPTY;
+				boolean connectionOK = false;
+				
+				if (InfoConnection.getDatabase().equals(EnumDatabase.ORACLE)) {	
+					url = getOracleURL();		
 				}
 				
 				if (InfoConnection.getDatabase().equals(EnumDatabase.POSTGRE)) {
-					establishPostgreSQLConnection();
+					url = getPostgreSQLURL();		
 				}	
 				
-				if (InfoConnection.getDatabase().equals(EnumDatabase.MYSQL)) {				
-					establishMySQLConnection();
+				if (InfoConnection.getDatabase().equals(EnumDatabase.MYSQL)) {	
+					url = getMySQLURL();
+				}
+				
+				if (InfoConnection.getDatabase().equals(EnumDatabase.SQLITE)) {	
+					connection = DriverManager.getConnection(getSQLiteURL());
+					connectionOK = true;
 				}	
+				
+				if (!connectionOK)
+					connection = DriverManager.getConnection(url, InfoConnection.getUser(), InfoConnection.getPassword());
 				
 				LogUtil.getLogger(SingletonConnection.class).info(EnumLogMessages.CONN_SUCCESS.getMessage()
 						+ "\nBank: " + InfoConnection.getDatabase().name()
@@ -52,23 +65,25 @@ public class SingletonConnection extends MountConnection {
 		}
 	}
 
-	private static void establishMySQLConnection() throws ClassNotFoundException, SQLException {
-		String url = isNull(InfoConnection.getUrl()) ? mountMySQLURL(EnumConnectionMySQL.URL.getParameter()) : InfoConnection.getUrl();
-		Class.forName(EnumConnectionMySQL.DRIVER_V8.getParameter());					
-		connection = DriverManager.getConnection(url, InfoConnection.getUser(), InfoConnection.getPassword());
+	private static String getMySQLURL() throws ClassNotFoundException {
+		Class.forName(EnumConnectionMySQL.DRIVER_V8.getParameter());
+		return isNull(InfoConnection.getUrl()) ? mountMySQLURL(EnumConnectionMySQL.URL.getParameter()) : InfoConnection.getUrl();
 	}
 
-	private static void establishPostgreSQLConnection() throws ClassNotFoundException, SQLException {
-		String url = isNull(InfoConnection.getUrl()) ? mountPostgreSQLURL(EnumConnectionPostgreSQL.URL.getParameter()) : InfoConnection.getUrl();		
-		Class.forName(EnumConnectionPostgreSQL.DRIVER.getParameter());					
-		connection = DriverManager.getConnection(url, InfoConnection.getUser(), InfoConnection.getPassword());
+	private static String getPostgreSQLURL() throws ClassNotFoundException {
+		Class.forName(EnumConnectionPostgreSQL.DRIVER.getParameter());	
+		return isNull(InfoConnection.getUrl()) ? mountPostgreSQLURL(EnumConnectionPostgreSQL.URL.getParameter()) : InfoConnection.getUrl();
 	}
 
-	private static void establishOracleConnection() throws ClassNotFoundException, SQLException {
-		String url = isNull(InfoConnection.getUrl()) ? mountOracleURL(EnumConnectionOracle.URL.getParameter()) : InfoConnection.getUrl();		
+	private static String getOracleURL() throws ClassNotFoundException {
 		Class.forName(EnumConnectionOracle.DRIVER.getParameter());					
-		connection = DriverManager.getConnection(url, InfoConnection.getUser(),	InfoConnection.getPassword());
-	}	
+		return isNull(InfoConnection.getUrl()) ? mountOracleURL(EnumConnectionOracle.URL.getParameter()) : InfoConnection.getUrl();
+	}
+	
+	private static String getSQLiteURL() throws ClassNotFoundException {
+		Class.forName(EnumConnectionSQLite.DRIVER.getParameter());					
+		return isNull(InfoConnection.getUrl()) ? mountSQLiteURL(EnumConnectionSQLite.URL.getParameter()) : InfoConnection.getUrl();
+	}
 
 	public static Connection getConnection() {
 		return connection;
