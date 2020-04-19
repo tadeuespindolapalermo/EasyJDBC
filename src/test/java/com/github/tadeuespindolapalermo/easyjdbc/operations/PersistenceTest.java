@@ -274,13 +274,12 @@ public class PersistenceTest {
         assertNotNull(entity);
     }
 	
-	/*@Test
+	@Test
 	public void operateWithResultSetTest() throws Exception {
 		Persistence<Entity> p = new Persistence<>(Entity.class);		
 		assertTrue(p.operateWithResultSet(
-			 "SELECT COUNT(1) AS qtde FROM entity WHERE cpf = '" + CPF_MOCK + "'")
-	 		.getInt("qtde") <= 0);		 
-	}*/
+			 "SELECT COUNT(1) AS qtde FROM entity WHERE approved = true").getInt("qtde") >= 0);		 
+	}
 	
 	@Test
     public void searchByIdTest() throws Exception {
@@ -308,7 +307,7 @@ public class PersistenceTest {
 		e.setLastname("Espíndola Palermo");
 		e.setName("Tadeu");
 		e.setWeight(82D);
-		e.setCurriculum("UYT&jkh9878iuhBGUYGT&5t");
+		e.setCurriculumEntity("UYT&jkh9878iuhBGUYGT&5t");
 		return e;
 	}
 	
@@ -334,7 +333,7 @@ public class PersistenceTest {
 		e.setLastname("BBBBBBBBBBBBBB");
 		e.setName("Osvaldo");
 		e.setWeight(105D);
-		e.setCurriculum("7634uihfdbjkh345yh");
+		e.setCurriculumEntity("7634uihfdbjkh345yh");
 		return e;
 	}
 	
@@ -345,7 +344,7 @@ public class PersistenceTest {
 		e.setLastname("ANAANAANAANAANAANAANA");
 		e.setName("Osvaldooooooooo");
 		e.setWeight(199D);
-		e.setCurriculum("iuyUKIH9787&iugIGU");
+		e.setCurriculumEntity("iuyUKIH9787&iugIGU");
 		return e;
 	}
 

@@ -2,6 +2,7 @@ package com.github.tadeuespindolapalermo.easyjdbc.entity;
 
 import java.io.Serializable;
 
+import com.github.tadeuespindolapalermo.easyjdbc.annotation.ColumnConfig;
 import com.github.tadeuespindolapalermo.easyjdbc.annotation.Identifier;
 import com.github.tadeuespindolapalermo.easyjdbc.annotation.NotColumn;
 import com.github.tadeuespindolapalermo.easyjdbc.annotation.PersistentClass;
@@ -18,7 +19,9 @@ public class Entity implements Serializable {
 	private Double weight;
 	private Boolean approved;
 	private Integer age;
-	private String curriculum;
+	
+	@ColumnConfig(columnName = "curriculum")
+	private String curriculumEntity;
 
 	@NotColumn
 	private String nonPersistentAttribute;
@@ -121,12 +124,12 @@ public class Entity implements Serializable {
 		this.nonPersistentAttributeOtherMoreOne = nonPersistentAttributeOtherMoreOne;
 	}
 
-	public String getCurriculum() {
-		return curriculum;
+	public String getCurriculumEntity() {
+		return curriculumEntity;
 	}
 
-	public void setCurriculum(String curriculum) {
-		this.curriculum = curriculum;
+	public void setCurriculumEntity(String curriculumEntity) {
+		this.curriculumEntity = curriculumEntity;
 	}
 
 	@Override
@@ -159,7 +162,7 @@ public class Entity implements Serializable {
 	@Override
 	public String toString() {
 		return "Entity [id=" + id + ", name=" + name + ", lastname=" + lastname + ", cpf=" + cpf + ", weight=" + weight
-				+ ", approved=" + approved + ", age=" + age + ", curriculum=" + curriculum + "]";
+				+ ", approved=" + approved + ", age=" + age + ", curriculumEntity=" + curriculumEntity + "]";
 	}
 
 }

@@ -14,6 +14,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.github.tadeuespindolapalermo.easyjdbc.annotation.ColumnConfig;
 import com.github.tadeuespindolapalermo.easyjdbc.annotation.Identifier;
 import com.github.tadeuespindolapalermo.easyjdbc.annotation.NotColumn;
 import com.github.tadeuespindolapalermo.easyjdbc.annotation.PersistentClass;
@@ -102,12 +103,12 @@ public class OperationsUtils<T> {
 		}	
 	}
 	
-	protected void processSelect(String sql, List<T> entities) 
+	protected void processSelect(String query, List<T> entities) 
 			throws SQLException, NoSuchMethodException, 
 			IllegalAccessException, InvocationTargetException, 
 			InstantiationException {	
 		
-		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {
 			try (ResultSet result = stmt.executeQuery()) {
 				Field[] fields = removeSerialVersionUIDAttribute(entity.getDeclaredFields());
 				fields = removeAttributeNotColumn(fields);
@@ -132,8 +133,8 @@ public class OperationsUtils<T> {
 		return null;
 	}
 	
-	protected boolean processDelete(String sql) throws SQLException {
-		try (PreparedStatement statement = connection.prepareStatement(sql)) {
+	protected boolean processDelete(String query) throws SQLException {
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			if(statement.executeUpdate() == 1) {
 				connection.commit();
 				return Boolean.TRUE;						
@@ -148,7 +149,7 @@ public class OperationsUtils<T> {
 		return METHOD_SETTER_PREFIX + firstCharacterUppercase + token[1];
 	}
 
-	protected void processInsertUpdate(T entity, String sql, String operation, boolean idAutoIncrement)
+	protected void processInsertUpdate(T entity, String query, String operation, boolean idAutoIncrement)
 			throws SQLException, IllegalAccessException, 
 			InvocationTargetException, NoSuchMethodException {
 		
@@ -157,7 +158,7 @@ public class OperationsUtils<T> {
 		Field[] fields = removeSerialVersionUIDAttribute(entity.getClass().getDeclaredFields());
 		fields = removeAttributeNotColumn(fields);
 		
-		try (PreparedStatement stmt = connection.prepareStatement(sql)) {			
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {			
 			for (int i = 0; i <= fields.length - 1; i++) {
 				if (operation.equals(UPDATE) && fields[i].getName().equals(getIdValue(entity))) {
 					continue;
@@ -333,7 +334,7 @@ public class OperationsUtils<T> {
 	protected String mountQueryInsert(String table, Field[] fields, boolean idAutoIncrement) {
 		
 		fields = removeSerialVersionUIDAttribute(fields);
-		fields = removeAttributeNotColumn(fields);
+		fields = removeAttributeNotColumn(fields);		
 
 		StringBuilder columnsName = new StringBuilder();
 		StringBuilder values = new StringBuilder();		
@@ -342,12 +343,12 @@ public class OperationsUtils<T> {
 
 		for (int i = 0; qtdColumns - 1 >= i; i++) {
 			if (i != qtdColumns - 1) {
-				if (idAutoIncrement && fields[i].getName().equals(getIdName(entity)))
+				if (idAutoIncrement && getFieldWithModifiedColumnName(fields[i]).equals(getIdName(entity)))
 					continue;
-				columnsName.append(fields[i].getName()).append(", ");
+				columnsName.append(getFieldWithModifiedColumnName(fields[i])).append(", ");
 				values.append("?").append(", ");
 			} else {
-				columnsName.append(fields[i].getName());
+				columnsName.append(getFieldWithModifiedColumnName(fields[i]));
 				values.append("?");
 			}
 		}
@@ -396,6 +397,14 @@ public class OperationsUtils<T> {
 			}		
 		}		
 		return fieldsWithoutNotColumnAnnotation;
+	}
+	
+	private String getFieldWithModifiedColumnName(Field field) {		
+		ColumnConfig annotAttribute = field.getDeclaredAnnotation(ColumnConfig.class);
+		if (annotAttribute != null) {
+			return annotAttribute.columnName();
+		}
+		return field.getName();
 	}
 	
 	private boolean containsAttributeSerialVersionUID(Field[] fields) {
@@ -471,11 +480,11 @@ public class OperationsUtils<T> {
 
 		for (int i = 0; qtdColumns - 1 >= i; i++) {
 			if (i != qtdColumns - 1) {
-				if (idAutoIncrement && fields[i].getName().equals(getIdName(entity)))
+				if (idAutoIncrement && getFieldWithModifiedColumnName(fields[i]).equals(getIdName(entity)))
 					continue;
-				columnsName.append(fields[i].getName()).append(" = ?").append(", ");
+				columnsName.append(getFieldWithModifiedColumnName(fields[i])).append(" = ?").append(", ");
 			} else {
-				columnsName.append(fields[i].getName()).append(" = ?");
+				columnsName.append(getFieldWithModifiedColumnName(fields[i])).append(" = ?");
 			}
 		}
 
@@ -499,11 +508,11 @@ public class OperationsUtils<T> {
 
 		for (int i = 0; qtdColumns - 1 >= i; i++) {
 			if (i != qtdColumns - 1) {
-				if (fields[i].getName().equals(getIdName(entity)))
+				if (getFieldWithModifiedColumnName(fields[i]).equals(getIdName(entity)))
 					continue;
-				columnsName.append(fields[i].getName()).append(" = ?").append(", ");
+				columnsName.append(getFieldWithModifiedColumnName(fields[i])).append(" = ?").append(", ");
 			} else {
-				columnsName.append(fields[i].getName()).append(" = ?");
+				columnsName.append(getFieldWithModifiedColumnName(fields[i])).append(" = ?");
 			}
 		}
 
@@ -566,55 +575,55 @@ public class OperationsUtils<T> {
 		Object type = field.getType().getName();
 
 		if (verifyTypeWrapperPrimitiveLong(type)) {
-			return result.getLong(field.getName());
+			return result.getLong(getFieldWithModifiedColumnName(field));
 		}
 
 		if (verifyTypeWrapperPrimitiveDouble(type)) {
-			return result.getDouble(field.getName());
+			return result.getDouble(getFieldWithModifiedColumnName(field));
 		}
 
 		if (verifyTypeWrapperPrimitiveFloat(type)) {
-			return result.getFloat(field.getName());
+			return result.getFloat(getFieldWithModifiedColumnName(field));
 		}
 
 		if (verifyTypeWrapperPrimitiveInteger(type)) {
-			return result.getInt(field.getName());
+			return result.getInt(getFieldWithModifiedColumnName(field));
 		}
 
 		if (verifyTypeWrapperPrimitiveCharacter(type)) {
-			return result.getCharacterStream(field.getName());
+			return result.getCharacterStream(getFieldWithModifiedColumnName(field));
 		}		
 
 		if (verifyTypeWrapperPrimitiveBoolean(type)) {
-			return result.getBoolean(field.getName());
+			return result.getBoolean(getFieldWithModifiedColumnName(field));
 		}
 
 		if (verifyTypeWrapperPrimitiveByte(type)) {
-			return result.getByte(field.getName());
+			return result.getByte(getFieldWithModifiedColumnName(field));
 		}
 
 		if (verifyTypeWrapperPrimitiveShort(type)) {
-			return result.getShort(field.getName());
+			return result.getShort(getFieldWithModifiedColumnName(field));
 		}		
 		
 		if (verifyTypeClassString(type)) {
-			return result.getString(field.getName());
+			return result.getString(getFieldWithModifiedColumnName(field));
 		}
 		
 		if (verifyTypeClassBigDecimal(type)) {
-			return result.getBigDecimal(field.getName());
+			return result.getBigDecimal(getFieldWithModifiedColumnName(field));
 		}
 		
 		if (verifyTypeClassArray(type)) {
-			return result.getArray(field.getName());
+			return result.getArray(getFieldWithModifiedColumnName(field));
 		}
 		
 		if (verifyTypeClassBlob(type)) {
-			return result.getBlob(field.getName());
+			return result.getBlob(getFieldWithModifiedColumnName(field));
 		}
 		
 		if (verifyTypeClassDate(type)) {
-			return result.getDate(field.getName());
+			return result.getDate(getFieldWithModifiedColumnName(field));
 		}
 		return new Object();
 	}
