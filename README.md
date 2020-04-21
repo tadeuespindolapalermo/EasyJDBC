@@ -67,92 +67,91 @@ Send e-mail to <b>tadeupalermoti@gmail.com</b> and make your request! <br>
 @PersistentClassNamed("tb_product")
 public class Product {
 
-	private Long id;
+    private Long id;
 
-	@ColumnConfig(columnName = "desc_product")
-	private String name;
+    @ColumnConfig(columnName = "desc_product")
+    private String name;
 
-	private double value;
+    private double value;
 
-	@ColumnConfig(columnName = "amt")
-	private int amount;
+    @ColumnConfig(columnName = "amt")
+    private int amount;
 
-	@NotColumn
-	private boolean bestSeller;
+    @NotColumn
+    private boolean bestSeller;
 
-	public Product() { }	
+    public Product() { }	
 
-	public Product(String name, double value, int amount) {		
-		this.name = name;
-		this.value = value;
-		this.amount = amount;
-	}
+    public Product(String name, double value, int amount) {		
+        this.name = name;
+	this.value = value;
+	this.amount = amount;
+    }
 	
-	@Identifier(autoIncrement = true)
-	public Long getId() {
-		return id;
-	}
+    @Identifier(autoIncrement = true)
+    public Long getId() {
+        return id;
+    }
 	
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+	this.id = id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+	return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+	this.name = name;
+    }
 
-	public double getValue() {
-		return value;
-	}
+    public double getValue() {
+	return value;
+    }
 
-	public void setValue(double value) {
-		this.value = value;
-	}
+    public void setValue(double value) {
+	this.value = value;
+    }
 
-	public int getAmount() {
-		return amount;
-	}
+    public int getAmount() {
+	return amount;
+    }
 
-	public void setAmount(int amount) {
-		this.amount = amount;
-	}
+    public void setAmount(int amount) {
+	this.amount = amount;
+    }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
+    @Override
+    public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + ((id == null) ? 0 : id.hashCode());
+	return result;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Product other = (Product) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
+    @Override
+    public boolean equals(Object obj) {
+	if (this == obj)
+   	    return true;
+	if (obj == null)
+	    return false;
+	if (getClass() != obj.getClass())
+	    return false;
+	Product other = (Product) obj;
+	if (id == null) {
+	    if (other.id != null)
+	        return false;
+	} else if (!id.equals(other.id))
+	    return false;
+	return true;
+    }
 
-	@Override
-	public String toString() {
-		return "Product - id: " + id + " | name: " + name + " | value: " + value + " | amount: " + amount;
-	}
+    @Override
+    public String toString() {
+	return "Product - id: " + id + " | name: " + name + " | value: " + value + " | amount: " + amount;
+    }
 }
 </pre>
-
 
 <b>OPERATIONS WITH THE PRODUCT ENTITY</b>
 
