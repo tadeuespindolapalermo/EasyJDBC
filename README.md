@@ -158,43 +158,42 @@ public class Product {
 
 <pre>  
 public class Main {
+        
+    public static void main(String[] args) throws Exception {
+                
+        toConnect();
 
-	public static void main(String[] args) throws Exception {
-
-		toConnect();
-
-		Persistence&lt;Product&gt; persistence = new Persistence<>(Product.class);
+	Persistence&lt;Product&gt; persistence = new Persistence<>(Product.class);
 		
-		persistence.save(createProduct("Product A", 400.0, 30));
-		persistence.save(createProduct("Product B", 800.5, 45));
-		persistence.save(createProduct("Product C", 1900.3, 02));
-		persistence.save(createProduct("Product D", 50.1, 15));
+	persistence.save(createProduct("Product A", 400.0, 30));
+	persistence.save(createProduct("Product B", 800.5, 45));
+	persistence.save(createProduct("Product C", 1900.3, 02));
+	persistence.save(createProduct("Product D", 50.1, 15));
 
-		Product product = persistence.searchById(1L);
+	Product product = persistence.searchById(1L);
 		
-		product.setName("Product A Update");
-		persistence.update(product);
+	product.setName("Product A Update");
+	persistence.update(product);
 
-		List&lt;Product&gt; products = persistence.getAll();
-		products.forEach(System.out::println);
+	List&lt;Product&gt; products = persistence.getAll();
+	products.forEach(System.out::println);
 
-		persistence.delete(2L);
+	persistence.delete(2L);
 
-		persistence.search("select * from tb_product").forEach(System.out::println);		
-	}
+	persistence.search("select * from tb_product").forEach(System.out::println);		
+    }
 
-	private static void toConnect() {
-		InfoConnection.setDatabase(EnumDatabase.POSTGRE);
-		InfoConnection.setNameDatabase("product-registration");
-		InfoConnection.setUser("your-user-db");
-		InfoConnection.setPassword("your-password-db");
-	}
+    private static void toConnect() {
+	InfoConnection.setDatabase(EnumDatabase.POSTGRE);
+	InfoConnection.setNameDatabase("product-registration");
+	InfoConnection.setUser("your-user-db");
+	InfoConnection.setPassword("your-password-db");
+    }
 
-	private static Product createProduct(String name, double value, int amount) {
-		return new Product(name, value, amount);
-	}
+    private static Product createProduct(String name, double value, int amount) {
+	return new Product(name, value, amount);
+    }
 }</pre>
-
 
 <b>Output result</b>:
 
