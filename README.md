@@ -286,7 +286,7 @@ public class Main {
 
 	toConnect();
 
-	Persistence<People> persistence = new Persistence<>(People.class);
+	Persistence&lt;People&gt; persistence = new Persistence<>(People.class);
 
 	persistence.save(createPeople("Tadeu", 35));
 	persistence.save(createPeople("Joseph", 95));
@@ -305,7 +305,7 @@ public class Main {
 	return new People(name, age);
     }
 	
-    private static void printPeople(List<People> peoples) {
+    private static void printPeople(List&lt;People&gt; peoples) {
 	peoples.forEach(p -> System.out.println("Name: " + p.getName() + " - Age: " + p.getAge()));
     }
 }</pre>
