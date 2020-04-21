@@ -186,8 +186,8 @@ public class Main {
 	private static void toConnect() {
 		InfoConnection.setDatabase(EnumDatabase.POSTGRE);
 		InfoConnection.setNameDatabase("product-registration");
-		InfoConnection.setUser("postgres");
-		InfoConnection.setPassword("postgres1985");
+		InfoConnection.setUser("your-user-db");
+		InfoConnection.setPassword("your-password-db");
 	}
 
 	private static Product createProduct(String name, double value, int amount) {
