@@ -277,7 +277,7 @@ public class People {
 }
 </pre>
 
-<b>OPERATIONS WITH THE PRODUCT ENTITY</b>
+<b>OPERATIONS WITH THE PEOPLE ENTITY</b>
 
 <pre>  
 public class Main {
