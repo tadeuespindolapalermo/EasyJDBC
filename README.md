@@ -163,7 +163,7 @@ public class Main {
 
 		toConnect();
 
-		Persistence<Product> persistence = new Persistence<>(Product.class);
+		Persistence&lt;Product&gt; persistence = new Persistence<>(Product.class);
 		
 		persistence.save(createProduct("Product A", 400.0, 30));
 		persistence.save(createProduct("Product B", 800.5, 45));
@@ -175,7 +175,7 @@ public class Main {
 		product.setName("Product A Update");
 		persistence.update(product);
 
-		List<Product> products = persistence.getAll();
+		List&lt;Product&gt; products = persistence.getAll();
 		products.forEach(System.out::println);
 
 		persistence.delete(2L);
