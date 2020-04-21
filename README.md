@@ -38,7 +38,7 @@ Send e-mail to <b>tadeupalermoti@gmail.com</b> and make your request! <br>
 <hr>
 
 <h2>SIMPLE USAGE EXAMPLES</h2>
-<h3>EXAMPLE 1</h3>
+<h2>EXAMPLE 1</h2>
 
 <b>PRODUCT SEQUENCER - PostgreSQL</b>
 
@@ -209,7 +209,7 @@ Product - id: 1 | name: Product A Update | value: 400.0 | amount: 30
 
 <hr>
 
-<h3>EXAMPLE 2</h3>
+<h2>EXAMPLE 2</h2>
 
 <b>PEOPLE SEQUENCER - PostgreSQL</b>
 
