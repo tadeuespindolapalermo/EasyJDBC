@@ -208,3 +208,114 @@ Product - id: 4 | name: Product D | value: 50.1 | amount: 15<br>
 Product - id: 1 | name: Product A Update | value: 400.0 | amount: 30
 
 <hr>
+
+<h3>EXAMPLE 2</h3>
+
+<b>PEOPLE SEQUENCER - PostgreSQL</b>
+
+<pre>CREATE SEQUENCE public.people_sequence
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;</pre>
+
+<b>PEOPLE TABLE - PostgreSQL</b>
+
+<pre>CREATE TABLE public.people (
+    id bigint NOT NULL DEFAULT nextval('people_sequence'::regclass),
+    name character varying COLLATE pg_catalog."default" NOT NULL,
+    age bigint NOT NULL,    
+    CONSTRAINT people_pkey PRIMARY KEY (id)
+)</pre>
+
+<hr>
+
+<b>PEOPLE ENTITY - PERSISTENT CLASS</b>
+
+<pre>
+@PersistentClass
+public class People {
+
+    private Long id;
+
+    private String name;
+
+    private int age;
+
+    public People() { }
+
+    public People(String name, int age) {
+	this.name = name;
+	this.age = age;
+    }
+
+    @Identifier(autoIncrement = true)
+    public Long getId() {
+	return id;
+    }
+
+    public void setId(Long id) {
+	this.id = id;
+    }
+
+    public String getName() {
+	return name;
+    }
+
+    public void setName(String name) {
+	this.name = name;
+    }
+
+    public int getAge() {
+	return age;
+    }
+
+    public void setAge(int age) {
+	this.age = age;
+    }
+}
+</pre>
+
+<b>OPERATIONS WITH THE PRODUCT ENTITY</b>
+
+<pre>  
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+
+	toConnect();
+
+	Persistence<People> persistence = new Persistence<>(People.class);
+
+	persistence.save(createPeople("Tadeu", 35));
+	persistence.save(createPeople("Joseph", 95));
+
+	printPeople(persistence.getAll());
+    }
+
+    private static void toConnect() {
+	InfoConnection.setDatabase(EnumDatabase.POSTGRE);
+	InfoConnection.setNameDatabase("people-registration");
+	InfoConnection.setUser("postgres");
+	InfoConnection.setPassword("postgres1985");
+    }
+
+    private static People createPeople(String name, int age) {
+	return new People(name, age);
+    }
+	
+    private static void printPeople(List<People> peoples) {
+	peoples.forEach(p -> System.out.println("Name: " + p.getName() + " - Age: " + p.getAge()));
+    }
+}</pre>
+
+<b>Output result</b>:
+
+14:38:31,597  INFO -> Connection successful!<br>
+Bank: POSTGRE<br>
+Database: people-registration<br>
+Name: Tadeu - Age: 35<br>
+Name: Joseph - Age: 95<br>
+
+<hr>
