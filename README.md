@@ -297,8 +297,8 @@ public class Main {
     private static void toConnect() {
 	InfoConnection.setDatabase(EnumDatabase.POSTGRE);
 	InfoConnection.setNameDatabase("people-registration");
-	InfoConnection.setUser("postgres");
-	InfoConnection.setPassword("postgres1985");
+	InfoConnection.setUser("your-user-db");
+	InfoConnection.setPassword("your-password-db");
     }
 
     private static People createPeople(String name, int age) {
