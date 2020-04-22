@@ -4,8 +4,6 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
-import com.github.tadeuespindolapalermo.easyjdbc.connection.InfoConnection;
-import com.github.tadeuespindolapalermo.easyjdbc.connection.SingletonConnection;
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumDatabase;
 
 public class SingletonConnectionTest {

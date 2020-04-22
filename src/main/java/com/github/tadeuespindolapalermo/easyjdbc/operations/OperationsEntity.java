@@ -23,7 +23,7 @@ import com.github.tadeuespindolapalermo.easyjdbc.connection.SingletonConnection;
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumExceptionMessages;
 import com.github.tadeuespindolapalermo.easyjdbc.exception.NotPersistentClassException;
 
-public class OperationsUtils<T> {	
+public class OperationsEntity<T> {	
 	
 	protected Connection connection;
 	
@@ -55,7 +55,9 @@ public class OperationsUtils<T> {
 	
 	private static final String SERIAL_VERSION_UID = "serialVersionUID";
 	
-	public OperationsUtils(Class<T> entity) throws NotPersistentClassException {	
+	protected static final String INSERT_INTO = "INSERT INTO ";
+	
+	public OperationsEntity(Class<T> entity) throws NotPersistentClassException {	
 		validatePersistentClass(entity);	
 		this.entity = entity;
 		connection = SingletonConnection.getConnection();
@@ -133,7 +135,7 @@ public class OperationsUtils<T> {
 		return null;
 	}
 	
-	protected boolean processDelete(String query) throws SQLException {
+	protected boolean processDeleteById(String query) throws SQLException {
 		try (PreparedStatement statement = connection.prepareStatement(query)) {
 			if(statement.executeUpdate() == 1) {
 				connection.commit();
@@ -169,9 +171,9 @@ public class OperationsUtils<T> {
 			stmt.executeUpdate();
 		}
 		connection.commit();
-	}	
+	}		
 
-    private Method getMethodGetter(Class<?> entityClass, int i, Field[] fields) throws NoSuchMethodException { // Tadeu
+    private Method getMethodGetter(Class<?> entityClass, int i, Field[] fields) throws NoSuchMethodException {
         Field field = fields[i];
         String firstCharacterUppercase = String.valueOf(Character.toUpperCase(field.getName().charAt(0)));        
         String[] token = field.getName().split(firstCharacterUppercase.toLowerCase(), LIMIT_TOKEN_SPLIT);	        
@@ -353,14 +355,14 @@ public class OperationsUtils<T> {
 			}
 		}
 		
-		StringBuilder sql = new StringBuilder("INSERT INTO ")		
+		StringBuilder sql = new StringBuilder(INSERT_INTO)		
 			.append(table)
 			.append(" (" + columnsName + ") ")
 			.append("VALUES")
 			.append(" (" + values + ") ");
 
 		return sql.toString();
-	}
+	}	
 	
 	private Field[] removeSerialVersionUIDAttribute(Field[] fields) {
 		boolean flagExistAttributeSerialVersionUID = false;
@@ -439,63 +441,7 @@ public class OperationsUtils<T> {
 			}
 		}
 		return amount;
-	}
-	
-	protected String mountQueryInsert(String table, String[] columns, boolean idAutoIncrement) {
-
-		StringBuilder columnsName = new StringBuilder();
-		StringBuilder values = new StringBuilder();
-		
-		int qtdColumns = columns.length;
-
-		for (int i = 0; qtdColumns - 1 >= i; i++) {
-			if (i != qtdColumns - 1) {	
-				if (idAutoIncrement && columns[i].equals(getIdName(entity)))
-					continue;
-				columnsName.append(columns[i]).append(", ");
-				values.append("?").append(", ");
-			} else {
-				columnsName.append(columns[i]);
-				values.append("?");
-			}
-		}
-
-		StringBuilder sql = new StringBuilder("INSERT INTO ")		
-			.append(table)
-			.append(" (" + columnsName.toString() + ") ")
-			.append("VALUES")
-			.append(" (" + values.toString() + ") ");
-
-		return sql.toString();
-	}	
-	
-	protected String mountQueryUpdate(String table, Field[] fields, Long id, boolean idAutoIncrement) {
-		
-		fields = removeSerialVersionUIDAttribute(fields);
-		fields = removeAttributeNotColumn(fields);
-		
-		StringBuilder columnsName = new StringBuilder();		
-		
-		int qtdColumns = fields.length;
-
-		for (int i = 0; qtdColumns - 1 >= i; i++) {
-			if (i != qtdColumns - 1) {
-				if (idAutoIncrement && getFieldWithModifiedColumnName(fields[i]).equals(getIdName(entity)))
-					continue;
-				columnsName.append(getFieldWithModifiedColumnName(fields[i])).append(" = ?").append(", ");
-			} else {
-				columnsName.append(getFieldWithModifiedColumnName(fields[i])).append(" = ?");
-			}
-		}
-
-		StringBuilder sql = new StringBuilder("UPDATE ")		
-			.append(table)
-			.append(" SET ")
-			.append(columnsName.toString())
-			.append(" WHERE id = " + id);		
-
-		return sql.toString().replace("id = ?,", "");		
-	}
+	}		
 	
 	protected String mountQueryUpdate(String table, Field[] fields, Object idValue, String idName) {
 		
