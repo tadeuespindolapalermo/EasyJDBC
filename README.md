@@ -319,3 +319,88 @@ Name: Tadeu - Age: 35<br>
 Name: Joseph - Age: 95<br>
 
 <hr>
+
+<h2>EXAMPLE 3</h2>
+
+<b>PEOPLE SEQUENCER - PostgreSQL</b>
+
+<pre>CREATE SEQUENCE public.user_sequence
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 9223372036854775807
+    CACHE 1;</pre>
+
+<b>USER TABLE - PostgreSQL</b>
+
+<pre>CREATE TABLE public.tb_user (
+    id bigint NOT NULL DEFAULT nextval('user_sequence'::regclass),
+    name character varying COLLATE pg_catalog."default" NOT NULL,
+    email character varying COLLATE pg_catalog."default" NOT NULL,
+    password character varying COLLATE pg_catalog."default" NOT NULL,
+    phone character varying COLLATE pg_catalog."default" NOT NULL,
+    children bigint NOT NULL,    
+    CONSTRAINT user_pkey PRIMARY KEY (id)
+)</pre>
+
+<hr>
+
+<b>OPERATIONS WITH THE USER TABLE</b>
+
+<pre>  
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+
+	toConnect();
+
+	Crud crud = new Crud();		
+		
+	crud.save(createColumnsAndValues(), "tb_user");	
+	crud.save(createColumnsAndValues(), "tb_user");	
+	crud.save(createColumnsAndValues(), "tb_user");	
+	crud.update(updateColumnsAndValues(), clauseColumnAndValue(), "tb_user");
+	crud.delete("tb_user", "id", 3);
+    }
+
+    private static void toConnect() {
+	InfoConnection.setDatabase(EnumDatabase.POSTGRE);
+	InfoConnection.setNameDatabase("user-registration");
+	InfoConnection.setUser("your-user-db");
+	InfoConnection.setPassword("your-password-db");
+    }
+
+    private static Map&lt;String, Object&gt; createColumnsAndValues() {
+	Map&lt;String, Object&gt; columnsAndValues = new HashMap<>();		
+	columnsAndValues.put("name", "User Pool");
+	columnsAndValues.put("email", "user@user.com");
+	columnsAndValues.put("password", "123");
+	columnsAndValues.put("phone", "96521456");
+	columnsAndValues.put("children", 3);				
+	return columnsAndValues;
+    }
+	
+    private static Map&lt;String, Object&gt; clauseColumnAndValue() {
+        Map&lt;String, Object&gt; columnsAndValues = new HashMap<>();		
+	columnsAndValues.put("id", 2);					
+	return columnsAndValues;
+    }
+	
+    private static Map&lt;String, Object&gt; updateColumnsAndValues() {
+	Map&lt;String, Object&gt;> columnsAndValues = new HashMap<>();		
+	columnsAndValues.put("name", "User Pool Update");
+	columnsAndValues.put("email", "userupdate@userupdate.com");
+	columnsAndValues.put("password", "123update");
+	columnsAndValues.put("phone", "96521456000");
+	columnsAndValues.put("children", 6);				
+	return columnsAndValues;
+    }   
+}</pre>
+
+<b>Output result</b>:
+
+20:00:35,570  INFO -> Connection successful!<br>
+Bank: POSTGRE<br>
+Database: user-registration<br>
+
+<hr>
