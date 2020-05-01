@@ -162,24 +162,24 @@ public class Main {
                 
         toConnect();
 
-	Persistence&lt;Product&gt; persistence = new Persistence<>(Product.class);
+	CrudEntity&lt;Product&gt; crudEntity = new CrudEntity<>(Product.class);
 		
-	persistence.save(createProduct("Product A", 400.0, 30));
-	persistence.save(createProduct("Product B", 800.5, 45));
-	persistence.save(createProduct("Product C", 1900.3, 02));
-	persistence.save(createProduct("Product D", 50.1, 15));
+	crudEntity.save(createProduct("Product A", 400.0, 30));
+	crudEntity.save(createProduct("Product B", 800.5, 45));
+	crudEntity.save(createProduct("Product C", 1900.3, 02));
+	crudEntity.save(createProduct("Product D", 50.1, 15));
 
-	Product product = persistence.searchById(1L);
+	Product product = crudEntity.searchById(1L);
 		
 	product.setName("Product A Update");
-	persistence.update(product);
+	crudEntity.update(product);
 
-	List&lt;Product&gt; products = persistence.getAll();
+	List&lt;Product&gt; products = crudEntity.getAll();
 	products.forEach(System.out::println);
 
-	persistence.delete(2L);
+	crudEntity.delete(2L);
 
-	persistence.search("select * from tb_product").forEach(System.out::println);		
+	crudEntity.search("select * from tb_product").forEach(System.out::println);		
     }
 
     private static void toConnect() {
@@ -286,12 +286,12 @@ public class Main {
 
 	toConnect();
 
-	Persistence&lt;People&gt; persistence = new Persistence<>(People.class);
+	CrudEntity&lt;People&gt; crudEntity = new CrudEntity<>(People.class);
 
-	persistence.save(createPeople("Tadeu", 35));
-	persistence.save(createPeople("Joseph", 95));
+	crudEntity.save(createPeople("Tadeu", 35));
+	crudEntity.save(createPeople("Joseph", 95));
 
-	printPeople(persistence.getAll());
+	printPeople(crudEntity.getAll());
     }
 
     private static void toConnect() {
