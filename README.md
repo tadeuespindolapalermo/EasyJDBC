@@ -418,7 +418,7 @@ public class Main {
     }
 	
     private static Map&lt;String, Object&gt; updateColumnsAndValues() {
-	Map&lt;String, Object&gt;> columnsAndValues = new HashMap<>();		
+	Map&lt;String, Object&gt; columnsAndValues = new HashMap<>();		
 	columnsAndValues.put("name", "User Pool Update");
 	columnsAndValues.put("email", "userupdate@userupdate.com");
 	columnsAndValues.put("password", "123update");
