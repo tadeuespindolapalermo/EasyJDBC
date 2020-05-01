@@ -190,7 +190,7 @@ public class Main {
 	List&lt;Product&gt; products = crudEntity.getAll();
 	products.forEach(System.out::println);
 
-	crudEntity.delete(2L);
+	crudEntity.deleteById(2L);
 
 	crudEntity.search("select * from tb_product").forEach(System.out::println);		
     }
