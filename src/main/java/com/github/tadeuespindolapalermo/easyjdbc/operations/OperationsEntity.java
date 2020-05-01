@@ -169,8 +169,8 @@ public class OperationsEntity<T> {
 					setStatementProcess(entity, stmt, i, getMethodGetter(entityClass, i, fields).invoke(entity), operation, idAutoIncrement, fields);
 			}			
 			stmt.executeUpdate();
-		}
-		connection.commit();
+			connection.commit();
+		}		
 	}		
 
     private Method getMethodGetter(Class<?> entityClass, int i, Field[] fields) throws NoSuchMethodException {

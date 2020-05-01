@@ -6,14 +6,13 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Random;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.github.tadeuespindolapalermo.easyjdbc.connection.InfoConnection;
 import com.github.tadeuespindolapalermo.easyjdbc.connection.SingletonConnection;
 import com.github.tadeuespindolapalermo.easyjdbc.entity.Entity;
 import com.github.tadeuespindolapalermo.easyjdbc.entity.EntityNamed;
-import com.github.tadeuespindolapalermo.easyjdbc.entity.EntityQuestions;
+//import com.github.tadeuespindolapalermo.easyjdbc.entity.EntityQuestions;
 import com.github.tadeuespindolapalermo.easyjdbc.entity.EntityUniqueAttribute;
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumDatabase;
 import com.github.tadeuespindolapalermo.easyjdbc.util.Utils;
@@ -205,14 +204,13 @@ public class CrudEntityTest {
         CrudEntity<Entity> p = new CrudEntity<>(Entity.class);
         Utils.print(p.getAll());
         assertNotNull(p.getAll());
-    }
+    }	
 	
-	@Ignore
-    public void getAllEntityQuestionsTest() throws Exception {
+    /*public void getAllEntityQuestionsTest() throws Exception {
 		CrudEntity<EntityQuestions> p = new CrudEntity<>(EntityQuestions.class);
         Utils.print(p.getAll());
         assertNotNull(p.getAll());
-    }
+    }*/
 	
 	@Test
     public void searchTest() throws Exception {

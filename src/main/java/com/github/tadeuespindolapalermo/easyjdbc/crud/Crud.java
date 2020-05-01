@@ -16,13 +16,22 @@ public class Crud extends Operations implements CrudRepository {
 			IllegalAccessException, InvocationTargetException, NotPersistentClassException {		
 		
 	    String query = mountQueryInsert(columnsAndValues, tableName);		
-		return processInsertUpdate(columnsAndValues, query, INSERT);
+		return processInsertUpdate(columnsAndValues, query);
 	}	
+	
+	@Override
+	public boolean update(Map<String, ?> columnsAndValues, Map<String, ?> clauseColumnAndValue, String tableName)
+			throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException,
+			NotPersistentClassException {
+		
+		String query = mountQueryUpdate(columnsAndValues, clauseColumnAndValue, tableName);		
+		return processInsertUpdate(columnsAndValues, query);		
+	}
 	
 	@Override
 	public boolean delete(String table, String column, Object value) throws SQLException {		
 		String query = mountQueryDelete(table, column, value);		
 		return processDelete(query);
-	}
+	}	
 	
 }

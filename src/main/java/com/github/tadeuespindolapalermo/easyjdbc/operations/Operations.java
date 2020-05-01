@@ -17,13 +17,9 @@ public class Operations {
 	
 	protected Connection connection;	
 	
-	private boolean flag;
-	
 	protected static final String UPDATE = "update";
 	
 	protected static final String INSERT = "insert";
-	
-	private static final int INDEX_DIFERENCE_UPDATE = 1;
 	
 	protected static final int SINGLE_ELEMENT_COLLECTION = 0;	
 	
@@ -52,54 +48,22 @@ public class Operations {
 		return Boolean.FALSE;
 	}	
 	
-	protected boolean processInsertUpdate(Map<String, ?> columnsAndValues, String query, String operation) throws SQLException {	
+	protected boolean processInsertUpdate(Map<String, ?> columnsAndValues, String query) throws SQLException {	
 		
-		boolean idAutoIncrement = false;
 		boolean success = false;
 		
 		try (PreparedStatement stmt = connection.prepareStatement(query)) {			
 			for (int i = 0; i <= columnsAndValues.values().size() - 1; i++) {
-				if (operation.equals(UPDATE)) {
-					continue;
-				}				
-				setStatementProcess(stmt, i, columnsAndValues.values().toArray()[i], operation, idAutoIncrement, columnsAndValues);
+				setStatementProcess(stmt, i, columnsAndValues.values().toArray()[i], columnsAndValues);
 			}			
 			success = stmt.executeUpdate() > 0;
 			connection.commit();
 		}
 		return success;
-	}      
-    
-    private int computeIndexUpdate(int i, boolean idAutoIncrement) {
-    	return i == 0 && !idAutoIncrement ? ++ i : ++ i - INDEX_DIFERENCE_UPDATE;
-    } 
-    
-    private int computeIndexInsert(int i, boolean idAutoIncrement) {
-    	return i != 0 && idAutoIncrement ? i : ++ i;
-    } 
-
-	private void setStatementProcess(PreparedStatement stmt, int i, Object value, String operation, boolean idAutoIncrement, Map<String, ?> columnsAndValues) throws SQLException {
-		
-		if (operation.equals(UPDATE) && !idAutoIncrement) {
-			flag = true;
-			return;
-		}
-		
-		if (flag)
-			i --;
-			
-		int index = computeIndexInsert(i, idAutoIncrement);
-		
-	    if (operation.equals(UPDATE)) {
-	    	index = computeIndexUpdate(i, idAutoIncrement);
-	    	if (!idAutoIncrement && i != 0)
-	    		index ++;
-	    } 
-	    
-	    if (flag)
-	    	i ++;
-	    
-		setStatement(stmt, i, value, index, columnsAndValues);
+	}   
+	
+	private void setStatementProcess(PreparedStatement stmt, int i, Object value, Map<String, ?> columnsAndValues) throws SQLException {	    
+		setStatement(stmt, i, value, ++ i, columnsAndValues);
 	}
 
 	private void setStatement(PreparedStatement stmt, int i, Object value, int index, Map<String, ?> columnsAndValues) throws SQLException {
@@ -245,7 +209,32 @@ public class Operations {
 				.append(" (" + values + ") ");
 
 		return sql.toString();		
-	}		
+	}	
+	
+	protected String mountQueryUpdate(Map<String, ?> columnsAndValues, Map<String, ?> clauseColumnAndValue, String tableName) {
+		
+		StringBuilder columnsName = new StringBuilder();
+		
+		int qtdColumns = columnsAndValues.values().size();
+
+		for (int i = 0; qtdColumns - 1 >= i; i++) {
+			if (i != qtdColumns - 1) {				
+				columnsName.append(columnsAndValues.keySet().toArray()[i]).append(" = ?").append(", ");
+			} else {
+				columnsName.append(columnsAndValues.keySet().toArray()[i]).append(" = ?");
+			}
+		}					
+		
+		StringBuilder sql = new StringBuilder("UPDATE ")		
+			.append(tableName)
+			.append(" SET ")
+			.append(columnsName)
+			.append(WHERE_CLAUSE + 
+				clauseColumnAndValue.keySet().toArray()[0].toString().replace("[", "").replace("]", "") + " = '" + 
+				clauseColumnAndValue.values().toArray()[0].toString().replace("[", "").replace("]", "") + "'");		
+
+		return sql.toString();
+	}	
 	
 	protected String mountQueryDelete(String table, String column, Object value) {
 		
@@ -258,5 +247,13 @@ public class Operations {
 		
 		return sql.toString();
 	}	
+	
+	protected String mountQueryGetAll(String table) {
+		
+		StringBuilder sql = new StringBuilder("SELECT * FROM ")		
+			.append(table);			
+		
+		return sql.toString();
+	}
 
 }
