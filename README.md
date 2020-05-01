@@ -64,6 +64,11 @@ Send e-mail to <b>tadeupalermoti@gmail.com</b> and make your request! <br>
 <b>PRODUCT ENTITY - PERSISTENT CLASS</b>
 
 <pre>
+import com.github.tadeuespindolapalermo.easyjdbc.annotation.ColumnConfig;
+import com.github.tadeuespindolapalermo.easyjdbc.annotation.Identifier;
+import com.github.tadeuespindolapalermo.easyjdbc.annotation.NotColumn;
+import com.github.tadeuespindolapalermo.easyjdbc.annotation.PersistentClassNamed;
+
 @PersistentClassNamed("tb_product")
 public class Product {
 
@@ -156,6 +161,14 @@ public class Product {
 <b>OPERATIONS WITH THE PRODUCT ENTITY</b>
 
 <pre>  
+import java.util.List;
+
+import com.github.tadeuespindolapalermo.easyjdbc.connection.InfoConnection;
+import com.github.tadeuespindolapalermo.easyjdbc.crud.CrudEntity;
+import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumDatabase;
+
+import br.com.productregistration.model.Product;
+
 public class Main {
         
     public static void main(String[] args) throws Exception {
@@ -234,6 +247,9 @@ Product - id: 1 | name: Product A Update | value: 400.0 | amount: 30
 <b>PEOPLE ENTITY - PERSISTENT CLASS</b>
 
 <pre>
+import com.github.tadeuespindolapalermo.easyjdbc.annotation.Identifier;
+import com.github.tadeuespindolapalermo.easyjdbc.annotation.PersistentClass;
+
 @PersistentClass
 public class People {
 
@@ -280,6 +296,14 @@ public class People {
 <b>OPERATIONS WITH THE PEOPLE ENTITY</b>
 
 <pre>  
+import java.util.List;
+
+import com.github.tadeuespindolapalermo.easyjdbc.connection.InfoConnection;
+import com.github.tadeuespindolapalermo.easyjdbc.crud.CrudEntity;
+import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumDatabase;
+
+import br.com.peopleregistration.model.People;
+
 public class Main {
 
     public static void main(String[] args) throws Exception {
@@ -348,6 +372,13 @@ Name: Joseph - Age: 95<br>
 <b>OPERATIONS WITH THE USER TABLE</b>
 
 <pre>  
+import java.util.HashMap;
+import java.util.Map;
+
+import com.github.tadeuespindolapalermo.easyjdbc.connection.InfoConnection;
+import com.github.tadeuespindolapalermo.easyjdbc.crud.Crud;
+import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumDatabase;
+
 public class Main {
 
     public static void main(String[] args) throws Exception {
