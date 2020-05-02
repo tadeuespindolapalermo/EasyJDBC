@@ -31,6 +31,9 @@ Sonatype: <br>
 Video presentation of the library at the event FLISOL DF 2020 (02/05/2020): <br>
 <b> https://www.youtube.com/watch?v=Vg-VT86z65Q </b><br>
 
+Source code used to present the library at the FLISOL event: <br>
+<b> https://github.com/tadeuespindolapalermo/flisol-easyjdbc </b><br>
+
 <hr>
 
 Be part of this project reporting bug's or becoming a committer! <br>
