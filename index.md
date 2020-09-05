@@ -2,7 +2,7 @@
 
 Easy JDBC is a library built to facilitate the use of JDBC for data persistence in Java projects.
 
-Latest version of the library: <b><a target="_blank" href="https://mvnrepository.com/artifact/com.github.tadeuespindolapalermo.easyjdbc/easy-jdbc/1.8-beta" >1.8-beta</a></b>
+Latest version of the library: <b><a href="https://mvnrepository.com/artifact/com.github.tadeuespindolapalermo.easyjdbc/easy-jdbc/1.8-beta" >1.8-beta</a></b>
 
 <hr>
 
@@ -22,17 +22,13 @@ How to incorporate into your project?
 
 Main links:<br>
 
-MVN Repository: <br>
-<b> https://mvnrepository.com/artifact/com.github.tadeuespindolapalermo.easyjdbc/easy-jdbc </b><br>
+<b><a href="https://mvnrepository.com/artifact/com.github.tadeuespindolapalermo.easyjdbc/easy-jdbc">MVN Repository</a></b><br>
 
-Sonatype: <br>
-<b> https://search.maven.org/artifact/com.github.tadeuespindolapalermo.easyjdbc/easy-jdbc </b><br>
+<b><a href="https://search.maven.org/artifact/com.github.tadeuespindolapalermo.easyjdbc/easy-jdbc">Sonatype</a></b><br>
 
-Video presentation of the library at the event FLISOL DF 2020 (02/05/2020): <br>
-<b> https://www.youtube.com/watch?v=Vg-VT86z65Q </b><br>
+<b><a href="https://www.youtube.com/watch?v=Vg-VT86z65Q">Video presentation of the library at the event FLISOL DF 2020 (02/05/2020)</a></b><br>
 
-Source code used to present the library at the FLISOL event: <br>
-<b> https://github.com/tadeuespindolapalermo/flisol-easyjdbc </b><br>
+<b><a href="https://github.com/tadeuespindolapalermo/flisol-easyjdbc">Source code used to present the library at the FLISOL event</a></b><br>
 
 <hr>
 
