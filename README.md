@@ -4,6 +4,8 @@ Easy JDBC is a library built to facilitate the use of JDBC for data persistence 
 
 Latest version of the library: <b><a href="https://mvnrepository.com/artifact/com.github.tadeuespindolapalermo.easyjdbc/easy-jdbc/1.8-beta" >1.8-beta</a></b>
 
+GitHub Pages:<b> https://tadeuespindolapalermo.github.io/EasyJDBC/ </b>
+
 <hr>
 
 How to incorporate into your project?
@@ -21,9 +23,6 @@ How to incorporate into your project?
 <pre>implementation 'com.github.tadeuespindolapalermo.easyjdbc:easy-jdbc:1.8-beta'</pre>
 
 Main links:<br>
-
-GitHub Pages:<br>
-<b> https://tadeuespindolapalermo.github.io/EasyJDBC/ </b><br>
 
 MVN Repository: <br>
 <b> https://mvnrepository.com/artifact/com.github.tadeuespindolapalermo.easyjdbc/easy-jdbc </b><br>
