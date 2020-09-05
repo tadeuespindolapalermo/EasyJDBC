@@ -22,6 +22,9 @@ How to incorporate into your project?
 
 Main links:<br>
 
+GitHub Pages:<br>
+<b> https://tadeuespindolapalermo.github.io/EasyJDBC/ </b><br>
+
 MVN Repository: <br>
 <b> https://mvnrepository.com/artifact/com.github.tadeuespindolapalermo.easyjdbc/easy-jdbc </b><br>
 
