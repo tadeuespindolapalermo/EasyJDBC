@@ -22,13 +22,13 @@ How to incorporate into your project?
 
 Main links:<br>
 
-<b><a href="https://mvnrepository.com/artifact/com.github.tadeuespindolapalermo.easyjdbc/easy-jdbc">MVN Repository</a></b><br>
-
-<b><a href="https://search.maven.org/artifact/com.github.tadeuespindolapalermo.easyjdbc/easy-jdbc">Sonatype</a></b><br>
-
 <b><a href="https://www.youtube.com/watch?v=Vg-VT86z65Q">Video presentation of the library at the event FLISOL DF 2020 (02/05/2020)</a></b><br>
 
 <b><a href="https://github.com/tadeuespindolapalermo/flisol-easyjdbc">Source code used to present the library at the FLISOL event</a></b><br>
+
+<b><a href="https://mvnrepository.com/artifact/com.github.tadeuespindolapalermo.easyjdbc/easy-jdbc">MVN Repository</a></b><br>
+
+<b><a href="https://search.maven.org/artifact/com.github.tadeuespindolapalermo.easyjdbc/easy-jdbc">Sonatype</a></b><br>
 
 <hr>
 
