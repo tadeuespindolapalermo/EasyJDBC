@@ -27,7 +27,7 @@ public class CrudTest {
 	private static void connectionPostgreSQLMain() {
 		InfoConnection.setDatabase(EnumDatabase.POSTGRE);
 		InfoConnection.setNameDatabase("easyjdbc");
-		InfoConnection.setPassword("postgres1985");
+		InfoConnection.setPassword("tadeu123");
 		InfoConnection.setUser("postgres");
 		SingletonConnection.getConnection();
 	}
