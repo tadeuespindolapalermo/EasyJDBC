@@ -34,7 +34,7 @@ public class CrudEntityTest {
 	private static void connectionPostgreSQLMain() {
 		InfoConnection.setDatabase(EnumDatabase.POSTGRE);
 		InfoConnection.setNameDatabase("easyjdbc");
-		InfoConnection.setPassword("postgres1985");
+		InfoConnection.setPassword("tadeu123");
 		InfoConnection.setUser("postgres");		
 		SingletonConnection.getConnection();
 	}	
@@ -51,7 +51,7 @@ public class CrudEntityTest {
 	
 	private static void connectionPostgreSQL() {
 		InfoConnection.setDatabase(EnumDatabase.POSTGRE);		
-		InfoConnection.setPassword("postgres1985");
+		InfoConnection.setPassword("tadeu123");
 		InfoConnection.setUser("postgres");			
 		InfoConnection.setUrl("jdbc:postgresql://127.0.0.1:5432/easyjdbc");
 		assertNotNull(SingletonConnection.getConnection());
