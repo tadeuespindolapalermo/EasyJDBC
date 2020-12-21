@@ -12,7 +12,7 @@ public class SingletonConnectionTest {
 	public void connection() {
 		InfoConnection.setDatabase(EnumDatabase.POSTGRE);
 		InfoConnection.setNameDatabase("easyjdbc");
-		InfoConnection.setPassword("postgres1985");
+		InfoConnection.setPassword("tadeu123");
 		InfoConnection.setUser("postgres");
 		InfoConnection.setHost("127.0.0.1");
 		InfoConnection.setPort("5432");
