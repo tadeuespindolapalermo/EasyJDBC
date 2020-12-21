@@ -53,7 +53,7 @@
 		<mysql.version>8.0.19</mysql.version>
 		<sqlite.version>3.30.1</sqlite.version>
 		<log4j.version>1.2.17</log4j.version>
-		<oracle.version>12.1.0</oracle.version>
+		<oracle.version>19.3.0.0</oracle.version>
 		<sonar.host.url>http://localhost:9000</sonar.host.url>
 		<sonar.projectKey>com.github.tadeuespindolapalermo.easyjdbc:easy-jdbc</sonar.projectKey>
 		<sonar.projectName>Easy JDBC</sonar.projectName>
@@ -89,11 +89,11 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc7</artifactId>
-			<version>${oracle.version}</version>
-		</dependency>
-
+            <groupId>com.oracle.ojdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <version>${oracle.version}</version>
+        </dependency>
+        
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
