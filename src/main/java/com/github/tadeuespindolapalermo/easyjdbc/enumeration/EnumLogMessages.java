@@ -7,7 +7,7 @@ public enum EnumLogMessages {
 
 	private final String message;
 
-	private EnumLogMessages(String message) {
+	EnumLogMessages(String message) {
 		this.message = message;
 	}
 
