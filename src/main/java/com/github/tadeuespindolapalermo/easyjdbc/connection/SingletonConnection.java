@@ -1,5 +1,6 @@
 package com.github.tadeuespindolapalermo.easyjdbc.connection;
 
+import static com.github.tadeuespindolapalermo.easyjdbc.connection.InfoConnection.getDatabase;
 import static com.github.tadeuespindolapalermo.easyjdbc.util.ValidatorUtil.isNotNull;
 import static com.github.tadeuespindolapalermo.easyjdbc.util.ValidatorUtil.isNull;
 
@@ -33,19 +34,19 @@ public class SingletonConnection extends MountConnection {
 				String url = STRING_EMPTY;
 				boolean connectionOK = false;
 				
-				if (InfoConnection.getDatabase().equals(EnumDatabase.ORACLE)) {	
+				if (getDatabase().equals(EnumDatabase.ORACLE)) {
 					url = getOracleURL();		
 				}
 				
-				if (InfoConnection.getDatabase().equals(EnumDatabase.POSTGRE)) {
+				if (getDatabase().equals(EnumDatabase.POSTGRE)) {
 					url = getPostgreSQLURL();		
 				}	
 				
-				if (InfoConnection.getDatabase().equals(EnumDatabase.MYSQL)) {	
+				if (getDatabase().equals(EnumDatabase.MYSQL)) {
 					url = getMySQLURL();
 				}
 				
-				if (InfoConnection.getDatabase().equals(EnumDatabase.SQLITE)) {	
+				if (getDatabase().equals(EnumDatabase.SQLITE)) {
 					connection = DriverManager.getConnection(getSQLiteURL());
 					connectionOK = true;
 				}	
@@ -54,7 +55,7 @@ public class SingletonConnection extends MountConnection {
 					connection = DriverManager.getConnection(url, InfoConnection.getUser(), InfoConnection.getPassword());
 				
 				LogUtil.getLogger(SingletonConnection.class).info(EnumLogMessages.CONN_SUCCESS.getMessage()
-						+ "\nBank: " + InfoConnection.getDatabase().name()
+						+ "\nBank: " + getDatabase().name()
 						+ "\nDatabase: " + (isNotNull(InfoConnection.getNameDatabase()) 
 								? InfoConnection.getNameDatabase() : "informed directly in the connection URL"));				
 			}

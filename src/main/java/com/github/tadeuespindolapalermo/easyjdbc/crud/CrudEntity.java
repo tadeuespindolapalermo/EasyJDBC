@@ -1,14 +1,14 @@
 package com.github.tadeuespindolapalermo.easyjdbc.crud;
 
+import com.github.tadeuespindolapalermo.easyjdbc.exception.NotPersistentClassException;
+import com.github.tadeuespindolapalermo.easyjdbc.operations.OperationsEntity;
+import com.github.tadeuespindolapalermo.easyjdbc.repository.CrudEntityRepository;
+
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.github.tadeuespindolapalermo.easyjdbc.exception.NotPersistentClassException;
-import com.github.tadeuespindolapalermo.easyjdbc.operations.OperationsEntity;
-import com.github.tadeuespindolapalermo.easyjdbc.repository.CrudEntityRepository;
 
 public class CrudEntity<T> extends OperationsEntity<T> implements CrudEntityRepository<T> {	
 	
@@ -19,7 +19,7 @@ public class CrudEntity<T> extends OperationsEntity<T> implements CrudEntityRepo
 	@Override
 	public <E extends T> E save(E entity) 
 			throws SQLException, NoSuchMethodException, 
-			IllegalAccessException, InvocationTargetException, NotPersistentClassException {				
+			IllegalAccessException, InvocationTargetException {
 				
 		String query = mountQueryInsert(
 				defineTableName(entity.getClass()),

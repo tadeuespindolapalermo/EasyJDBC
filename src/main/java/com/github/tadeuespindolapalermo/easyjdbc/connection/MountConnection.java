@@ -10,19 +10,19 @@ import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumDatabase;
 
 public class MountConnection {	
 	
-	private static final String ORACLE_HOST_DEFAULT = EnumConnectionOracle.HOST_DAFAULT.getParameter();
-	private static final String ORACLE_PORT_DEFAULT = EnumConnectionOracle.PORT_DAFAULT.getParameter();
+	private static final String ORACLE_HOST_DEFAULT = EnumConnectionOracle.HOST_DEFAULT.getParameter();
+	private static final String ORACLE_PORT_DEFAULT = EnumConnectionOracle.PORT_DEFAULT.getParameter();
 	
-	private static final String POSTGRESQL_HOST_DEFAULT = EnumConnectionPostgreSQL.HOST_DAFAULT.getParameter();
-	private static final String POSTGRESQL_PORT_DEFAULT = EnumConnectionPostgreSQL.PORT_DAFAULT.getParameter();
+	private static final String POSTGRESQL_HOST_DEFAULT = EnumConnectionPostgreSQL.HOST_DEFAULT.getParameter();
+	private static final String POSTGRESQL_PORT_DEFAULT = EnumConnectionPostgreSQL.PORT_DEFAULT.getParameter();
 	
-	private static final String MYSQL_HOST_DEFAULT = EnumConnectionMySQL.HOST_DAFAULT.getParameter();
-	private static final String MYSQL_PORT_DEFAULT = EnumConnectionMySQL.PORT_DAFAULT.getParameter();	
+	private static final String MYSQL_HOST_DEFAULT = EnumConnectionMySQL.HOST_DEFAULT.getParameter();
+	private static final String MYSQL_PORT_DEFAULT = EnumConnectionMySQL.PORT_DEFAULT.getParameter();
 	private static final String MYSQL_EXTRA_PARAMETER_USE_TIMEZONE_PT_BR = EnumConnectionMySQL.EXTRA_PARAMETER_USE_TIMEZONE_PT_BR.getParameter();
 	private static final String MYSQL_EXTRA_PARAMETER_SERVER_TIMEZONE_PT_BR = EnumConnectionMySQL.EXTRA_PARAMETER_SERVER_TIMEZONE_PT_BR.getParameter();
 	
-	private static final String SQLITE_FILE_PATH_DATABASE_DAFAULT = EnumConnectionSQLite.FILE_PATH_DATABASE_DAFAULT.getParameter();
-	private static final String SQLITE_FILE_DATABASE_DAFAULT = EnumConnectionSQLite.FILE_DATABASE_DAFAULT.getParameter();
+	private static final String SQLITE_FILE_PATH_DATABASE_DEFAULT = EnumConnectionSQLite.FILE_PATH_DATABASE_DEFAULT.getParameter();
+	private static final String SQLITE_FILE_DATABASE_DEFAULT = EnumConnectionSQLite.FILE_DATABASE_DEFAULT.getParameter();
 	
 	protected MountConnection () {}
 	
@@ -79,7 +79,7 @@ public class MountConnection {
 	}	
 	
 	protected static String mountSQLiteURL(String initialURL) {			
-		return mountURL(initialURL, SQLITE_FILE_PATH_DATABASE_DAFAULT, SQLITE_FILE_DATABASE_DAFAULT);
+		return mountURL(initialURL, SQLITE_FILE_PATH_DATABASE_DEFAULT, SQLITE_FILE_DATABASE_DEFAULT);
 	}	
 
 }

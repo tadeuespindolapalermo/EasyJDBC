@@ -27,8 +27,12 @@ public class Operations {
 	
 	public Operations() {		
 		connection = SingletonConnection.getConnection();
-	}		
-	
+	}
+
+	/**
+	 * ATTENTION: this method must not close appeal!
+	 * Do not use the close method or try-with-resources
+	 */
 	protected ResultSet processOperateWithResultSet(String query) throws SQLException  {		
 	    PreparedStatement statement = connection.prepareStatement(query);
 		ResultSet result = statement.executeQuery() ;
@@ -50,7 +54,7 @@ public class Operations {
 	
 	protected boolean processInsertUpdate(Map<String, ?> columnsAndValues, String query) throws SQLException {	
 		
-		boolean success = false;
+		boolean success;
 		
 		try (PreparedStatement stmt = connection.prepareStatement(query)) {			
 			for (int i = 0; i <= columnsAndValues.values().size() - 1; i++) {
