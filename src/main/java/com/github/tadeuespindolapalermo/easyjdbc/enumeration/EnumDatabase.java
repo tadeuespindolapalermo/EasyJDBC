@@ -5,6 +5,7 @@ public enum EnumDatabase {
 	POSTGRE,
 	MYSQL,
 	ORACLE,	
-	SQLITE
+	SQLITE,
+	H2
 	
 }

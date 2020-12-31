@@ -12,6 +12,8 @@ public interface CrudRepository {
 	
 	boolean update(Map<String, ?> columnsAndValues, Map<String, ?> clauseColumnAndValue, String tableName) throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, NotPersistentClassException;
 	
-	boolean delete(String table, String column, Object value) throws SQLException;	
+	boolean delete(String table, String column, Object value) throws SQLException;
+
+	boolean dml(String query) throws SQLException;	
 	
 }

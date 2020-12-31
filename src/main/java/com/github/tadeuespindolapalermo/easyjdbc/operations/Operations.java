@@ -86,6 +86,16 @@ public class Operations {
 		}
 		return success;
 	}
+	
+	protected boolean processDML(String query) throws SQLException {
+		boolean success = false;
+
+		PreparedStatement stmt = connection.prepareStatement(query);
+		success = stmt.execute();
+		connection.commit();
+
+		return success;
+	}
 
 	private void setStatementProcess(PreparedStatement stmt, int i, Object value, Map<String, ?> columnsAndValues)
 			throws SQLException {

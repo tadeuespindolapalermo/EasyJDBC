@@ -17,7 +17,12 @@ public class Crud extends Operations implements CrudRepository {
 		
 	    String query = mountQueryInsert(columnsAndValues, tableName);		
 		return processInsertUpdate(columnsAndValues, query);
-	}	
+	}
+	
+	@Override
+	public boolean dml(String query) throws SQLException {		
+		return processDML(query);
+	}
 	
 	@Override
 	public boolean update(Map<String, ?> columnsAndValues, Map<String, ?> clauseColumnAndValue, String tableName)

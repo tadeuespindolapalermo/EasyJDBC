@@ -21,7 +21,7 @@ public class MountConnection {
 	private static final String MYSQL_EXTRA_PARAMETER_USE_TIMEZONE_PT_BR = EnumConnectionMySQL.EXTRA_PARAMETER_USE_TIMEZONE_PT_BR.getParameter();
 	private static final String MYSQL_EXTRA_PARAMETER_SERVER_TIMEZONE_PT_BR = EnumConnectionMySQL.EXTRA_PARAMETER_SERVER_TIMEZONE_PT_BR.getParameter();
 	
-	private static final String SQLITE_FILE_PATH_DATABASE_DAFAULT = EnumConnectionSQLite.FILE_PATH_DATABASE_DAFAULT.getParameter();
+	private static final String SQLITE_FILE_PATH_DATABASE_DAFAULT = EnumConnectionSQLite.FILE_PATH_DATABASE_DEFAULT.getParameter();
 	private static final String SQLITE_FILE_DATABASE_DAFAULT = EnumConnectionSQLite.FILE_DATABASE_DAFAULT.getParameter();
 	
 	protected MountConnection () {}
@@ -80,6 +80,6 @@ public class MountConnection {
 	
 	protected static String mountSQLiteURL(String initialURL) {			
 		return mountURL(initialURL, SQLITE_FILE_PATH_DATABASE_DAFAULT, SQLITE_FILE_DATABASE_DAFAULT);
-	}	
-
+	}
+	
 }
