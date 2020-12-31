@@ -6,7 +6,7 @@ public enum EnumExceptionMessages {
 
 	private final String message;
 
-	private EnumExceptionMessages(String message) {
+	EnumExceptionMessages(String message) {
 		this.message = message;
 	}
 

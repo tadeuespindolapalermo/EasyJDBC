@@ -1,20 +1,15 @@
 package com.github.tadeuespindolapalermo.easyjdbc.crud;
 
-import java.lang.reflect.InvocationTargetException;
-import java.sql.SQLException;
-import java.util.Map;
-
-import com.github.tadeuespindolapalermo.easyjdbc.exception.NotPersistentClassException;
 import com.github.tadeuespindolapalermo.easyjdbc.operations.Operations;
 import com.github.tadeuespindolapalermo.easyjdbc.repository.CrudRepository;
+
+import java.sql.SQLException;
+import java.util.Map;
 
 public class Crud extends Operations implements CrudRepository {		
 	
 	@Override
-	public boolean save(Map<String, ?> columnsAndValues, String tableName) 
-			throws SQLException, NoSuchMethodException, 
-			IllegalAccessException, InvocationTargetException, NotPersistentClassException {		
-		
+	public boolean save(Map<String, ?> columnsAndValues, String tableName) throws SQLException {
 	    String query = mountQueryInsert(columnsAndValues, tableName);		
 		return processInsertUpdate(columnsAndValues, query);
 	}
@@ -25,10 +20,7 @@ public class Crud extends Operations implements CrudRepository {
 	}
 	
 	@Override
-	public boolean update(Map<String, ?> columnsAndValues, Map<String, ?> clauseColumnAndValue, String tableName)
-			throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException,
-			NotPersistentClassException {
-		
+	public boolean update(Map<String, ?> columnsAndValues, Map<String, ?> clauseColumnAndValue, String tableName) throws SQLException {
 		String query = mountQueryUpdate(columnsAndValues, clauseColumnAndValue, tableName);		
 		return processInsertUpdate(columnsAndValues, query);		
 	}

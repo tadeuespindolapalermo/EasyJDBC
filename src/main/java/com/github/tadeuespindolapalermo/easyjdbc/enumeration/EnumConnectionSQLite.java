@@ -5,11 +5,11 @@ public enum EnumConnectionSQLite {
 	URL("jdbc:sqlite:"),
 	DRIVER("org.sqlite.JDBC"),
 	FILE_PATH_DATABASE_DEFAULT("src/main/resources/data/"),
-	FILE_DATABASE_DAFAULT("database.db");
+	FILE_DATABASE_DEFAULT("database.db"),;
 	
 	private final String parameter;
 
-	private EnumConnectionSQLite(String parameter) {
+	EnumConnectionSQLite(String parameter) {
 		this.parameter = parameter;
 	}
 

@@ -16,8 +16,6 @@ public class SingletonConnection extends MountConnection {
 
 	private static Connection connection = InfoConnection.getConnection();
 
-	private static final String STRING_EMPTY = "";
-
 	private static final Map<EnumDatabase, AbstractConnectionUrl> MAP_DATABASE_URL = new HashMap<>();
 
 	private SingletonConnection() {
@@ -37,9 +35,7 @@ public class SingletonConnection extends MountConnection {
 		try {
 			if (isNull(connection)) {
 
-				String url = STRING_EMPTY;
-
-				url = MAP_DATABASE_URL.get(InfoConnection.getDatabase()).getUrl();
+				String url = MAP_DATABASE_URL.get(InfoConnection.getDatabase()).getUrl();
 
 				if (InfoConnection.getDatabase().equals(EnumDatabase.SQLITE)) {
 					connection = DriverManager.getConnection(url);

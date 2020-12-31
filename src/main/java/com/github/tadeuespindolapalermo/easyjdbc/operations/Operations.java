@@ -29,6 +29,10 @@ public class Operations {
 		connection = SingletonConnection.getConnection();
 	}
 
+	/**
+	 * ATTENTION: this method must not close appeal!
+	 * Do not use the close method or try-with-resources
+	 */
 	protected ResultSet processOperateWithResultSet(String query) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet result = null;
@@ -71,13 +75,13 @@ public class Operations {
 			}
 		}
 		return Boolean.FALSE;
-	}
-
-	protected boolean processInsertUpdate(Map<String, ?> columnsAndValues, String query) throws SQLException {
-
-		boolean success = false;
-
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+	}	
+	
+	protected boolean processInsertUpdate(Map<String, ?> columnsAndValues, String query) throws SQLException {	
+		
+		boolean success;
+		
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {			
 			for (int i = 0; i <= columnsAndValues.values().size() - 1; i++) {
 				setStatementProcess(stmt, i, columnsAndValues.values().toArray()[i], columnsAndValues);
 			}

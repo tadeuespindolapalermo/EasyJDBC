@@ -113,19 +113,22 @@ public class OperationsEntity<T> {
 			try (ResultSet result = stmt.executeQuery()) {
 				Field[] fields = removeSerialVersionUIDAttribute(entity.getDeclaredFields());
 				fields = removeAttributeNotColumn(fields);
-				while (result.next()) {
-					T entityResult = entity.newInstance();
-					for (Field field : fields) {
-						Method methodSetAttribute = entityResult.getClass()
-								.getDeclaredMethod(getMethodSetterName(field), field.getType());
-						methodSetAttribute.invoke(entityResult, defineResultSetAttribute(result, field));
-					}
+				while (result.next()) {					
+					T entityResult = entity.getDeclaredConstructor().newInstance();
+					for (Field field : fields) {						
+						Method methodSetAttribute = entityResult.getClass().getDeclaredMethod(getMethodSetterName(field), field.getType());
+						methodSetAttribute.invoke(entityResult, defineResultSetAttribute(result, field));						
+					}										
 					entities.add(entityResult);
 				}
 			}
 		}
 	}
 
+	/**
+	 * ATTENTION: this method must not close appeal!
+	 * Do not use the close method or try-with-resources
+	 */
 	protected ResultSet processOperateWithResultSet(String query) throws SQLException {
 		PreparedStatement statement = null;
 		ResultSet result = null;

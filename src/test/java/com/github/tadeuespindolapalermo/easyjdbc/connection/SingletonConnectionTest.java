@@ -10,12 +10,12 @@ public class SingletonConnectionTest {
 
 	@Test
 	public void connection() {
-		InfoConnection.setDatabase(EnumDatabase.SQLITE);
-		//InfoConnection.setNameDatabase("easyjdbc");
-		//InfoConnection.setPassword("postgres1985");
-		//InfoConnection.setUser("postgres");
-		//InfoConnection.setHost("127.0.0.1");
-		//InfoConnection.setPort("5432");
+		InfoConnection.setDatabase(EnumDatabase.POSTGRE);
+		InfoConnection.setNameDatabase("easyjdbc");
+		InfoConnection.setPassword("tadeu123");
+		InfoConnection.setUser("postgres");
+		InfoConnection.setHost("127.0.0.1");
+		InfoConnection.setPort("5432");
 		assertNotNull(SingletonConnection.getConnection());
 	}
 
