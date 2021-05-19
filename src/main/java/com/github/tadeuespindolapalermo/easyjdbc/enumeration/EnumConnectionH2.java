@@ -7,7 +7,7 @@ public enum EnumConnectionH2 {
 	
 	private final String parameter;
 
-	private EnumConnectionH2(String parameter) {
+	EnumConnectionH2(String parameter) {
 		this.parameter = parameter;
 	}
 

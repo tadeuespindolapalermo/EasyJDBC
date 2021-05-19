@@ -1,6 +1,6 @@
-drop table pessoa if exists;
+--drop table pessoa if exists;
 
-create table pessoa(
+create table if not exists pessoa (
 	id bigint, 
 	name varchar(255), 
 	lastname varchar(255), 

@@ -5,7 +5,7 @@ import static com.github.tadeuespindolapalermo.easyjdbc.util.ValidatorUtil.isNul
 
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumConnectionMySQL;
 
-public class MySQLConnectionUrl extends AbstractConnectionUrl {
+public class MySQLConnectionUrl implements ConnectionUrl {
 	
 	@Override
 	public String getUrl() throws ClassNotFoundException {

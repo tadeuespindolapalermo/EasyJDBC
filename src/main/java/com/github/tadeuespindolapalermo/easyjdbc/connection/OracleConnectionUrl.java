@@ -5,7 +5,7 @@ import static com.github.tadeuespindolapalermo.easyjdbc.util.ValidatorUtil.isNul
 
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumConnectionOracle;
 
-public class OracleConnectionUrl extends AbstractConnectionUrl {
+public class OracleConnectionUrl implements ConnectionUrl {
 	
 	@Override
 	public String getUrl() throws ClassNotFoundException {

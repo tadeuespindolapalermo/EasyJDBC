@@ -5,13 +5,12 @@ import static com.github.tadeuespindolapalermo.easyjdbc.util.ValidatorUtil.isNul
 
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumConnectionSQLite;
 
-public class SQLiteConnectionUrl extends AbstractConnectionUrl {
+public class SQLiteConnectionUrl implements ConnectionUrl {
 	
 	@Override
 	public String getUrl() throws ClassNotFoundException {
 		Class.forName(EnumConnectionSQLite.DRIVER.getParameter());					
 		return isNull(InfoConnection.getUrl()) ? mountSQLiteURL(EnumConnectionSQLite.URL.getParameter()) : InfoConnection.getUrl();
-
 	}
 
 }

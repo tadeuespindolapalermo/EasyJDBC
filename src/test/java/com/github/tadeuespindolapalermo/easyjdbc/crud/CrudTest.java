@@ -1,24 +1,20 @@
 package com.github.tadeuespindolapalermo.easyjdbc.crud;
 
-import static org.junit.Assert.assertTrue;
+import com.github.tadeuespindolapalermo.easyjdbc.connection.InfoConnection;
+import com.github.tadeuespindolapalermo.easyjdbc.connection.SingletonConnection;
+import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumConnectionH2;
+import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumDatabase;
+import org.h2.tools.RunScript;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.lang.reflect.InvocationTargetException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.h2.tools.RunScript;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.github.tadeuespindolapalermo.easyjdbc.connection.InfoConnection;
-import com.github.tadeuespindolapalermo.easyjdbc.connection.SingletonConnection;
-import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumConnectionH2;
-import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumDatabase;
-import com.github.tadeuespindolapalermo.easyjdbc.exception.NotPersistentClassException;
+import static org.junit.Assert.assertTrue;
 
 public class CrudTest {
 
@@ -29,8 +25,7 @@ public class CrudTest {
 		InfoConnection.setDatabase(EnumDatabase.H2);
 		InfoConnection.setUser("sa");
 		InfoConnection.setPassword("");
-		SingletonConnection.getConnection();		
-
+		SingletonConnection.getConnection();
 		loadDDL();
 	}
 
@@ -43,8 +38,7 @@ public class CrudTest {
 		save();
 	}
 
-	private void save() throws SQLException, NoSuchMethodException, IllegalAccessException, InvocationTargetException,
-			NotPersistentClassException {
+	private void save() throws SQLException {
 		Crud p = new Crud();
 		boolean save = p.save(createColumnsAndValues(), TABLE);
 		assertTrue(save);
@@ -67,7 +61,7 @@ public class CrudTest {
 		assertTrue(p.delete(TABLE, "lastname", "Palermo"));
 	}
 
-	private Map<String, Object> createColumnsAndValues() throws SQLException {
+	private Map<String, Object> createColumnsAndValues() {
 		Map<String, Object> columnsAndValues = new HashMap<>();
 		columnsAndValues.put("id", new Random().nextInt(999999999));
 		columnsAndValues.put("name", "Tadeu test without entity");

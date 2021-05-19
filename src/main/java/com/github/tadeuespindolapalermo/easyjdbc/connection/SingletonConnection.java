@@ -1,22 +1,21 @@
 package com.github.tadeuespindolapalermo.easyjdbc.connection;
 
-import static com.github.tadeuespindolapalermo.easyjdbc.util.ValidatorUtil.isNotNull;
-import static com.github.tadeuespindolapalermo.easyjdbc.util.ValidatorUtil.isNull;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumDatabase;
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumLogMessages;
 import com.github.tadeuespindolapalermo.easyjdbc.util.LogUtil;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.EnumMap;
+
+import static com.github.tadeuespindolapalermo.easyjdbc.util.ValidatorUtil.isNotNull;
+import static com.github.tadeuespindolapalermo.easyjdbc.util.ValidatorUtil.isNull;
 
 public class SingletonConnection extends MountConnection {
 
 	private static Connection connection = InfoConnection.getConnection();
 
-	private static final Map<EnumDatabase, AbstractConnectionUrl> MAP_DATABASE_URL = new HashMap<>();
+	private static final EnumMap<EnumDatabase, ConnectionUrl> MAP_DATABASE_URL = new EnumMap<>(EnumDatabase.class);
 
 	private SingletonConnection() {
 	}
@@ -27,7 +26,6 @@ public class SingletonConnection extends MountConnection {
 		MAP_DATABASE_URL.put(EnumDatabase.ORACLE, new OracleConnectionUrl());
 		MAP_DATABASE_URL.put(EnumDatabase.POSTGRE, new PostgreConnectionUrl());
 		MAP_DATABASE_URL.put(EnumDatabase.H2, new H2ConnectionUrl());
-
 		toConnect();
 	}
 

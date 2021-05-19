@@ -53,36 +53,27 @@ public class Operations {
 	}
 	
 	protected boolean processInsertUpdate(Map<String, ?> columnsAndValues, String query) throws SQLException {	
-		
-		boolean success;
-		
-		try (PreparedStatement stmt = connection.prepareStatement(query)) {			
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {
 			for (int i = 0; i <= columnsAndValues.values().size() - 1; i++) {
 				setStatementProcess(stmt, i, columnsAndValues.values().toArray()[i], columnsAndValues);
 			}
-			success = stmt.executeUpdate() > 0;
 			connection.commit();
+			return stmt.executeUpdate() > 0;
 		}
-		return success;
 	}
 	
 	protected boolean processDML(String query) throws SQLException {
-		boolean success = false;
-
-		PreparedStatement stmt = connection.prepareStatement(query);
-		success = stmt.execute();
-		connection.commit();
-
-		return success;
+		try (PreparedStatement stmt = connection.prepareStatement(query)) {
+			connection.commit();
+			return stmt.execute();
+		}
 	}
 
-	private void setStatementProcess(PreparedStatement stmt, int i, Object value, Map<String, ?> columnsAndValues)
-			throws SQLException {
+	private void setStatementProcess(PreparedStatement stmt, int i, Object value, Map<String, ?> columnsAndValues) throws SQLException {
 		setStatement(stmt, i, value, ++i, columnsAndValues);
 	}
 
-	private void setStatement(PreparedStatement stmt, int i, Object value, int index, Map<String, ?> columnsAndValues)
-			throws SQLException {
+	private void setStatement(PreparedStatement stmt, int i, Object value, int index, Map<String, ?> columnsAndValues) throws SQLException {
 
 		if (verifyTypeWrapperPrimitiveLong(i, columnsAndValues)) {
 			stmt.setLong(index, (Long) value);
@@ -240,11 +231,11 @@ public class Operations {
 		}
 
 		StringBuilder sql = new StringBuilder("UPDATE ").append(tableName).append(" SET ").append(columnsName)
-				.append(WHERE_CLAUSE
-						+ clauseColumnAndValue.keySet().toArray()[0].toString().replace("[", "").replace("]", "")
-						+ " = '"
-						+ clauseColumnAndValue.values().toArray()[0].toString().replace("[", "").replace("]", "")
-						+ "'");
+			.append(WHERE_CLAUSE
+				+ clauseColumnAndValue.keySet().toArray()[0].toString().replace("[", "").replace("]", "")
+				+ " = '"
+				+ clauseColumnAndValue.values().toArray()[0].toString().replace("[", "").replace("]", "")
+				+ "'");
 
 		return sql.toString();
 	}
@@ -258,9 +249,7 @@ public class Operations {
 	}
 
 	protected String mountQueryGetAll(String table) {
-
 		StringBuilder sql = new StringBuilder("SELECT * FROM ").append(table);
-
 		return sql.toString();
 	}
 

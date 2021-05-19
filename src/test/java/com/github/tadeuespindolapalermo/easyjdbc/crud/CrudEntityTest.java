@@ -1,43 +1,35 @@
 package com.github.tadeuespindolapalermo.easyjdbc.crud;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-import java.util.Random;
-
-import org.junit.Test;
-
 import com.github.tadeuespindolapalermo.easyjdbc.connection.InfoConnection;
 import com.github.tadeuespindolapalermo.easyjdbc.connection.SingletonConnection;
 import com.github.tadeuespindolapalermo.easyjdbc.entity.Entity;
 import com.github.tadeuespindolapalermo.easyjdbc.entity.EntityNamed;
-//import com.github.tadeuespindolapalermo.easyjdbc.entity.EntityQuestions;
 import com.github.tadeuespindolapalermo.easyjdbc.entity.EntityUniqueAttribute;
 import com.github.tadeuespindolapalermo.easyjdbc.enumeration.EnumDatabase;
 import com.github.tadeuespindolapalermo.easyjdbc.util.Utils;
+import org.junit.Before;
+import org.junit.Test;
 
-public class CrudEntityTest {	
+import java.util.List;
+import java.util.Random;
+
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+public class CrudEntityTest {
 	
 	private static final String CPF_MOCK = "12121212121AAB7CY7T";	
 	
 	private static final String DESCRIPTION_MOCK = "Mock Description";
 
-	static {
-		connectionTest();
-	}	
-
-	private static void connectionTest() {
-		connectionPostgreSQLMain();		
-	}
-	
-	private static void connectionPostgreSQLMain() {
+	@Before
+	public void connectionPostgreSQLMain() {
 		InfoConnection.setDatabase(EnumDatabase.POSTGRE);
 		InfoConnection.setNameDatabase("easyjdbc");
 		InfoConnection.setPassword("tadeu123");
 		InfoConnection.setUser("postgres");		
 		SingletonConnection.getConnection();
-	}	
+	}
 	
 	private void connectionMySQL() {
 		InfoConnection.setDatabase(EnumDatabase.MYSQL);
@@ -205,8 +197,9 @@ public class CrudEntityTest {
         Utils.print(p.getAll());
         assertNotNull(p.getAll());
     }	
-	
-    /*public void getAllEntityQuestionsTest() throws Exception {
+
+    /*@Test
+    public void getAllEntityQuestionsTest() throws Exception {
 		CrudEntity<EntityQuestions> p = new CrudEntity<>(EntityQuestions.class);
         Utils.print(p.getAll());
         assertNotNull(p.getAll());

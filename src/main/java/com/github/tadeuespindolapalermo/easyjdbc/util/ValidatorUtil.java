@@ -16,9 +16,8 @@ public class ValidatorUtil {
 				}
 			}
 			return Boolean.TRUE;
-		} else {
-			return Boolean.FALSE;
 		}
+		return Boolean.FALSE;
 	}
 	
 	public static boolean isNull(Object object) {
@@ -28,7 +27,7 @@ public class ValidatorUtil {
 	public static boolean isArrayValid(Object[] array) {
     	return array != null && array.length > 0;
     }
-	
+
 	public static boolean isArrayNotValid(Object[] array) {
     	return array == null || array.length <= 0;
     }

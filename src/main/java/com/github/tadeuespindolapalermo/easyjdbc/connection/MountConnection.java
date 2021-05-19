@@ -61,7 +61,7 @@ public class MountConnection {
 		if (!extraParameters.toString().isEmpty()) { 
 			stringConnection
 				.append("?")
-				.append(extraParameters.toString());
+				.append(extraParameters);
 		}			
 		return stringConnection.toString();
 	}
