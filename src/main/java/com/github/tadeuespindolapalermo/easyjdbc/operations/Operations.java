@@ -33,49 +33,24 @@ public class Operations {
 	 * ATTENTION: this method must not close appeal!
 	 * Do not use the close method or try-with-resources
 	 */
-	protected ResultSet processOperateWithResultSet(String query) throws SQLException {
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		try {
-			statement = connection.prepareStatement(query);
-			result = statement.executeQuery();
-			result.next();
-		} catch (SQLException e) {
-			// TODO Escrever LOG
-		} finally {
-			try {
-				if (result != null) {
-					result.close();
-				}
-
-			} catch (SQLException e) {
-				// TODO Escrever LOG
-			} finally {
-				if (statement != null) {
-					statement.close();
-				}
-			}
+	protected ResultSet processOperateWithResultSet(String query) throws SQLException  {
+		PreparedStatement statement = connection.prepareStatement(query);
+		ResultSet result = statement.executeQuery() ;
+		if (result.next()) {
+			return result;
 		}
-		return result;
+		return null;
 	}
 
 	protected boolean processDelete(String query) throws SQLException {
-		PreparedStatement statement = null;
-		try {
-			statement = connection.prepareStatement(query);
-			if (statement.executeUpdate() >= 1) {
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			if(statement.executeUpdate() >= 1) {
 				connection.commit();
 				return Boolean.TRUE;
 			}
-		} catch (SQLException e) {
-			// TODO Escrever LOG
-		} finally {
-			if (statement != null) {
-				statement.close();
-			}
 		}
 		return Boolean.FALSE;
-	}	
+	}
 	
 	protected boolean processInsertUpdate(Map<String, ?> columnsAndValues, String query) throws SQLException {	
 		

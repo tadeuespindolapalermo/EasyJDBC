@@ -129,48 +129,23 @@ public class OperationsEntity<T> {
 	 * ATTENTION: this method must not close appeal!
 	 * Do not use the close method or try-with-resources
 	 */
-	protected ResultSet processOperateWithResultSet(String query) throws SQLException {
-		PreparedStatement statement = null;
-		ResultSet result = null;
-		try {
-			statement = connection.prepareStatement(query);
-			result = statement.executeQuery();
-			result.next();
-		} catch (SQLException e) {
-			// TODO Escrever LOG
-		} finally {
-			try {
-				if (result != null) {
-					result.close();
-				}
-			} catch (SQLException e) {
-				// TODO Escrever LOG
-			} finally {
-				if (statement != null) {
-					statement.close();
-				}
-			}
+	protected ResultSet processOperateWithResultSet(String query) throws SQLException  {
+		PreparedStatement statement = connection.prepareStatement(query);
+		ResultSet result = statement.executeQuery() ;
+		if (result.next()) {
+			return result;
 		}
-		return result;
+		return null;
 	}
 
 	protected boolean processDeleteById(String query) throws SQLException {
-		Boolean processDeleted = FALSE;
-		PreparedStatement statement = null;
-		try {
-			statement = connection.prepareStatement(query);
-			if (statement.executeUpdate() == 1) {
+		try (PreparedStatement statement = connection.prepareStatement(query)) {
+			if(statement.executeUpdate() == 1) {
 				connection.commit();
-				processDeleted = TRUE;
-			}
-		} catch (SQLException e) {
-			// TODO Escrever LOG
-		} finally {
-			if (statement != null) {
-				statement.close();
+				return Boolean.TRUE;
 			}
 		}
-		return processDeleted;
+		return Boolean.FALSE;
 	}
 
 	private String getMethodSetterName(Field field) {
